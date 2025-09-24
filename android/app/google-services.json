@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "539912887024",
+    "project_id": "blue-dock",
+    "storage_bucket": "blue-dock.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:539912887024:android:3788cb709903bae93d0035",
+        "android_client_info": {
+          "package_name": "com.example.bluedock"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAoLt_qhgTr41hDYuiIvgNMUrKrlIECEIs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

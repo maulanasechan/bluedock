@@ -1,0 +1,51 @@
+{
+  "__collections__": {
+    "Roles": {
+      "R1a2B3c4D5e6F7g8H9i0": {
+        "roleId": "R1a2B3c4D5e6F7g8H9i0",
+        "title": "President Director",
+        "listWidget": []
+      },
+      "J8k7L6m5N4o3P2q1R0s9": {
+        "roleId": "J8k7L6m5N4o3P2q1R0s9",
+        "title": "Chief Financial Officer",
+        "listWidget": []
+      },
+      "X1y2Z3a4B5c6D7e8F9g0": {
+        "roleId": "X1y2Z3a4B5c6D7e8F9g0",
+        "title": "Finance Officer Assistant",
+        "listWidget": []
+      },
+      "M9n8O7p6Q5r4S3t2U1v0": {
+        "roleId": "M9n8O7p6Q5r4S3t2U1v0",
+        "title": "Chief Legal and Compliance",
+        "listWidget": []
+      },
+      "W1x2Y3z4A5b6C7d8E9f0": {
+        "roleId": "W1x2Y3z4A5b6C7d8E9f0",
+        "title": "Chief Quality Control and Assurance",
+        "listWidget": []
+      },
+      "H9g8F7e6D5c4B3a2Z1y0": {
+        "roleId": "H9g8F7e6D5c4B3a2Z1y0",
+        "title": "Chief Sales and Marketing",
+        "listWidget": []
+      },
+      "K1l2M3n4O5p6Q7r8S9t0": {
+        "roleId": "K1l2M3n4O5p6Q7r8S9t0",
+        "title": "Chief Technical Support",
+        "listWidget": []
+      },
+      "U9v8W7x6Y5z4A3b2C1d0": {
+        "roleId": "U9v8W7x6Y5z4A3b2C1d0",
+        "title": "Technical Support Assistant",
+        "listWidget": []
+      },
+      "E1f2G3h4I5j6K7l8M9n0": {
+        "roleId": "E1f2G3h4I5j6K7l8M9n0",
+        "title": "Worker",
+        "listWidget": []
+      }
+    }
+  }
+}
