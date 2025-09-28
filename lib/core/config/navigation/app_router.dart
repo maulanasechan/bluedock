@@ -1,14 +1,18 @@
 import 'package:bluedock/common/helper/navigation/format_route.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
+import 'package:bluedock/features/home/domain/entities/user_entity.dart';
 import 'package:bluedock/features/home/presentation/pages/error/access_denied_page.dart';
 import 'package:bluedock/features/home/presentation/pages/error/page_not_found_page.dart';
 import 'package:bluedock/features/home/presentation/pages/error/under_construction_page.dart';
 import 'package:bluedock/features/home/presentation/pages/error/you_are_offline_page.dart';
 import 'package:bluedock/features/home/presentation/pages/home/home_page.dart';
+import 'package:bluedock/features/home/presentation/pages/profile/change_password_page.dart';
+import 'package:bluedock/features/home/presentation/pages/profile/profile_page.dart';
 import 'package:bluedock/features/login/presentation/pages/forgot_password_page.dart';
 import 'package:bluedock/features/login/presentation/pages/login_page.dart';
 import 'package:bluedock/features/login/presentation/pages/send_email_page.dart';
 import 'package:bluedock/features/splash/pages/splash_page.dart';
+import 'package:bluedock/features/staff/domain/entities/staff_entity.dart';
 import 'package:bluedock/features/staff/presentation/pages/add_or_update_staff_page.dart';
 import 'package:bluedock/features/staff/presentation/pages/manage_staff_page.dart';
 import 'package:bluedock/features/staff/presentation/pages/staff_detail_page.dart';
@@ -27,12 +31,12 @@ class AppRouter {
       GoRoute(
         path: formatRoute(AppRoutes.login),
         name: AppRoutes.login,
-        builder: (context, state) => const LoginPage(),
+        builder: (context, state) => LoginPage(),
         routes: [
           GoRoute(
             path: AppRoutes.forgotPassword,
             name: AppRoutes.forgotPassword,
-            builder: (context, state) => const ForgotPasswordPage(),
+            builder: (context, state) => ForgotPasswordPage(),
           ),
           GoRoute(
             path: AppRoutes.sendEmail,
@@ -66,6 +70,21 @@ class AppRouter {
             name: AppRoutes.accessDenied,
             builder: (context, state) => const AccessDeniedPage(),
           ),
+          GoRoute(
+            path: AppRoutes.profile,
+            name: AppRoutes.profile,
+            builder: (context, state) {
+              final extra = state.extra as UserEntity;
+              return ProfilePage(staff: extra);
+            },
+            routes: [
+              GoRoute(
+                path: AppRoutes.changePassword,
+                name: AppRoutes.changePassword,
+                builder: (context, state) => ChangePasswordPage(),
+              ),
+            ],
+          ),
         ],
       ),
       GoRoute(
@@ -76,12 +95,18 @@ class AppRouter {
           GoRoute(
             path: AppRoutes.staffDetail,
             name: AppRoutes.staffDetail,
-            builder: (context, state) => const StaffDetailPage(),
+            builder: (context, state) {
+              final extra = state.extra as StaffEntity;
+              return StaffDetailPage(staff: extra);
+            },
           ),
           GoRoute(
             path: AppRoutes.addOrUpdateStaff,
             name: AppRoutes.addOrUpdateStaff,
-            builder: (context, state) => const AddOrUpdateStaffPage(),
+            builder: (context, state) {
+              final extra = state.extra as StaffEntity?;
+              return AddOrUpdateStaffPage(staff: extra);
+            },
           ),
           GoRoute(
             path: AppRoutes.successStaff,

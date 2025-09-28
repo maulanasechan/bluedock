@@ -1,7 +1,7 @@
 //command to run import json to firebase
 npx -p node-firestore-import-export firestore-import -a [your renamed file name/new firebase json name].json -b [our json collection name].json
 
-npx -p node-firestore-import-export firestore-import -a key.json -b output_enriched.json
+npx -p node-firestore-import-export firestore-import -a key.json -b roles.json
 
 //command untuk buat search_keyword
 node enrich.js products.json output_enriched.json

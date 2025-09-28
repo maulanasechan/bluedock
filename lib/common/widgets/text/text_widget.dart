@@ -1,3 +1,4 @@
+import 'package:bluedock/core/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class TextWidget extends StatelessWidget {
@@ -14,7 +15,7 @@ class TextWidget extends StatelessWidget {
     required this.text,
     this.fontSize = 16,
     this.fontWeight = FontWeight.w400,
-    this.color,
+    this.color = AppColors.darkBlue,
     this.overflow = TextOverflow.ellipsis,
     this.align,
     this.maxLines,

@@ -15,6 +15,8 @@ class AppColors {
 
   static const boxShadow = Color.fromRGBO(0, 0, 0, 0.25);
   static const border = Color.fromRGBO(245, 245, 245, 0.25);
+  static const baseLoading = Color.fromARGB(255, 174, 174, 174);
+  static const highlightLoading = Color.fromARGB(255, 255, 255, 255);
 
   static const LinearGradient scaffoldBackground = LinearGradient(
     begin: Alignment.topCenter,
@@ -26,5 +28,12 @@ class AppColors {
       AppColors.blueSecondary,
     ],
     stops: [0.0, 0.15, 0.80, 1.0],
+  );
+
+  static const LinearGradient gradientModal = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [AppColors.blueSecondary, AppColors.greySecondary],
+    stops: [0.0, 1.0],
   );
 }

@@ -1,29 +1,68 @@
+import 'package:bluedock/common/widgets/button/bloc/action_button_cubit.dart';
+import 'package:bluedock/common/widgets/button/bloc/action_button_state.dart';
+import 'package:bluedock/common/widgets/button/widgets/action_button_widget.dart';
 import 'package:bluedock/common/widgets/button/widgets/button_widget.dart';
 import 'package:bluedock/common/widgets/button/widgets/icon_button_widget.dart';
 import 'package:bluedock/common/widgets/gradientScaffold/gradient_scaffold_widget.dart';
 import 'package:bluedock/common/widgets/text/text_widget.dart';
+import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
+import 'package:bluedock/features/staff/domain/entities/staff_entity.dart';
+import 'package:bluedock/features/staff/domain/usecases/delete_staff_usecase.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import 'package:intl/intl.dart';
 
 class StaffDetailPage extends StatelessWidget {
-  const StaffDetailPage({super.key});
+  final StaffEntity staff;
+  const StaffDetailPage({super.key, required this.staff});
 
   @override
   Widget build(BuildContext context) {
-    return GradientScaffoldWidget(
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 90, 0, 20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Stack(
+    return MultiBlocProvider(
+      providers: [BlocProvider(create: (context) => ActionButtonCubit())],
+      child: GradientScaffoldWidget(
+        body: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 90, 0, 0),
+          child: BlocListener<ActionButtonCubit, ActionButtonState>(
+            listener: (context, state) {
+              if (state is ActionButtonFailure) {
+                var snackbar = SnackBar(content: Text(state.errorMessage));
+                ScaffoldMessenger.of(context).showSnackBar(snackbar);
+              }
+              if (state is ActionButtonSuccess) {
+                final router = GoRouter.of(context);
+
+                Future.delayed(const Duration(seconds: 1), () {
+                  router.goNamed(
+                    AppRoutes.successStaff,
+                    extra: 'User had been deleted',
+                  );
+                });
+              }
+            },
+            child: Column(
               children: [
-                Align(alignment: Alignment.topLeft, child: IconButtonWidget()),
-                Align(alignment: Alignment.topCenter, child: _avatarWidget()),
+                Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: IconButtonWidget(),
+                    ),
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: _avatarWidget(),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 32),
+                _bottomNavWidget(context, staff),
               ],
             ),
-            _bottomNavWidget(),
-          ],
+          ),
         ),
       ),
     );
@@ -47,7 +86,7 @@ class StaffDetailPage extends StatelessWidget {
         ),
         SizedBox(height: 24),
         TextWidget(
-          text: 'Dava Valubia Ramadhan',
+          text: staff.fullName,
           fontWeight: FontWeight.w700,
           fontSize: 18,
         ),
@@ -58,15 +97,15 @@ class StaffDetailPage extends StatelessWidget {
             TextWidget(text: 'Last Online', fontSize: 14),
             SizedBox(width: 10),
             TextWidget(
-              text: '3 days ago',
+              text: staff.lastOnline == Timestamp(0, 0)
+                  ? '-'
+                  : timeago.format(staff.lastOnline.toDate()),
               fontSize: 14,
               fontWeight: FontWeight.w700,
               color: AppColors.red,
             ),
           ],
         ),
-        SizedBox(height: 32),
-        _contentWidget(),
       ],
     );
   }
@@ -85,64 +124,116 @@ class StaffDetailPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextWidget(text: 'NIK', fontWeight: FontWeight.w700, fontSize: 16),
+            TextWidget(text: 'NIP', fontWeight: FontWeight.w700, fontSize: 16),
             SizedBox(height: 4),
-            TextWidget(text: '30578040204970005', fontSize: 16),
-            SizedBox(height: 16),
-            TextWidget(
-              text: 'Email',
-              fontWeight: FontWeight.w700,
-              fontSize: 16,
+            TextWidget(text: staff.nip, fontSize: 16),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 16, 0, 4),
+              child: TextWidget(
+                text: 'NIK',
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+              ),
             ),
-            SizedBox(height: 4),
-            TextWidget(text: 'dava@gmail.com', fontSize: 16),
-            SizedBox(height: 16),
-            TextWidget(
-              text: 'Password',
-              fontWeight: FontWeight.w700,
-              fontSize: 16,
+            TextWidget(text: staff.nik, fontSize: 16),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 16, 0, 4),
+              child: TextWidget(
+                text: 'Email',
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+              ),
             ),
-            SizedBox(height: 4),
-            TextWidget(text: 'kaka12345', fontSize: 16),
-            SizedBox(height: 16),
-            TextWidget(
-              text: 'Address',
-              fontWeight: FontWeight.w700,
-              fontSize: 16,
+            TextWidget(text: staff.email, fontSize: 16),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 16, 0, 4),
+              child: TextWidget(
+                text: 'Address',
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+              ),
             ),
-            SizedBox(height: 4),
             TextWidget(
               overflow: TextOverflow.fade,
-              text: 'bagong ginayan 50/60, surabaya, medokan, jawa timur',
+              text: staff.address,
               fontSize: 16,
             ),
-            SizedBox(height: 16),
-            TextWidget(text: 'Role', fontWeight: FontWeight.w700, fontSize: 16),
-            SizedBox(height: 4),
-            TextWidget(text: 'Chief Technical Support', fontSize: 16),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 16, 0, 4),
+              child: TextWidget(
+                text: 'Role',
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+              ),
+            ),
+            TextWidget(text: staff.role.title, fontSize: 16),
+            if (staff.updatedBy != '')
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 16, 0, 4),
+                child: TextWidget(
+                  text: 'Updated By',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
+                ),
+              ),
+            if (staff.updatedBy != '')
+              TextWidget(text: staff.updatedBy, fontSize: 16),
+            if (staff.updatedAt != null)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 16, 0, 4),
+                child: TextWidget(
+                  text: 'Updated At',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
+                ),
+              ),
+            if (staff.updatedAt != null)
+              TextWidget(
+                text: DateFormat(
+                  'dd MMM yyyy, HH:mm',
+                ).format(staff.updatedAt!.toDate()),
+                fontSize: 16,
+              ),
           ],
         ),
       ),
     );
   }
 
-  Widget _bottomNavWidget() {
-    return Column(
-      children: [
-        ButtonWidget(
-          onPressed: () {},
-          background: AppColors.orange,
-          title: 'Update Staff',
-          fontSize: 16,
-        ),
-        SizedBox(height: 16),
-        ButtonWidget(
-          onPressed: () {},
-          background: AppColors.red,
-          title: 'Delete Staff',
-          fontSize: 16,
-        ),
-      ],
+  Widget _bottomNavWidget(BuildContext context, StaffEntity staff) {
+    return Builder(
+      builder: (context) {
+        return Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                _contentWidget(),
+                SizedBox(height: 50),
+                ButtonWidget(
+                  onPressed: () {
+                    context.pushNamed(AppRoutes.addOrUpdateStaff, extra: staff);
+                  },
+                  background: AppColors.orange,
+                  title: 'Update Staff',
+                  fontSize: 16,
+                ),
+                SizedBox(height: 16),
+                ActionButtonWidget(
+                  onPressed: () {
+                    context.read<ActionButtonCubit>().execute(
+                      usecase: DeleteStaffUsecase(),
+                      params: staff.staffId,
+                    );
+                  },
+                  background: AppColors.red,
+                  title: 'Delete Staff',
+                  fontSize: 16,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

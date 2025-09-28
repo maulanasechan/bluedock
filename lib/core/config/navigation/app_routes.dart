@@ -22,4 +22,6 @@ class AppRoutes {
   static const staffDetail = 'staffDetail';
   static const addOrUpdateStaff = 'addOrUpdateStaff';
   static const successStaff = 'successStaff';
+  static const profile = 'profile';
+  static const changePassword = 'changePassword';
 }

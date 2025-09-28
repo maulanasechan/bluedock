@@ -18,7 +18,7 @@ class SplashPage extends StatelessWidget {
           context.goNamed(AppRoutes.login);
         }
         if (state is Authenticated) {
-          // context.goNamed(AppRoutes.home);
+          context.goNamed(AppRoutes.home);
         }
       },
       child: GradientScaffoldWidget(

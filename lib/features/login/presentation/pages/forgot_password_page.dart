@@ -9,16 +9,15 @@ import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class ForgotPasswordPage extends StatelessWidget {
-  const ForgotPasswordPage({super.key});
+  ForgotPasswordPage({super.key});
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    final formKey = GlobalKey<FormState>();
-
     return GradientScaffoldWidget(
       hideBack: false,
       body: Form(
-        key: formKey,
+        key: _formKey,
         child: Column(
           children: [
             TextWidget(
@@ -35,8 +34,8 @@ class ForgotPasswordPage extends StatelessWidget {
             SizedBox(height: 42),
             ButtonWidget(
               onPressed: () {
-                // final isValid = formKey.currentState?.validate() ?? false;
-                // if (!isValid) return;
+                final isValid = _formKey.currentState?.validate() ?? false;
+                if (!isValid) return;
                 context.goNamed(AppRoutes.sendEmail);
               },
               title: 'Send to Email',

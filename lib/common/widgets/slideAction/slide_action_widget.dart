@@ -8,6 +8,7 @@ class SlideActionWidget extends StatelessWidget {
   final bool isFirst;
   final bool isLast;
   final Color color;
+  final VoidCallback? onTap;
 
   const SlideActionWidget({
     super.key,
@@ -16,6 +17,7 @@ class SlideActionWidget extends StatelessWidget {
     this.isFirst = false,
     this.isLast = false,
     required this.color,
+    this.onTap,
   });
 
   @override
@@ -25,7 +27,10 @@ class SlideActionWidget extends StatelessWidget {
       padding: EdgeInsets.zero,
       backgroundColor: Colors.transparent,
       foregroundColor: Colors.transparent,
-      onPressed: (_) {},
+      onPressed: (actionContext) {
+        Slidable.of(actionContext)?.close();
+        onTap?.call();
+      },
       child: Container(
         margin: EdgeInsets.fromLTRB(8, 0, 0, 4),
         width: double.infinity,

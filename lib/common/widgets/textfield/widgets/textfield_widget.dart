@@ -36,6 +36,7 @@ class TextfieldWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return FormField<String>(
       validator: validator,
+      initialValue: initialValue,
       builder: (field) {
         final hasError = field.hasError;
         return Column(

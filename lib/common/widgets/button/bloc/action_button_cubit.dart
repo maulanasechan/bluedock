@@ -1,27 +1,27 @@
-import 'package:bluedock/common/widgets/button/bloc/button_responsive_state.dart';
+import 'package:bluedock/common/widgets/button/bloc/action_button_state.dart';
 import 'package:bluedock/core/config/usecase/format_usecase.dart';
 import 'package:dartz/dartz.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ButtonResponsiveCubit extends Cubit<ButtonResponsiveState> {
-  ButtonResponsiveCubit() : super(ButtonResponsiveInitial());
+class ActionButtonCubit extends Cubit<ActionButtonState> {
+  ActionButtonCubit() : super(ActionButtonInitial());
 
   Future<void> execute({dynamic params, required UseCase usecase}) async {
-    emit(ButtonResponsiveLoading());
+    emit(ActionButtonLoading());
     try {
       Either returnedData = await usecase.call(params: params);
 
       returnedData.fold(
         (error) {
-          emit(ButtonResponsiveFailure(errorMessage: error));
+          emit(ActionButtonFailure(errorMessage: error));
         },
         (data) {
-          emit(ButtonResponsiveSuccess());
+          emit(ActionButtonSuccess());
         },
       );
     } catch (e) {
-      emit(ButtonResponsiveFailure(errorMessage: e.toString()));
+      emit(ActionButtonFailure(errorMessage: e.toString()));
     }
   }
 }

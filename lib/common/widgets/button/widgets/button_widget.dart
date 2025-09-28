@@ -8,6 +8,7 @@ class ButtonWidget extends StatelessWidget {
   final double? height;
   final double? width;
   final Color? background;
+  final Color? fontColor;
   final Widget? prefix;
   final Widget? suffix;
   final FontWeight fontWeight;
@@ -20,6 +21,7 @@ class ButtonWidget extends StatelessWidget {
     this.width,
     this.content,
     this.background = AppColors.blue,
+    this.fontColor = AppColors.white,
     this.prefix,
     this.suffix,
     this.fontSize = 20,
@@ -61,7 +63,7 @@ class ButtonWidget extends StatelessWidget {
                   Text(
                     title,
                     style: TextStyle(
-                      color: Colors.white,
+                      color: fontColor,
                       fontWeight: fontWeight,
                       fontSize: fontSize,
                     ),

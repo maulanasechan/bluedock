@@ -61,6 +61,20 @@ class AppValidators {
     };
   }
 
+  static StringValidator nip({
+    String requiredMessage = 'NIP is required.',
+    String lengthMessage = 'NIP must be exactly 16 digits.',
+    String invalidMessage = 'NIP must only contain numbers.',
+  }) {
+    return (v) {
+      final s = (v ?? '').trim();
+      if (s.isEmpty) return requiredMessage;
+      if (!_nikRegex.hasMatch(s)) return invalidMessage;
+      if (s.length != 6) return lengthMessage;
+      return null;
+    };
+  }
+
   static StringValidator password({
     String requiredMessage = 'Password is required.',
     String lengthMessage = 'Must be at least 8 characters long',

@@ -2,13 +2,17 @@ import 'package:bluedock/common/widgets/slideAction/slide_action_widget.dart';
 import 'package:bluedock/common/widgets/text/text_widget.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
+import 'package:bluedock/features/staff/domain/entities/staff_entity.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class StaffCardWidget extends StatelessWidget {
-  const StaffCardWidget({super.key});
+  final StaffEntity? staff;
+  const StaffCardWidget({super.key, this.staff});
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +21,9 @@ class StaffCardWidget extends StatelessWidget {
         motion: const DrawerMotion(),
         children: [
           SlideActionWidget(
+            onTap: () {
+              context.pushNamed(AppRoutes.addOrUpdateStaff, extra: staff);
+            },
             icon: PhosphorIconsBold.gearFine,
             label: 'Update',
             color: AppColors.orange,
@@ -30,7 +37,7 @@ class StaffCardWidget extends StatelessWidget {
       ),
       child: GestureDetector(
         onTap: () {
-          context.pushNamed(AppRoutes.staffDetail);
+          context.pushNamed(AppRoutes.staffDetail, extra: staff);
         },
         child: Container(
           margin: EdgeInsets.fromLTRB(0, 0, 0, 4),
@@ -68,15 +75,18 @@ class StaffCardWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         TextWidget(
-                          text: 'Dava Valubia',
+                          text: staff != null
+                              ? staff!.fullName
+                              : 'Dava Valubia',
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
                         ),
-                        TextWidget(
-                          text: 'Online',
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
-                        ),
+                        if (staff!.lastOnline != Timestamp(0, 0))
+                          TextWidget(
+                            text: 'Online',
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                          ),
                       ],
                     ),
                     SizedBox(height: 8),
@@ -84,11 +94,17 @@ class StaffCardWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         TextWidget(
-                          text: 'Chief Technical Support',
+                          text: staff != null
+                              ? staff!.role.title
+                              : 'Chief Technical Support',
                           fontSize: 12,
                         ),
                         TextWidget(
-                          text: '3 days ago',
+                          text: staff != null
+                              ? staff!.lastOnline != Timestamp(0, 0)
+                                    ? timeago.format(staff!.lastOnline.toDate())
+                                    : ''
+                              : '3 days ago',
                           fontSize: 12,
                           color: AppColors.blue,
                           fontWeight: FontWeight.w700,

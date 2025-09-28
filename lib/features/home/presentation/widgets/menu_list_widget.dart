@@ -1,18 +1,18 @@
 import 'package:bluedock/common/widgets/text/text_widget.dart';
-import 'package:bluedock/features/home/data/models/menu_model.dart';
+import 'package:bluedock/features/home/data/models/app_menu_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class MenuListWidget extends StatelessWidget {
-  final List<MenuModel> listMenu;
+  final List<AppMenuModel> listAppMenu;
 
-  const MenuListWidget({super.key, required this.listMenu});
+  const MenuListWidget({super.key, required this.listAppMenu});
 
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: listMenu.length,
+      itemCount: listAppMenu.length,
       padding: EdgeInsets.zero,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4,
@@ -21,7 +21,7 @@ class MenuListWidget extends StatelessWidget {
         childAspectRatio: 0.6,
       ),
       itemBuilder: (BuildContext context, int index) {
-        final menu = listMenu[index];
+        final menu = listAppMenu[index];
         return GestureDetector(
           onTap: () {
             context.pushNamed(menu.route);
