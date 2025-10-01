@@ -1,4 +1,4 @@
-import 'package:bluedock/common/widgets/bottomModal/bottom_modal_widget.dart';
+import 'package:bluedock/common/widgets/modal/bottom_modal_widget.dart';
 import 'package:bluedock/common/widgets/button/bloc/action_button_cubit.dart';
 import 'package:bluedock/common/widgets/button/bloc/action_button_state.dart';
 import 'package:bluedock/common/widgets/button/widgets/action_button_widget.dart';
@@ -47,22 +47,21 @@ class AddOrUpdateStaffPage extends StatelessWidget {
         hideBack: false,
         appbarTitle: isUpdate ? 'Update Staff' : 'Add New Staff',
         body: BlocListener<ActionButtonCubit, ActionButtonState>(
-          listener: (context, state) {
+          listener: (context, state) async {
             if (state is ActionButtonFailure) {
               var snackbar = SnackBar(content: Text(state.errorMessage));
               ScaffoldMessenger.of(context).showSnackBar(snackbar);
             }
             if (state is ActionButtonSuccess) {
-              final router = GoRouter.of(context);
-
-              Future.delayed(const Duration(seconds: 1), () {
-                router.goNamed(
-                  AppRoutes.successStaff,
-                  extra: isUpdate
-                      ? 'User had been updated'
-                      : 'New user had been created',
-                );
-              });
+              final changed = await context.pushNamed(
+                AppRoutes.successStaff,
+                extra: isUpdate
+                    ? 'The staff has been updated'
+                    : 'New staff has been added',
+              );
+              if (changed == true && context.mounted) {
+                context.pop(true);
+              }
             }
           },
           child: SingleChildScrollView(
@@ -115,9 +114,8 @@ class AddOrUpdateStaffPage extends StatelessWidget {
                       if (isUpdate != true) SizedBox(height: 24),
                       if (isUpdate != true)
                         PasswordTextfieldWidget(
-                          title: isUpdate ? 'Change Password' : 'Password',
+                          title: 'Password',
                           initialValue: state.password,
-                          toogle: isUpdate,
                           onChanged: (v) =>
                               context.read<StaffFormCubit>().setPassword(v),
                         ),

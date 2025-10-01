@@ -1,0 +1,76 @@
+{
+  "__collections__": {
+    "AppMenu": {
+      "3wtxG3WEvUTX1CAbYUYu": {
+        "index": 1,
+        "appMenuId": "3wtxG3WEvUTX1CAbYUYu",
+        "title": "Project",
+        "icon": "assets/icons/IconProject.png",
+        "route": "underConstruction"
+      },
+      "H7kLp3wqZx81vFRtB2Ns": {
+        "index": 2,
+        "appMenuId": "H7kLp3wqZx81vFRtB2Ns",
+        "title": "Inventory",
+        "icon": "assets/icons/IconInventory.png",
+        "route": "underConstruction"
+      },
+      "gU92hXLqT4mbP5sYc7Vn": {
+        "index": 3,
+        "appMenuId": "gU92hXLqT4mbP5sYc7Vn",
+        "title": "Aftersales",
+        "icon": "assets/icons/IconAftersales.png",
+        "route": "underConstruction"
+      },
+      "DqR1f8yZW3jT6nKb9xMo": {
+        "index": 4,
+        "appMenuId": "DqR1f8yZW3jT6nKb9xMo",
+        "title": "Products",
+        "icon": "assets/icons/IconProducts.png",
+        "route": "underConstruction"
+      },
+      "Z7uJp6kR2tYxL9mWv3Ha": {
+        "index": 5,
+        "appMenuId": "Z7uJp6kR2tYxL9mWv3Ha",
+        "title": "Purchase Order",
+        "icon": "assets/icons/IconPurchaseOrder.png",
+        "route": "underConstruction"
+      },
+      "a4QxN1mZr7VyH3fGp8Tu": {
+        "index": 6,
+        "appMenuId": "a4QxN1mZr7VyH3fGp8Tu",
+        "title": "Finance",
+        "icon": "assets/icons/IconFinance.png",
+        "route": "accessDenied"
+      },
+      "tX5jR8nYw2pL7zM9qVkB": {
+        "index": 7,
+        "appMenuId": "tX5jR8nYw2pL7zM9qVkB",
+        "title": "Receipt",
+        "icon": "assets/icons/IconReceipt.png",
+        "route": "youAreOffline"
+      },
+      "b6UqK3yZn1HrT4xP9wVm": {
+        "index": 8,
+        "appMenuId": "b6UqK3yZn1HrT4xP9wVm",
+        "title": "Delivery Order",
+        "icon": "assets/icons/IconDeliveryOrder.png",
+        "route": "underConstruction"
+      },
+      "Jm7hW2tQp8zX5vL4kRc9": {
+        "index": 9,
+        "appMenuId": "Jm7hW2tQp8zX5vL4kRc9",
+        "title": "Manage Staff",
+        "icon": "assets/icons/IconStaff.png",
+        "route": "manageStaff"
+      },
+      "f9TzL3rM6nW1pX8vQkYa": {
+        "index": 10,
+        "appMenuId": "f9TzL3rM6nW1pX8vQkYa",
+        "title": "Daily Task",
+        "icon": "assets/icons/IconDailyTask.png",
+        "route": "pageNotFound"
+      }
+    }
+  }
+}

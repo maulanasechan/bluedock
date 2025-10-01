@@ -1,9 +1,9 @@
 import 'package:bluedock/common/widgets/button/bloc/action_button_cubit.dart';
 import 'package:bluedock/common/widgets/button/bloc/action_button_state.dart';
-import 'package:bluedock/common/widgets/button/widgets/action_button_widget.dart';
 import 'package:bluedock/common/widgets/button/widgets/button_widget.dart';
 import 'package:bluedock/common/widgets/button/widgets/icon_button_widget.dart';
 import 'package:bluedock/common/widgets/gradientScaffold/gradient_scaffold_widget.dart';
+import 'package:bluedock/common/widgets/modal/center_modal_widget.dart';
 import 'package:bluedock/common/widgets/text/text_widget.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
@@ -34,14 +34,10 @@ class StaffDetailPage extends StatelessWidget {
                 ScaffoldMessenger.of(context).showSnackBar(snackbar);
               }
               if (state is ActionButtonSuccess) {
-                final router = GoRouter.of(context);
-
-                Future.delayed(const Duration(seconds: 1), () {
-                  router.goNamed(
-                    AppRoutes.successStaff,
-                    extra: 'User had been deleted',
-                  );
-                });
+                context.goNamed(
+                  AppRoutes.successStaff,
+                  extra: 'User had been deleted',
+                );
               }
             },
             child: Column(
@@ -210,20 +206,46 @@ class StaffDetailPage extends StatelessWidget {
                 _contentWidget(),
                 SizedBox(height: 50),
                 ButtonWidget(
-                  onPressed: () {
-                    context.pushNamed(AppRoutes.addOrUpdateStaff, extra: staff);
+                  onPressed: () async {
+                    final changed = await context.pushNamed(
+                      AppRoutes.addOrUpdateStaff,
+                      extra: staff,
+                    );
+                    if (changed == true && context.mounted) {
+                      context.pop(true);
+                    }
                   },
                   background: AppColors.orange,
                   title: 'Update Staff',
                   fontSize: 16,
                 ),
                 SizedBox(height: 16),
-                ActionButtonWidget(
-                  onPressed: () {
-                    context.read<ActionButtonCubit>().execute(
-                      usecase: DeleteStaffUsecase(),
-                      params: staff.staffId,
+                ButtonWidget(
+                  onPressed: () async {
+                    final actionCubit = context.read<ActionButtonCubit>();
+                    final changed = await CenterModalWidget.display(
+                      context: context,
+                      title: 'Remove Staff',
+                      subtitle: "Are you sure to remove ${staff.fullName}?",
+                      yesButton: 'Remove',
+                      actionCubit: actionCubit,
+                      yesButtonOnTap: () {
+                        context.read<ActionButtonCubit>().execute(
+                          usecase: DeleteStaffUsecase(),
+                          params: staff.staffId,
+                        );
+                      },
                     );
+                    if (changed == true && context.mounted) {
+                      final change = await context.pushNamed(
+                        AppRoutes.successStaff,
+                        extra: '${staff.fullName} has been removed',
+                      );
+
+                      if (change == true && context.mounted) {
+                        context.pop(true);
+                      }
+                    }
                   },
                   background: AppColors.red,
                   title: 'Delete Staff',

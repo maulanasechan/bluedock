@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 abstract class LoginFirebaseService {
   Future<Either> login(LoginFormReq user);
   Future<bool> isLoggedIn();
+  Future<Either> sendPasswordReset(String email);
 }
 
 class LoginFirebaseServiceImpl extends LoginFirebaseService {
@@ -67,6 +68,16 @@ class LoginFirebaseServiceImpl extends LoginFirebaseService {
       }
     } catch (e) {
       return false;
+    }
+  }
+
+  @override
+  Future<Either> sendPasswordReset(String email) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      return Right('Password reset email was send');
+    } catch (e) {
+      return const Left('Please try again');
     }
   }
 }

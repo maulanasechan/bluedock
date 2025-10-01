@@ -11,6 +11,10 @@ import 'package:bluedock/features/home/presentation/pages/profile/profile_page.d
 import 'package:bluedock/features/login/presentation/pages/forgot_password_page.dart';
 import 'package:bluedock/features/login/presentation/pages/login_page.dart';
 import 'package:bluedock/features/login/presentation/pages/send_email_page.dart';
+import 'package:bluedock/features/product/presentation/pages/productCategory/product_category_page.dart';
+import 'package:bluedock/features/product/presentation/pages/sperreAirCompressor/add_sperre_air_compressor_page.dart';
+import 'package:bluedock/features/product/presentation/pages/sperreAirCompressor/sperre_air_compressor_page.dart';
+import 'package:bluedock/features/product/presentation/pages/successProduct/success_product_page.dart';
 import 'package:bluedock/features/splash/pages/splash_page.dart';
 import 'package:bluedock/features/staff/domain/entities/staff_entity.dart';
 import 'package:bluedock/features/staff/presentation/pages/add_or_update_staff_page.dart';
@@ -112,9 +116,48 @@ class AppRouter {
             path: AppRoutes.successStaff,
             name: AppRoutes.successStaff,
             builder: (context, state) {
-              final extra = state.extra as String;
-              return SuccessStaffPage(title: extra);
+              final title = state.extra as String;
+              return SuccessStaffPage(title: title);
             },
+          ),
+        ],
+      ),
+      GoRoute(
+        path: formatRoute(AppRoutes.productCategory),
+        name: AppRoutes.productCategory,
+        builder: (context, state) => const ProductCategoryPage(),
+        routes: [
+          GoRoute(
+            path: AppRoutes.successProduct,
+            name: AppRoutes.successProduct,
+            builder: (context, state) {
+              final map = (state.extra is Map)
+                  ? Map<String, dynamic>.from(state.extra as Map)
+                  : const <String, dynamic>{};
+
+              final title = map['title'] as String? ?? '';
+              final routeName = map['routeName'] as String? ?? AppRoutes.home;
+              return SuccessProductPage(
+                title: title,
+                onPressed: () {
+                  context.goNamed(routeName);
+                },
+              );
+            },
+          ),
+          GoRoute(
+            path: AppRoutes.sperreAirCompressor,
+            name: AppRoutes.sperreAirCompressor,
+            builder: (context, state) {
+              return SperreAirCompressorPage();
+            },
+            routes: [
+              GoRoute(
+                path: AppRoutes.addSperreAirCompressor,
+                name: AppRoutes.addSperreAirCompressor,
+                builder: (context, state) => AddSperreAirCompressorPage(),
+              ),
+            ],
           ),
         ],
       ),

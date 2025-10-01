@@ -9,4 +9,6 @@ class AppImages {
   static const appUnderConstruction = '${basePath}under_construction$format';
   static const appOffline = '${basePath}offline$format';
   static const appUserCreated = '${basePath}user_created$format';
+  static const appSperreAirCompressor = '${basePath}SperreAirCompressor$format';
+  static const appAddedProduct = '${basePath}added_product$format';
 }

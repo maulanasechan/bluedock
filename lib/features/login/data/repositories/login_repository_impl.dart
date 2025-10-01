@@ -14,4 +14,9 @@ class LoginRepositoryImpl extends LoginRepository {
   Future<bool> isLoggedIn() async {
     return await sl<LoginFirebaseService>().isLoggedIn();
   }
+
+  @override
+  Future<Either> sendPasswordReset(String email) async {
+    return await sl<LoginFirebaseService>().sendPasswordReset(email);
+  }
 }

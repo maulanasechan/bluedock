@@ -11,6 +11,8 @@ abstract class UserFirebaseService {
     required String oldPassword,
     required String newPassword,
   });
+
+  Future<Either> getAppMenu();
 }
 
 class UserFirebaseServiceImpl extends UserFirebaseService {
@@ -87,6 +89,20 @@ class UserFirebaseServiceImpl extends UserFirebaseService {
     } on FirebaseAuthException catch (e) {
       final msg = mapAuthError(e);
       return Left(msg);
+    }
+  }
+
+  @override
+  Future<Either> getAppMenu() async {
+    try {
+      final listData = await _db.collection('AppMenu').orderBy('index').get();
+      if (listData.docs.isEmpty) {
+        return Left('App Menu Not Found');
+      }
+
+      return Right(listData.docs.map((e) => e.data()).toList());
+    } catch (e) {
+      return Left('Please try again');
     }
   }
 }

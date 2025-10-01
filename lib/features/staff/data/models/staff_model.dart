@@ -16,6 +16,7 @@ class StaffModel {
   final Timestamp? updatedAt;
   final Timestamp lastOnline;
   final Timestamp lastLogin;
+  final List<String> fullNameWordPrefixes;
 
   StaffModel({
     required this.staffId,
@@ -30,6 +31,7 @@ class StaffModel {
     this.updatedAt,
     required this.lastOnline,
     required this.lastLogin,
+    this.fullNameWordPrefixes = const <String>[],
   });
 
   Map<String, dynamic> toMap() {
@@ -46,6 +48,7 @@ class StaffModel {
       'updatedAt': updatedAt,
       'lastOnline': lastOnline,
       'lastLogin': lastLogin,
+      'fullNameWordPrefixes': fullNameWordPrefixes,
     };
   }
 
@@ -63,6 +66,11 @@ class StaffModel {
       updatedAt: map['updatedAt'],
       lastOnline: map['lastOnline'] ?? Timestamp(0, 0),
       lastLogin: map['lastLogin'] ?? Timestamp(0, 0),
+      fullNameWordPrefixes: (map['fullNameWordPrefixes'] is List)
+          ? List<String>.from(
+              (map['fullNameWordPrefixes'] as List).map((e) => e.toString()),
+            )
+          : const <String>[],
     );
   }
 
@@ -86,6 +94,7 @@ extension StaffXModel on StaffModel {
       updatedBy: updatedBy,
       updatedAt: updatedAt,
       lastOnline: lastOnline,
+      fullNameWordPrefixes: fullNameWordPrefixes,
     );
   }
 }

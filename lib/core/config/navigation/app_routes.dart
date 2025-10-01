@@ -24,4 +24,8 @@ class AppRoutes {
   static const successStaff = 'successStaff';
   static const profile = 'profile';
   static const changePassword = 'changePassword';
+  static const productCategory = 'productCategory';
+  static const sperreAirCompressor = 'sperreAirCompressor';
+  static const addSperreAirCompressor = 'addSperreAirCompressor';
+  static const successProduct = 'successProduct';
 }

@@ -35,4 +35,15 @@ class StaffRepositoryImpl extends StaffRepository {
   Future<Either> updateStaff(StaffFormReq staff) async {
     return await sl<StaffFirebaseService>().updateStaff(staff);
   }
+
+  @override
+  Future<Either> searchStaffByName(String query) async {
+    final res = await sl<StaffFirebaseService>().searchStaffByName(query);
+    return res.fold(
+      (error) => Left(error),
+      (data) => Right(
+        List.from(data).map((e) => StaffModel.fromMap(e).toEntity()).toList(),
+      ),
+    );
+  }
 }

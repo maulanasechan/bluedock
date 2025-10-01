@@ -13,6 +13,7 @@ class StaffEntity {
   final String updatedBy;
   final Timestamp? updatedAt;
   final Timestamp lastOnline;
+  final List<String> fullNameWordPrefixes;
 
   StaffEntity({
     required this.staffId,
@@ -26,11 +27,13 @@ class StaffEntity {
     required this.updatedBy,
     this.updatedAt,
     required this.lastOnline,
+    this.fullNameWordPrefixes = const <String>[],
   });
 
   StaffEntity copyWith({
     String? staffId,
     String? fullName,
+    List<String>? fullNameWordPrefixes,
     String? nik,
     String? nip,
     String? email,
@@ -53,6 +56,7 @@ class StaffEntity {
       updatedBy: updatedBy ?? this.updatedBy,
       updatedAt: updatedAt ?? this.updatedAt,
       lastOnline: lastOnline ?? this.lastOnline,
+      fullNameWordPrefixes: fullNameWordPrefixes ?? this.fullNameWordPrefixes,
     );
   }
 }

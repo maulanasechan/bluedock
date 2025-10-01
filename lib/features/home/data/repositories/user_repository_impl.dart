@@ -1,3 +1,4 @@
+import 'package:bluedock/features/home/data/models/app_menu_model.dart';
 import 'package:bluedock/features/home/data/models/change_password_req.dart';
 import 'package:bluedock/features/home/data/models/user_model.dart';
 import 'package:bluedock/features/home/data/sources/user_firebase_service.dart';
@@ -29,6 +30,23 @@ class UserRepositoryImpl extends UserRepository {
     return await sl<UserFirebaseService>().changePassword(
       oldPassword: password.oldPassword,
       newPassword: password.newPassword,
+    );
+  }
+
+  @override
+  Future<Either> getAppMenu() async {
+    var returnedData = await sl<UserFirebaseService>().getAppMenu();
+    return returnedData.fold(
+      (error) {
+        return Left(error);
+      },
+      (data) {
+        return Right(
+          List.from(
+            data,
+          ).map((e) => AppMenuModel.fromMap(e).toEntity()).toList(),
+        );
+      },
     );
   }
 }

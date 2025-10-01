@@ -5,4 +5,5 @@ abstract class UserRepository {
   Future<Either> getUser();
   Future<Either> logout();
   Future<Either> changePassword(ChangePasswordReq password);
+  Future<Either> getAppMenu();
 }

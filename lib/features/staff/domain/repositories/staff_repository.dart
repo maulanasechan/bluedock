@@ -6,4 +6,5 @@ abstract class StaffRepository {
   Future<Either> getAllStaff();
   Future<Either> deleteStaff(String id);
   Future<Either> updateStaff(StaffFormReq staff);
+  Future<Either> searchStaffByName(String query);
 }

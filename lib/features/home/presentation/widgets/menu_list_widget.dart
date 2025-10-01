@@ -1,10 +1,10 @@
 import 'package:bluedock/common/widgets/text/text_widget.dart';
-import 'package:bluedock/features/home/data/models/app_menu_model.dart';
+import 'package:bluedock/features/home/domain/entities/app_menu_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class MenuListWidget extends StatelessWidget {
-  final List<AppMenuModel> listAppMenu;
+  final List<AppMenuEntity> listAppMenu;
 
   const MenuListWidget({super.key, required this.listAppMenu});
 

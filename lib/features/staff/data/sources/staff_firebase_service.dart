@@ -10,13 +10,32 @@ abstract class StaffFirebaseService {
   Future<Either> getAllStaff();
   Future<Either> deleteStaff(String staffId);
   Future<Either> updateStaff(StaffFormReq staff);
+  Future<Either> searchStaffByName(String query);
 }
 
 class StaffFirebaseServiceImpl extends StaffFirebaseService {
+  List<String> _buildWordPrefixes(String name) {
+    final words = name
+        .trim()
+        .toLowerCase()
+        .split(RegExp(r'\s+'))
+        .where((w) => w.isNotEmpty);
+
+    final out = <String>[];
+    for (final w in words) {
+      var buf = '';
+      for (var i = 0; i < w.length; i++) {
+        buf += w[i];
+        out.add(buf);
+      }
+    }
+    return out.toSet().toList();
+  }
+
   @override
   Future<Either> addStaff(StaffFormReq staff) async {
     try {
-      final primary = Firebase.app(); // app utama
+      final primary = Firebase.app();
       final secondary = await Firebase.initializeApp(
         name: 'secondary',
         options: primary.options,
@@ -35,6 +54,7 @@ class StaffFirebaseServiceImpl extends StaffFirebaseService {
           .set({
             'staffId': cred.user!.uid,
             'fullName': staff.fullName,
+            'fullNameWordPrefixes': _buildWordPrefixes(staff.fullName),
             'nik': staff.nik,
             'nip': staff.nip,
             'email': staff.email,
@@ -98,6 +118,7 @@ class StaffFirebaseServiceImpl extends StaffFirebaseService {
 
       await staffRef.set({
         'fullName': staff.fullName,
+        'fullNameWordPrefixes': _buildWordPrefixes(staff.fullName),
         'nik': staff.nik,
         'nip': staff.nip,
         'address': staff.address,
@@ -108,6 +129,31 @@ class StaffFirebaseServiceImpl extends StaffFirebaseService {
 
       return Right('Staff updated successfully');
     } catch (_) {
+      return Left('Please try again');
+    }
+  }
+
+  @override
+  Future<Either> searchStaffByName(String query) async {
+    try {
+      final q = query.trim().toLowerCase();
+
+      if (q.isEmpty) {
+        final snap = await FirebaseFirestore.instance
+            .collection('Staff')
+            .orderBy('fullName')
+            .get();
+
+        return Right(snap.docs.map((e) => e.data()).toList());
+      }
+
+      final snap = await FirebaseFirestore.instance
+          .collection('Staff')
+          .where('fullNameWordPrefixes', arrayContains: q)
+          .get();
+
+      return Right(snap.docs.map((e) => e.data()).toList());
+    } catch (e) {
       return Left('Please try again');
     }
   }

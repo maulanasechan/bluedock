@@ -2,6 +2,7 @@ import 'package:bluedock/common/widgets/button/widgets/icon_button_widget.dart';
 import 'package:bluedock/common/widgets/text/text_widget.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 
 class GradientScaffoldWidget extends StatelessWidget {
@@ -16,6 +17,9 @@ class GradientScaffoldWidget extends StatelessWidget {
   final String? appbarTitle;
   final Widget? appbarAction;
   final bool loading;
+  final double fontSizeTitle;
+  final EdgeInsets? padding;
+  final VoidCallback? hideBackAction;
 
   const GradientScaffoldWidget({
     super.key,
@@ -28,8 +32,11 @@ class GradientScaffoldWidget extends StatelessWidget {
     this.end = Alignment.bottomCenter,
     this.hideBack = true,
     this.appbarTitle,
+    this.fontSizeTitle = 18,
     this.appbarAction,
     this.loading = false,
+    this.padding,
+    this.hideBackAction,
   });
 
   @override
@@ -52,19 +59,26 @@ class GradientScaffoldWidget extends StatelessWidget {
                       children: [
                         if (!hideBack)
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 90, 0, 40),
+                            padding:
+                                padding ?? EdgeInsets.fromLTRB(0, 90, 0, 40),
                             child: SizedBox(
                               height: 40,
                               child: Stack(
                                 children: [
-                                  IconButtonWidget(),
+                                  IconButtonWidget(
+                                    onPressed:
+                                        hideBackAction ??
+                                        () {
+                                          context.pop();
+                                        },
+                                  ),
                                   if (appbarTitle != null)
                                     Align(
                                       alignment: Alignment.center,
                                       child: TextWidget(
                                         text: appbarTitle!,
                                         fontWeight: FontWeight.w700,
-                                        fontSize: 20,
+                                        fontSize: fontSizeTitle,
                                       ),
                                     ),
                                   if (appbarAction != null)

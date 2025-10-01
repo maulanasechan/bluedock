@@ -1,0 +1,62 @@
+{
+  "__collections__": {
+    "ProductCategories": {
+      "aP9xG7kLmQzR2VtYcJwE": {
+        "index": 1,
+        "productCategoriesId": "aP9xG7kLmQzR2VtYcJwE",
+        "title": "Sperre-Air Compressor",
+        "image": "assets/images/Sperre-Air-Compressor.png",
+        "route": "underConstruction",
+        "totalProduct": 10
+      },
+      "Zx4nB8qHtUvL5rOaWsKd": {
+        "index": 2,
+        "productCategoriesId": "Zx4nB8qHtUvL5rOaWsKd",
+        "title": "Sperre-Screw Compressor",
+        "image": "assets/images/Sperre-Screw-Compressor.png",
+        "route": "underConstruction",
+        "totalProduct": 10
+      },
+      "tG6pN1yXcQwE9bJmRvUh": {
+        "index": 3,
+        "productCategoriesId": "tG6pN1yXcQwE9bJmRvUh",
+        "title": "Sperre-Air System Solutions",
+        "image": "assets/images/Sperre-Air-System-Solutions.png",
+        "route": "underConstruction",
+        "totalProduct": 10
+      },
+      "M3jvF7wXaZpL2yKsTbQr": {
+        "index": 4,
+        "productCategoriesId": "M3jvF7wXaZpL2yKsTbQr",
+        "title": "Quantum-Fresh Water Generator",
+        "image": "assets/images/Quantum-Fresh-Water-Generator.png",
+        "route": "underConstruction",
+        "totalProduct": 10
+      },
+      "qY8kH4mTzRpG6nVxWdJo": {
+        "index": 5,
+        "productCategoriesId": "qY8kH4mTzRpG6nVxWdJo",
+        "title": "Detegasa-Sewage Treatment Plant",
+        "image": "assets/images/Detegasa-Sewage-Treatment-Plant.png",
+        "route": "underConstruction",
+        "totalProduct": 10
+      },
+      "L9cX2bTfVgP5zRjYhMwQ": {
+        "index": 6,
+        "productCategoriesId": "L9cX2bTfVgP5zRjYhMwQ",
+        "title": "Detegasa-Incenerator",
+        "image": "assets/images/Detegasa-Incenerator.png",
+        "route": "underConstruction",
+        "totalProduct": 10
+      },
+      "A7b3C9d2E6f1G5h8J0k4": {
+        "index": 7,
+        "productCategoriesId": "A7b3C9d2E6f1G5h8J0k4",
+        "title": "Detegasa-Oily Water Separator",
+        "image": "assets/images/Detegasa-Oily-Water-Separator.png",
+        "route": "underConstruction",
+        "totalProduct": 10
+      }
+    }
+  }
+}

@@ -4,4 +4,5 @@ import 'package:dartz/dartz.dart';
 abstract class LoginRepository {
   Future<Either> login(LoginFormReq user);
   Future<bool> isLoggedIn();
+  Future<Either> sendPasswordReset(String email);
 }

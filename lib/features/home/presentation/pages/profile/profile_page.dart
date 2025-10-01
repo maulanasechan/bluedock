@@ -49,6 +49,7 @@ class ProfilePage extends StatelessWidget {
                     ),
                   ],
                 ),
+                SizedBox(height: 32),
                 _bottomNavWidget(context),
               ],
             ),
@@ -80,8 +81,6 @@ class ProfilePage extends StatelessWidget {
           fontWeight: FontWeight.w700,
           fontSize: 18,
         ),
-        SizedBox(height: 32),
-        _contentWidget(),
       ],
     );
   }
@@ -177,28 +176,34 @@ class ProfilePage extends StatelessWidget {
   Widget _bottomNavWidget(BuildContext context) {
     return Builder(
       builder: (context) {
-        return Column(
-          children: [
-            ButtonWidget(
-              onPressed: () {
-                context.pushNamed(AppRoutes.changePassword);
-              },
-              background: AppColors.orange,
-              title: 'Change Password',
-              fontSize: 16,
+        return Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                _contentWidget(),
+                SizedBox(height: 50),
+                ButtonWidget(
+                  onPressed: () {
+                    context.pushNamed(AppRoutes.changePassword);
+                  },
+                  background: AppColors.orange,
+                  title: 'Change Password',
+                  fontSize: 16,
+                ),
+                SizedBox(height: 16),
+                ActionButtonWidget(
+                  onPressed: () {
+                    context.read<ActionButtonCubit>().execute(
+                      usecase: LogoutUseCase(),
+                    );
+                  },
+                  background: AppColors.red,
+                  title: 'Logout',
+                  fontSize: 16,
+                ),
+              ],
             ),
-            SizedBox(height: 16),
-            ActionButtonWidget(
-              onPressed: () {
-                context.read<ActionButtonCubit>().execute(
-                  usecase: LogoutUseCase(),
-                );
-              },
-              background: AppColors.red,
-              title: 'Logout',
-              fontSize: 16,
-            ),
-          ],
+          ),
         );
       },
     );
