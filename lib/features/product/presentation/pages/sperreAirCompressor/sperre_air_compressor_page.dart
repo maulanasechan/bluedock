@@ -1,3 +1,4 @@
+import 'package:bluedock/common/widgets/button/bloc/action_button_cubit.dart';
 import 'package:bluedock/common/widgets/button/widgets/icon_button_widget.dart';
 import 'package:bluedock/common/widgets/gradientScaffold/gradient_scaffold_widget.dart';
 import 'package:bluedock/common/widgets/text/text_widget.dart';
@@ -18,24 +19,38 @@ class SperreAirCompressorPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          SperreAirCompressorCubit()..displaySperreAirCompressor(params: ''),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              SperreAirCompressorCubit()
+                ..displaySperreAirCompressor(params: ''),
+        ),
+        BlocProvider(create: (context) => ActionButtonCubit()),
+      ],
       child: GradientScaffoldWidget(
         hideBack: false,
         appbarTitle: 'Sperre-Air Compressor',
         padding: EdgeInsets.fromLTRB(0, 90, 0, 24),
-        hideBackAction: () {
-          context.goNamed(AppRoutes.productCategory);
-        },
-        appbarAction: IconButtonWidget(
-          iconColor: AppColors.orange,
-          icon: PhosphorIconsFill.folderPlus,
-          iconSize: 24,
-          onPressed: () {
-            context.pushNamed(AppRoutes.addSperreAirCompressor);
+        appbarAction: Builder(
+          builder: (ctx) {
+            return IconButtonWidget(
+              iconColor: AppColors.orange,
+              icon: PhosphorIconsFill.folderPlus,
+              iconSize: 24,
+              onPressed: () async {
+                final sperreCubit = ctx.read<SperreAirCompressorCubit>();
+                final changed = await ctx.pushNamed(
+                  AppRoutes.addSperreAirCompressor,
+                );
+                if (changed == true && ctx.mounted) {
+                  sperreCubit.displaySperreAirCompressor(params: '');
+                }
+              },
+            );
           },
         ),
+
         body: Column(
           children: [
             Builder(

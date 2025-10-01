@@ -1,12 +1,10 @@
 import 'package:bluedock/common/widgets/gradientScaffold/gradient_scaffold_widget.dart';
-import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
 import 'package:bluedock/features/product/presentation/bloc/productCategories/product_categories_cubit.dart';
 import 'package:bluedock/features/product/presentation/bloc/productCategories/product_categories_state.dart';
 import 'package:bluedock/features/product/presentation/widgets/product_category_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ProductCategoryPage extends StatelessWidget {
@@ -17,9 +15,6 @@ class ProductCategoryPage extends StatelessWidget {
     return GradientScaffoldWidget(
       hideBack: false,
       appbarTitle: 'Choose Category',
-      hideBackAction: () {
-        context.goNamed(AppRoutes.home);
-      },
       body: BlocProvider(
         create: (context) =>
             ProductCategoriesCubit()..displayProductCategories(),

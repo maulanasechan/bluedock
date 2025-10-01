@@ -14,8 +14,11 @@ import 'package:bluedock/features/product/data/repositories/product_repository_i
 import 'package:bluedock/features/product/data/sources/product_firebase_service.dart';
 import 'package:bluedock/features/product/domain/repositories/product_repository.dart';
 import 'package:bluedock/features/product/domain/usecases/productCategories/get_product_categories_usecase.dart';
+import 'package:bluedock/features/product/domain/usecases/selection/get_selection_usecase.dart';
 import 'package:bluedock/features/product/domain/usecases/sperreAirCompressor/add_sperre_air_compressor_usecase.dart';
+import 'package:bluedock/features/product/domain/usecases/sperreAirCompressor/delete_product_usecase.dart';
 import 'package:bluedock/features/product/domain/usecases/sperreAirCompressor/search_sperre_air_compressor_usecase.dart';
+import 'package:bluedock/features/product/domain/usecases/sperreAirCompressor/update_sperre_air_compressor_usecase.dart';
 import 'package:bluedock/features/staff/data/repositories/role_repository_impl.dart';
 import 'package:bluedock/features/staff/data/repositories/staff_repository_impl.dart';
 import 'package:bluedock/features/staff/data/sources/role_firebase_service.dart';
@@ -53,14 +56,14 @@ Future<void> initializeDependencies() async {
   //Staff Usecases
   sl.registerSingleton<AddStaffUseCase>(AddStaffUseCase());
   sl.registerSingleton<GetAllStaffUseCase>(GetAllStaffUseCase());
-  sl.registerSingleton<DeleteStaffUsecase>(DeleteStaffUsecase());
+  sl.registerSingleton<DeleteStaffUseCase>(DeleteStaffUseCase());
   sl.registerSingleton<UpdateStaffUseCase>(UpdateStaffUseCase());
   sl.registerSingleton<SearchStaffByNameUseCase>(SearchStaffByNameUseCase());
 
   //Login Usecases
   sl.registerSingleton<LoginUseCase>(LoginUseCase());
   sl.registerSingleton<IsLoggedInUseCase>(IsLoggedInUseCase());
-  sl.registerSingleton<SendPasswordResetUsecase>(SendPasswordResetUsecase());
+  sl.registerSingleton<SendPasswordResetUseCase>(SendPasswordResetUseCase());
 
   //User Usecases
   sl.registerSingleton<GetUserUseCase>(GetUserUseCase());
@@ -77,4 +80,9 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<AddSperreAirCompressorUseCase>(
     AddSperreAirCompressorUseCase(),
   );
+  sl.registerSingleton<UpdateSperreAirCompressorUseCase>(
+    UpdateSperreAirCompressorUseCase(),
+  );
+  sl.registerSingleton<DeleteProductUseCase>(DeleteProductUseCase());
+  sl.registerSingleton<GetSelectionUseCase>(GetSelectionUseCase());
 }

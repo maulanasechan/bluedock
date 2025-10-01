@@ -3,6 +3,7 @@ import 'package:bluedock/common/widgets/card/card_container_widget.dart';
 import 'package:bluedock/common/widgets/card/slidable_action_widget.dart';
 import 'package:bluedock/common/widgets/modal/center_modal_widget.dart';
 import 'package:bluedock/common/widgets/text/text_widget.dart';
+import 'package:bluedock/core/config/assets/app_images.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
 import 'package:bluedock/features/staff/domain/entities/staff_entity.dart';
@@ -42,16 +43,18 @@ class StaffCardWidget extends StatelessWidget {
             actionCubit: actionCubit,
             yesButtonOnTap: () async {
               context.read<ActionButtonCubit>().execute(
-                usecase: DeleteStaffUsecase(),
+                usecase: DeleteStaffUseCase(),
                 params: staff.staffId,
               );
-              context.pop(true);
             },
           );
           if (changed == true && context.mounted) {
             final change = await context.pushNamed(
               AppRoutes.successStaff,
-              extra: 'Staff has been removed',
+              extra: {
+                'title': '${staff.fullName} has been removed',
+                'image': AppImages.appUserDeleted,
+              },
             );
             if (change == true && context.mounted) {
               context.read<StaffDisplayCubit>().displayStaff(params: '');

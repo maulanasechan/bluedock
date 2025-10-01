@@ -9,6 +9,8 @@ class AppImages {
   static const appUnderConstruction = '${basePath}under_construction$format';
   static const appOffline = '${basePath}offline$format';
   static const appUserCreated = '${basePath}user_created$format';
+  static const appUserDeleted = '${basePath}user_deleted$format';
   static const appSperreAirCompressor = '${basePath}SperreAirCompressor$format';
-  static const appAddedProduct = '${basePath}added_product$format';
+  static const appProductAdded = '${basePath}product_added$format';
+  static const appProductDeleted = '${basePath}product_deleted$format';
 }

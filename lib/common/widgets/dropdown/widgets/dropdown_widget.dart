@@ -11,6 +11,7 @@ class DropdownWidget extends StatelessWidget {
   final double fontSize;
   final String state;
   final Function() onTap;
+  final PhosphorIconData? icon;
 
   const DropdownWidget({
     super.key,
@@ -20,6 +21,7 @@ class DropdownWidget extends StatelessWidget {
     required this.state,
     this.content,
     this.fontSize = 14,
+    this.icon,
   });
 
   @override
@@ -65,7 +67,7 @@ class DropdownWidget extends StatelessWidget {
                       content != null
                           ? _contentWidget()
                           : PhosphorIcon(
-                              PhosphorIconsBold.caretDown,
+                              icon ?? PhosphorIconsBold.caretDown,
                               size: fontSize + 10,
                               color: AppColors.blue,
                             ),
@@ -94,7 +96,7 @@ class DropdownWidget extends StatelessWidget {
         content!,
         const SizedBox(width: 30),
         PhosphorIcon(
-          PhosphorIconsBold.caretDown,
+          icon ?? PhosphorIconsBold.caretDown,
           size: fontSize + 10,
           color: AppColors.blue,
         ),

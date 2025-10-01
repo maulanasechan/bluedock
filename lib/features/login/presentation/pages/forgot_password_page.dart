@@ -59,7 +59,7 @@ class ForgotPasswordPage extends StatelessWidget {
                         if (!isValid) return;
 
                         context.read<ActionButtonCubit>().execute(
-                          usecase: SendPasswordResetUsecase(),
+                          usecase: SendPasswordResetUseCase(),
                           params: _emailCon.text,
                         );
                       },

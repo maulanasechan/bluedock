@@ -3,7 +3,7 @@ import 'package:bluedock/features/staff/domain/repositories/staff_repository.dar
 import 'package:bluedock/service_locator.dart';
 import 'package:dartz/dartz.dart';
 
-class DeleteStaffUsecase implements UseCase<Either, String> {
+class DeleteStaffUseCase implements UseCase<Either, String> {
   @override
   Future<Either> call({String? params}) async {
     return await sl<StaffRepository>().deleteStaff(params!);

@@ -5,9 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SperreAirCompressorCubit extends Cubit<SperreAirCompressorState> {
   SperreAirCompressorCubit() : super(SperreAirCompressorInitial());
+  int _reqId = 0;
 
   void displaySperreAirCompressor({String? params}) async {
+    final myReq = ++_reqId;
     emit(SperreAirCompressorLoading());
+
+    if (myReq != _reqId) return;
+
     var returnedData = await sl<SearchSperreAirCompressorUseCase>().call(
       params: params,
     );

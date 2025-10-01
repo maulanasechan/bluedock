@@ -11,6 +11,7 @@ import 'package:bluedock/features/home/presentation/pages/profile/profile_page.d
 import 'package:bluedock/features/login/presentation/pages/forgot_password_page.dart';
 import 'package:bluedock/features/login/presentation/pages/login_page.dart';
 import 'package:bluedock/features/login/presentation/pages/send_email_page.dart';
+import 'package:bluedock/features/product/domain/entities/sperre_air_compressor_entity.dart';
 import 'package:bluedock/features/product/presentation/pages/productCategory/product_category_page.dart';
 import 'package:bluedock/features/product/presentation/pages/sperreAirCompressor/add_sperre_air_compressor_page.dart';
 import 'package:bluedock/features/product/presentation/pages/sperreAirCompressor/sperre_air_compressor_page.dart';
@@ -116,8 +117,12 @@ class AppRouter {
             path: AppRoutes.successStaff,
             name: AppRoutes.successStaff,
             builder: (context, state) {
-              final title = state.extra as String;
-              return SuccessStaffPage(title: title);
+              final map = (state.extra is Map)
+                  ? Map<String, dynamic>.from(state.extra as Map)
+                  : const <String, dynamic>{};
+              final title = map['title'] as String? ?? '';
+              final image = map['image'] as String? ?? '';
+              return SuccessStaffPage(title: title, image: image);
             },
           ),
         ],
@@ -134,15 +139,9 @@ class AppRouter {
               final map = (state.extra is Map)
                   ? Map<String, dynamic>.from(state.extra as Map)
                   : const <String, dynamic>{};
-
               final title = map['title'] as String? ?? '';
-              final routeName = map['routeName'] as String? ?? AppRoutes.home;
-              return SuccessProductPage(
-                title: title,
-                onPressed: () {
-                  context.goNamed(routeName);
-                },
-              );
+              final image = map['image'] as String? ?? '';
+              return SuccessProductPage(title: title, image: image);
             },
           ),
           GoRoute(
@@ -155,7 +154,10 @@ class AppRouter {
               GoRoute(
                 path: AppRoutes.addSperreAirCompressor,
                 name: AppRoutes.addSperreAirCompressor,
-                builder: (context, state) => AddSperreAirCompressorPage(),
+                builder: (context, state) {
+                  final extra = state.extra as SperreAirCompressorEntity?;
+                  return AddSperreAirCompressorPage(product: extra);
+                },
               ),
             ],
           ),

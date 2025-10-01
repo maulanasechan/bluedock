@@ -55,9 +55,11 @@ class AddOrUpdateStaffPage extends StatelessWidget {
             if (state is ActionButtonSuccess) {
               final changed = await context.pushNamed(
                 AppRoutes.successStaff,
-                extra: isUpdate
-                    ? 'The staff has been updated'
-                    : 'New staff has been added',
+                extra: {
+                  'title': isUpdate
+                      ? 'Staff has been updated'
+                      : 'New staff has been added',
+                },
               );
               if (changed == true && context.mounted) {
                 context.pop(true);

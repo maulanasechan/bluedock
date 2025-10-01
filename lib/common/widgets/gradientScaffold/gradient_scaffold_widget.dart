@@ -19,7 +19,6 @@ class GradientScaffoldWidget extends StatelessWidget {
   final bool loading;
   final double fontSizeTitle;
   final EdgeInsets? padding;
-  final VoidCallback? hideBackAction;
 
   const GradientScaffoldWidget({
     super.key,
@@ -36,7 +35,6 @@ class GradientScaffoldWidget extends StatelessWidget {
     this.appbarAction,
     this.loading = false,
     this.padding,
-    this.hideBackAction,
   });
 
   @override
@@ -66,11 +64,9 @@ class GradientScaffoldWidget extends StatelessWidget {
                               child: Stack(
                                 children: [
                                   IconButtonWidget(
-                                    onPressed:
-                                        hideBackAction ??
-                                        () {
-                                          context.pop();
-                                        },
+                                    onPressed: () {
+                                      context.pop(true);
+                                    },
                                   ),
                                   if (appbarTitle != null)
                                     Align(

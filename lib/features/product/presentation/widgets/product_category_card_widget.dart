@@ -1,7 +1,9 @@
 import 'package:bluedock/common/widgets/text/text_widget.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
 import 'package:bluedock/features/product/domain/entities/product_categories_entity.dart';
+import 'package:bluedock/features/product/presentation/bloc/productCategories/product_categories_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class ProductCategoryCardWidget extends StatelessWidget {
@@ -11,8 +13,14 @@ class ProductCategoryCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        context.pushNamed(product.route, extra: product.productCategoriesId);
+      onTap: () async {
+        final changed = await context.pushNamed(
+          product.route,
+          extra: product.productCategoriesId,
+        );
+        if (changed == true && context.mounted) {
+          context.read<ProductCategoriesCubit>().displayProductCategories();
+        }
       },
       child: Material(
         elevation: 4,

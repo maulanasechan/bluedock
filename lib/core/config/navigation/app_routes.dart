@@ -28,4 +28,5 @@ class AppRoutes {
   static const sperreAirCompressor = 'sperreAirCompressor';
   static const addSperreAirCompressor = 'addSperreAirCompressor';
   static const successProduct = 'successProduct';
+  static const deletedProduct = 'deletedProduct';
 }

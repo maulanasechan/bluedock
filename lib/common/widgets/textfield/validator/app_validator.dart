@@ -5,10 +5,31 @@ class AppValidators {
   static final RegExp _pwRegex = RegExp(r'^(?=.*[A-Za-z])(?=.*\d).{8,}$');
   static final RegExp _nameRegex = RegExp(r'^[a-zA-Z\s]+$');
   static final RegExp _nikRegex = RegExp(r'^[0-9]+$');
+  static final RegExp _digitsOnly = RegExp(r'^\d+$');
 
   static StringValidator required({String? field}) {
     return (v) =>
         (v == null || v.trim().isEmpty) ? '$field is required.' : null;
+  }
+
+  static StringValidator number({
+    String requiredMessage = 'This field is required.',
+    String invalidMessage = 'Only numbers are allowed.',
+    int minLength = 1,
+    int? maxLength,
+  }) {
+    return (v) {
+      final s = (v ?? '').trim();
+      if (s.isEmpty) return requiredMessage;
+      if (!_digitsOnly.hasMatch(s)) return invalidMessage;
+      if (s.length < minLength) {
+        return 'Must be at least $minLength digit${minLength > 1 ? 's' : ''}.';
+      }
+      if (maxLength != null && s.length > maxLength) {
+        return 'Must be at most $maxLength digit${maxLength > 1 ? 's' : ''}.';
+      }
+      return null;
+    };
   }
 
   static StringValidator email({

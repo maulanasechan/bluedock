@@ -1,14 +1,23 @@
+import 'package:bluedock/common/helper/stringTrimmer/string_trimmer_helper.dart';
 import 'package:bluedock/common/widgets/button/bloc/action_button_cubit.dart';
 import 'package:bluedock/common/widgets/button/bloc/action_button_state.dart';
 import 'package:bluedock/common/widgets/button/widgets/action_button_widget.dart';
+import 'package:bluedock/common/widgets/dropdown/widgets/dropdown_widget.dart';
 import 'package:bluedock/common/widgets/gradientScaffold/gradient_scaffold_widget.dart';
+import 'package:bluedock/common/widgets/modal/bottom_modal_widget.dart';
 import 'package:bluedock/common/widgets/textfield/validator/app_validator.dart';
 import 'package:bluedock/common/widgets/textfield/widgets/textfield_widget.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
+import 'package:bluedock/features/product/data/models/selection/selection_req.dart';
 import 'package:bluedock/features/product/data/models/sperreAirCompressor/sperre_air_compressor_form_req.dart';
+import 'package:bluedock/features/product/domain/entities/selection_entity.dart';
 import 'package:bluedock/features/product/domain/entities/sperre_air_compressor_entity.dart';
 import 'package:bluedock/features/product/domain/usecases/sperreAirCompressor/add_sperre_air_compressor_usecase.dart';
+import 'package:bluedock/features/product/domain/usecases/sperreAirCompressor/update_sperre_air_compressor_usecase.dart';
+import 'package:bluedock/features/product/presentation/bloc/selection/selection_display_cubit.dart';
 import 'package:bluedock/features/product/presentation/bloc/sperreAirCompressor/sperre_air_compressor_form_cubit.dart';
+import 'package:bluedock/features/product/presentation/widgets/list_selection_button_widget.dart';
+import 'package:bluedock/features/product/presentation/widgets/selection_modal_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -33,30 +42,31 @@ class AddSperreAirCompressorPage extends StatelessWidget {
             return c;
           },
         ),
+        BlocProvider(create: (context) => SelectionDisplayCubit()),
       ],
       child: GradientScaffoldWidget(
         hideBack: false,
-        appbarTitle: 'Add Sperre-Air Compressor',
+        appbarTitle: isUpdate
+            ? 'Update Sperre-Air Compressor'
+            : 'Add Sperre-Air Compressor',
         body: BlocListener<ActionButtonCubit, ActionButtonState>(
-          listener: (context, state) {
+          listener: (context, state) async {
             if (state is ActionButtonFailure) {
               var snackbar = SnackBar(content: Text(state.errorMessage));
               ScaffoldMessenger.of(context).showSnackBar(snackbar);
             }
             if (state is ActionButtonSuccess) {
-              final router = GoRouter.of(context);
-
-              Future.delayed(const Duration(milliseconds: 30), () {
-                router.pushNamed(
-                  AppRoutes.successProduct,
-                  extra: {
-                    'title': isUpdate
-                        ? 'The product has been updated'
-                        : 'New product has been added',
-                    'routeName': AppRoutes.sperreAirCompressor,
-                  },
-                );
-              });
+              final changed = await context.pushNamed(
+                AppRoutes.successProduct,
+                extra: {
+                  'title': isUpdate
+                      ? 'Product has been updated'
+                      : 'New product has been added',
+                },
+              );
+              if (changed == true && context.mounted) {
+                context.pop(true);
+              }
             }
           },
           child: SingleChildScrollView(
@@ -70,26 +80,44 @@ class AddSperreAirCompressorPage extends StatelessWidget {
                       key: _formKey,
                       child: Column(
                         children: [
-                          TextfieldWidget(
-                            validator: AppValidators.required(),
-                            hintText: 'Product Usage',
+                          _selectionDropdown(
+                            context: context,
                             title: 'Product Usage',
-                            initialValue: state.productUsage,
-                            suffixIcon: PhosphorIconsBold.identificationCard,
-                            onChanged: (v) => context
-                                .read<SperreAirCompressorFormCubit>()
-                                .setProductUsage(v),
+                            selected: state.productUsage,
+                            icon: PhosphorIconsBold.creditCard,
+                            onPressed: (value) {
+                              context
+                                  .read<SperreAirCompressorFormCubit>()
+                                  .setProductUsage(value.title);
+                              context.pop();
+                            },
                           ),
                           SizedBox(height: 24),
-                          TextfieldWidget(
-                            validator: AppValidators.required(),
-                            hintText: 'Product Type',
+                          _selectionDropdown(
+                            context: context,
                             title: 'Product Type',
-                            initialValue: state.productType,
-                            suffixIcon: PhosphorIconsBold.creditCard,
-                            onChanged: (v) => context
-                                .read<SperreAirCompressorFormCubit>()
-                                .setProductType(v),
+                            selected: state.productType,
+                            icon: PhosphorIconsBold.creditCard,
+                            onPressed: (value) {
+                              context
+                                  .read<SperreAirCompressorFormCubit>()
+                                  .setProductType(value.title);
+                              context.pop();
+                            },
+                          ),
+                          SizedBox(height: 24),
+
+                          _selectionDropdown(
+                            context: context,
+                            title: 'Cooling System',
+                            selected: state.coolingSystem,
+                            icon: PhosphorIconsBold.thermometerCold,
+                            onPressed: (value) {
+                              context
+                                  .read<SperreAirCompressorFormCubit>()
+                                  .setCoolingSystem(value.title);
+                              context.pop();
+                            },
                           ),
                           SizedBox(height: 24),
                           TextfieldWidget(
@@ -104,21 +132,13 @@ class AddSperreAirCompressorPage extends StatelessWidget {
                           ),
                           SizedBox(height: 24),
                           TextfieldWidget(
-                            validator: AppValidators.required(),
-                            hintText: 'Cooling System',
-                            title: 'Cooling System',
-                            initialValue: state.coolingSystem,
-                            suffixIcon: PhosphorIconsBold.thermometerCold,
-                            onChanged: (v) => context
-                                .read<SperreAirCompressorFormCubit>()
-                                .setCoolingSystem(v),
-                          ),
-                          SizedBox(height: 24),
-                          TextfieldWidget(
-                            validator: AppValidators.required(),
+                            validator: AppValidators.number(),
                             hintText: 'Charging Capacity ( m3/h )',
                             title: 'Charging Capacity on 50 Hz - 1500 rpm',
-                            initialValue: state.chargingCapacity50Hz1500rpm,
+                            initialValue: stripSuffix(
+                              state.chargingCapacity50Hz1500rpm,
+                              'm3/h',
+                            ),
                             suffixIcon: PhosphorIconsBold.chargingStation,
                             onChanged: (v) => context
                                 .read<SperreAirCompressorFormCubit>()
@@ -126,10 +146,13 @@ class AddSperreAirCompressorPage extends StatelessWidget {
                           ),
                           SizedBox(height: 24),
                           TextfieldWidget(
-                            validator: AppValidators.required(),
+                            validator: AppValidators.number(),
                             hintText: 'Max. Delivery Pressure ( Bar )',
                             title: 'Max. Delivery Pressure',
-                            initialValue: state.maxDeliveryPressure,
+                            initialValue: stripSuffix(
+                              state.maxDeliveryPressure,
+                              'Bar',
+                            ),
                             suffixIcon: PhosphorIconsBold.gauge,
                             onChanged: (v) => context
                                 .read<SperreAirCompressorFormCubit>()
@@ -143,7 +166,9 @@ class AddSperreAirCompressorPage extends StatelessWidget {
                               if (!isValid) return;
 
                               context.read<ActionButtonCubit>().execute(
-                                usecase: AddSperreAirCompressorUseCase(),
+                                usecase: isUpdate
+                                    ? UpdateSperreAirCompressorUseCase()
+                                    : AddSperreAirCompressorUseCase(),
                                 params: context
                                     .read<SperreAirCompressorFormCubit>()
                                     .state,
@@ -162,6 +187,59 @@ class AddSperreAirCompressorPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _selectionDropdown({
+    required BuildContext context,
+    required String title,
+    required String selected,
+    required void Function(SelectionEntity) onPressed,
+    required PhosphorIconData icon,
+  }) {
+    return DropdownWidget(
+      icon: icon,
+      title: title,
+      state: selected == '' ? title : selected,
+      validator: (_) => selected == '' ? '$title is required.' : null,
+      onTap: () {
+        BottomModalWidget.display(
+          context,
+          MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: context.read<SperreAirCompressorFormCubit>(),
+              ),
+              BlocProvider.value(
+                value: context.read<SelectionDisplayCubit>()
+                  ..displaySelection(
+                    SelectionReq(
+                      productTitle: 'Sperre Air Compressor',
+                      selectionTitle: title,
+                    ),
+                  ),
+              ),
+            ],
+            child: SelectionModalWidget(
+              title: 'Choose one $title:',
+              builder: (context, listSelection) {
+                return BlocBuilder<
+                  SperreAirCompressorFormCubit,
+                  SperreAirCompressorReq
+                >(
+                  builder: (context, state) {
+                    return ListSelectionButtonWidget(
+                      listSelection: listSelection,
+                      selected: selected,
+                      onSelected: onPressed,
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 }

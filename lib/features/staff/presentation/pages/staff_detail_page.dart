@@ -1,10 +1,10 @@
 import 'package:bluedock/common/widgets/button/bloc/action_button_cubit.dart';
-import 'package:bluedock/common/widgets/button/bloc/action_button_state.dart';
 import 'package:bluedock/common/widgets/button/widgets/button_widget.dart';
 import 'package:bluedock/common/widgets/button/widgets/icon_button_widget.dart';
 import 'package:bluedock/common/widgets/gradientScaffold/gradient_scaffold_widget.dart';
 import 'package:bluedock/common/widgets/modal/center_modal_widget.dart';
 import 'package:bluedock/common/widgets/text/text_widget.dart';
+import 'package:bluedock/core/config/assets/app_images.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
 import 'package:bluedock/features/staff/domain/entities/staff_entity.dart';
@@ -27,37 +27,20 @@ class StaffDetailPage extends StatelessWidget {
       child: GradientScaffoldWidget(
         body: Padding(
           padding: const EdgeInsets.fromLTRB(0, 90, 0, 0),
-          child: BlocListener<ActionButtonCubit, ActionButtonState>(
-            listener: (context, state) {
-              if (state is ActionButtonFailure) {
-                var snackbar = SnackBar(content: Text(state.errorMessage));
-                ScaffoldMessenger.of(context).showSnackBar(snackbar);
-              }
-              if (state is ActionButtonSuccess) {
-                context.goNamed(
-                  AppRoutes.successStaff,
-                  extra: 'User had been deleted',
-                );
-              }
-            },
-            child: Column(
-              children: [
-                Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: IconButtonWidget(),
-                    ),
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: _avatarWidget(),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 32),
-                _bottomNavWidget(context, staff),
-              ],
-            ),
+          child: Column(
+            children: [
+              Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: IconButtonWidget(),
+                  ),
+                  Align(alignment: Alignment.topCenter, child: _avatarWidget()),
+                ],
+              ),
+              SizedBox(height: 32),
+              _bottomNavWidget(context, staff),
+            ],
           ),
         ),
       ),
@@ -231,15 +214,19 @@ class StaffDetailPage extends StatelessWidget {
                       actionCubit: actionCubit,
                       yesButtonOnTap: () {
                         context.read<ActionButtonCubit>().execute(
-                          usecase: DeleteStaffUsecase(),
+                          usecase: DeleteStaffUseCase(),
                           params: staff.staffId,
                         );
+                        context.pop(true);
                       },
                     );
                     if (changed == true && context.mounted) {
                       final change = await context.pushNamed(
                         AppRoutes.successStaff,
-                        extra: '${staff.fullName} has been removed',
+                        extra: {
+                          'title': '${staff.fullName} has been removed',
+                          'image': AppImages.appUserDeleted,
+                        },
                       );
 
                       if (change == true && context.mounted) {

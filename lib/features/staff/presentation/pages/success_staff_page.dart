@@ -6,13 +6,14 @@ import 'package:go_router/go_router.dart';
 
 class SuccessStaffPage extends StatelessWidget {
   final String title;
-  const SuccessStaffPage({super.key, required this.title});
+  final String? image;
+  const SuccessStaffPage({super.key, required this.title, this.image});
 
   @override
   Widget build(BuildContext context) {
     return GradientScaffoldWidget(
       body: SuccessPageWidget(
-        image: AppImages.appUserCreated,
+        image: image == '' ? AppImages.appUserCreated : image!,
         title: title,
         onPressed: () {
           context.pop(true);
