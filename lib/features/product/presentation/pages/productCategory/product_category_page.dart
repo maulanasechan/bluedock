@@ -27,7 +27,7 @@ class ProductCategoryPage extends StatelessWidget {
               return ListView.separated(
                 padding: EdgeInsets.zero,
                 separatorBuilder: (context, index) {
-                  return SizedBox(height: 16);
+                  return SizedBox(height: 8);
                 },
                 itemBuilder: (context, index) {
                   return ProductCategoryCardWidget(
@@ -51,7 +51,7 @@ class ProductCategoryPage extends StatelessWidget {
       child: ListView.separated(
         padding: EdgeInsets.zero,
         separatorBuilder: (context, index) {
-          return SizedBox(height: 16);
+          return SizedBox(height: 10);
         },
         itemBuilder: (context, index) {
           return Container(

@@ -24,7 +24,7 @@ class CardContainerWidget extends StatelessWidget {
         margin: margin ?? EdgeInsets.fromLTRB(0, 0, 0, 6),
         width: width ?? double.maxFinite,
         height: height,
-        padding: EdgeInsets.symmetric(horizontal: 14),
+        padding: EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: AppColors.white,
           border: Border.all(color: AppColors.border, width: 1.5),

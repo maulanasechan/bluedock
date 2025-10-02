@@ -1,5 +1,5 @@
 import 'package:bluedock/common/widgets/text/text_widget.dart';
-import 'package:bluedock/common/widgets/textfield/validator/app_validator.dart';
+import 'package:bluedock/common/helper/validator/validator_helper.dart';
 import 'package:bluedock/common/widgets/textfield/widgets/custom_textfield_widget.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +19,7 @@ class TextfieldWidget extends StatelessWidget {
   final int? maxLines;
   final double borderRadius;
   final Color? iconColor;
+  final TextInputType? keyboardType;
 
   const TextfieldWidget({
     super.key,
@@ -35,6 +36,7 @@ class TextfieldWidget extends StatelessWidget {
     this.maxLines = 1,
     this.borderRadius = 10,
     this.iconColor,
+    this.keyboardType,
   });
 
   @override
@@ -57,6 +59,7 @@ class TextfieldWidget extends StatelessWidget {
             SizedBox(height: title == null ? 0 : 12),
             CustomTextfieldWidget(
               initialValue: initialValue,
+              keyboardType: keyboardType,
               controller: controller,
               obscure: obscure,
               hintText: hintText,

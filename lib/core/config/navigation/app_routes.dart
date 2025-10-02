@@ -29,4 +29,10 @@ class AppRoutes {
   static const addSperreAirCompressor = 'addSperreAirCompressor';
   static const successProduct = 'successProduct';
   static const deletedProduct = 'deletedProduct';
+  static const sperreScrewCompressor = 'sperreScrewCompressor';
+  static const addSperreScrewCompressor = 'addSperreScrewCompressor';
+  static const sperreAirSystemSolutions = 'sperreAirSystemSolutions';
+  static const addSperreAirSystemSolutions = 'addSperreAirSystemSolutions';
+  static const quantumFreshWaterGenerator = 'quantumFreshWaterGenerator';
+  static const addQuantumFreshWaterGenerator = 'addQuantumFreshWaterGenerator';
 }

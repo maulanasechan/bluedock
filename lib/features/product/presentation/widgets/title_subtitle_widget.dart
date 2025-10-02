@@ -17,7 +17,13 @@ class TitleSubtitleWidget extends StatelessWidget {
       children: [
         TextWidget(text: title, fontSize: 12, overflow: TextOverflow.fade),
         SizedBox(height: 4),
-        TextWidget(text: subtitle, fontSize: 14, fontWeight: FontWeight.w700),
+        TextWidget(
+          text: subtitle,
+          fontSize: 14,
+          fontWeight: FontWeight.w700,
+          overflow: TextOverflow.fade,
+          align: TextAlign.justify,
+        ),
       ],
     );
   }

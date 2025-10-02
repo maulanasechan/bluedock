@@ -3,7 +3,7 @@ import 'package:bluedock/common/widgets/button/bloc/action_button_state.dart';
 import 'package:bluedock/common/widgets/button/widgets/action_button_widget.dart';
 import 'package:bluedock/common/widgets/gradientScaffold/gradient_scaffold_widget.dart';
 import 'package:bluedock/common/widgets/text/text_widget.dart';
-import 'package:bluedock/common/widgets/textfield/validator/app_validator.dart';
+import 'package:bluedock/common/helper/validator/validator_helper.dart';
 import 'package:bluedock/common/widgets/textfield/widgets/textfield_widget.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/features/login/domain/usecases/send_password_reset_usecase.dart';

@@ -1,4 +1,6 @@
+import 'package:bluedock/common/helper/waitAction/wait_action_helper.dart';
 import 'package:bluedock/common/widgets/button/bloc/action_button_cubit.dart';
+import 'package:bluedock/common/widgets/card/card_container_widget.dart';
 import 'package:bluedock/common/widgets/card/slidable_action_widget.dart';
 import 'package:bluedock/common/widgets/modal/center_modal_widget.dart';
 import 'package:bluedock/common/widgets/text/text_widget.dart';
@@ -7,20 +9,32 @@ import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
 import 'package:bluedock/features/product/data/models/product/product_req.dart';
 import 'package:bluedock/features/product/domain/entities/sperre_air_compressor_entity.dart';
-import 'package:bluedock/features/product/domain/usecases/sperreAirCompressor/delete_product_usecase.dart';
+import 'package:bluedock/features/product/domain/usecases/product/delete_product_usecase.dart';
+import 'package:bluedock/features/product/domain/usecases/product/favorite_product_usecase.dart';
 import 'package:bluedock/features/product/presentation/bloc/sperreAirCompressor/sperre_air_compressor_cubit.dart';
+import 'package:bluedock/features/product/presentation/widgets/product_rich_text_widget.dart';
 import 'package:bluedock/features/product/presentation/widgets/title_subtitle_widget.dart';
+import 'package:bluedock/service_locator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class SperreAirCompressoreCardWidget extends StatelessWidget {
+class SperreAirCompressorCardWidget extends StatelessWidget {
   final SperreAirCompressorEntity product;
-  const SperreAirCompressoreCardWidget({super.key, required this.product});
+  const SperreAirCompressorCardWidget({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    final isFav = uid != null && product.favorites.contains(uid);
+    final productReq = ProductReq(
+      productCategoriesId: 'aP9xG7kLmQzR2VtYcJwE',
+      productCategoriesTitle: 'Sperre Air Compressor',
+      productId: product.productId,
+    );
+
     return BlocProvider(
       create: (context) => ActionButtonCubit(),
       child: SlidableActionWidget(
@@ -39,28 +53,26 @@ class SperreAirCompressoreCardWidget extends StatelessWidget {
           final actionCubit = context.read<ActionButtonCubit>();
           final changed = await CenterModalWidget.display(
             context: context,
-            title: 'Remove Staff',
+            title: 'Remove Product',
             subtitle: "Are you sure to remove ${product.productTypeCode}?",
             yesButton: 'Remove',
             actionCubit: actionCubit,
             yesButtonOnTap: () async {
-              context.read<ActionButtonCubit>().execute(
+              actionCubit.execute(
                 usecase: DeleteProductUseCase(),
-                params: ProductReq(
-                  productCategoriesId: 'aP9xG7kLmQzR2VtYcJwE',
-                  productCategoriesTitle: 'Sperre Air Compressor',
-                  productId: product.productId,
-                ),
+                params: productReq,
               );
-              context.pop(true);
+              final ok = await waitActionDone(actionCubit);
+              actionCubit.reset();
+              if (ok && context.mounted) context.pop(true);
             },
           );
           if (changed == true && context.mounted) {
             final change = await context.pushNamed(
-              AppRoutes.successStaff,
+              AppRoutes.successProduct,
               extra: {
                 'title': '${product.productTypeCode} has been removed',
-                'image': AppImages.appUserDeleted,
+                'image': AppImages.appProductDeleted,
               },
             );
             if (change == true && context.mounted) {
@@ -71,22 +83,28 @@ class SperreAirCompressoreCardWidget extends StatelessWidget {
           }
         },
         deleteParams: product.productId,
-        child: Container(
-          width: double.maxFinite,
-          padding: EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: AppColors.white,
-          ),
+        child: CardContainerWidget(
           child: Stack(
             children: [
               Positioned(
                 top: 0,
                 right: 0,
                 child: GestureDetector(
-                  onTap: () {},
+                  onTap: () async {
+                    final cubit = context.read<SperreAirCompressorCubit>();
+                    final res = await sl<FavoriteProductUseCase>().call(
+                      params: productReq,
+                    );
+
+                    if (!context.mounted) return;
+
+                    final changed = res.isRight();
+                    if (changed) {
+                      cubit.displaySperreAirCompressor(params: '');
+                    }
+                  },
                   child: PhosphorIcon(
-                    PhosphorIconsBold.heart,
+                    isFav ? PhosphorIconsFill.heart : PhosphorIconsBold.heart,
                     color: AppColors.orange,
                     size: 28,
                   ),
@@ -182,25 +200,9 @@ class SperreAirCompressoreCardWidget extends StatelessWidget {
                           title: 'Product Type Code',
                           subtitle: product.productTypeCode,
                         ),
-                        SizedBox(height: 8),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.baseline,
-                          textBaseline: TextBaseline.alphabetic,
-                          children: [
-                            TextWidget(
-                              text: product.quantity.toString(),
-                              color: AppColors.orange,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 40,
-                            ),
-                            SizedBox(width: 4),
-                            TextWidget(
-                              text: 'Unit',
-                              color: AppColors.orange,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ],
+                        SizedBox(height: 12),
+                        ProductRichTextWidget(
+                          title: product.quantity.toString(),
                         ),
                       ],
                     ),

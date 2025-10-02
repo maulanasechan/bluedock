@@ -6,10 +6,33 @@ class AppValidators {
   static final RegExp _nameRegex = RegExp(r'^[a-zA-Z\s]+$');
   static final RegExp _nikRegex = RegExp(r'^[0-9]+$');
   static final RegExp _digitsOnly = RegExp(r'^\d+$');
+  static final RegExp _numberRange = RegExp(r'^\d+(-\d+)?$');
 
   static StringValidator required({String? field}) {
     return (v) =>
         (v == null || v.trim().isEmpty) ? '$field is required.' : null;
+  }
+
+  static StringValidator numberOrRange({
+    String requiredMessage = 'This field is required.',
+    String invalidMessage = 'Only numbers or ranges like 354-882 are allowed.',
+    bool ensureStartLEEnd = true,
+  }) {
+    return (v) {
+      final s = (v ?? '').trim();
+      if (s.isEmpty) return requiredMessage;
+      if (!_numberRange.hasMatch(s)) return invalidMessage;
+
+      final parts = s.split('-');
+      if (parts.length == 2) {
+        final start = int.parse(parts[0]);
+        final end = int.parse(parts[1]);
+        if (ensureStartLEEnd && start > end) {
+          return 'Start must be <= end.';
+        }
+      }
+      return null;
+    };
   }
 
   static StringValidator number({

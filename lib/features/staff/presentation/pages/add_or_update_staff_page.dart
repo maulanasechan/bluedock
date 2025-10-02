@@ -5,7 +5,7 @@ import 'package:bluedock/common/widgets/button/widgets/action_button_widget.dart
 import 'package:bluedock/common/widgets/dropdown/widgets/dropdown_widget.dart';
 import 'package:bluedock/common/widgets/gradientScaffold/gradient_scaffold_widget.dart';
 import 'package:bluedock/common/widgets/textfield/blocs/password_textfield_cubit.dart';
-import 'package:bluedock/common/widgets/textfield/validator/app_validator.dart';
+import 'package:bluedock/common/helper/validator/validator_helper.dart';
 import 'package:bluedock/common/widgets/textfield/widgets/password_textfield_widget.dart';
 import 'package:bluedock/common/widgets/textfield/widgets/textfield_widget.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';

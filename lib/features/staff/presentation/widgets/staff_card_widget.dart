@@ -63,7 +63,6 @@ class StaffCardWidget extends StatelessWidget {
         },
         deleteParams: staff.staffId,
         child: CardContainerWidget(
-          height: 72,
           onTap: () async {
             final changed = await context.pushNamed(
               AppRoutes.staffDetail,

@@ -7,12 +7,12 @@ import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
 import 'package:bluedock/features/product/presentation/bloc/sperreAirCompressor/sperre_air_compressor_cubit.dart';
 import 'package:bluedock/features/product/presentation/bloc/sperreAirCompressor/sperre_air_compressor_state.dart';
-import 'package:bluedock/features/product/presentation/widgets/sperre_air_compressore_card_widget.dart';
+import 'package:bluedock/features/product/presentation/widgets/product_loading_widget.dart';
+import 'package:bluedock/features/product/presentation/widgets/sperre_air_compressor_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:shimmer/shimmer.dart';
 
 class SperreAirCompressorPage extends StatelessWidget {
   const SperreAirCompressorPage({super.key});
@@ -81,7 +81,7 @@ class SperreAirCompressorPage extends StatelessWidget {
                   >(
                     builder: (context, state) {
                       if (state is SperreAirCompressorLoading) {
-                        return _productLoading();
+                        return ProductLoadingWidget();
                       }
                       if (state is SperreAirCompressorFetched) {
                         if (state.sperreAirCompressor.isEmpty) {
@@ -92,12 +92,12 @@ class SperreAirCompressorPage extends StatelessWidget {
                           return ListView.separated(
                             padding: EdgeInsets.zero,
                             itemBuilder: (context, index) {
-                              return SperreAirCompressoreCardWidget(
+                              return SperreAirCompressorCardWidget(
                                 product: state.sperreAirCompressor[index],
                               );
                             },
                             separatorBuilder: (context, index) {
-                              return SizedBox(height: 18);
+                              return SizedBox(height: 12);
                             },
                             itemCount: state.sperreAirCompressor.length,
                           );
@@ -109,30 +109,6 @@ class SperreAirCompressorPage extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _productLoading() {
-    return Shimmer.fromColors(
-      baseColor: AppColors.baseLoading,
-      highlightColor: AppColors.highlightLoading,
-      child: ListView.separated(
-        padding: EdgeInsets.zero,
-        separatorBuilder: (context, index) {
-          return SizedBox(height: 18);
-        },
-        itemBuilder: (context, index) {
-          return Container(
-            width: double.maxFinite,
-            height: 150,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: AppColors.red,
-            ),
-          );
-        },
-        itemCount: 8,
       ),
     );
   }

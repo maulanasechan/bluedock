@@ -1,5 +1,5 @@
 import 'package:bluedock/common/widgets/text/text_widget.dart';
-import 'package:bluedock/common/widgets/textfield/validator/app_validator.dart';
+import 'package:bluedock/common/helper/validator/validator_helper.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';

@@ -15,6 +15,7 @@ class CustomTextfieldWidget extends StatelessWidget {
   final double borderRadius;
   final Color? iconColor;
   final bool hasError;
+  final TextInputType? keyboardType;
 
   const CustomTextfieldWidget({
     super.key,
@@ -30,6 +31,7 @@ class CustomTextfieldWidget extends StatelessWidget {
     this.borderRadius = 10,
     this.iconColor,
     this.hasError = false,
+    this.keyboardType = TextInputType.text,
   });
 
   @override
@@ -50,6 +52,7 @@ class CustomTextfieldWidget extends StatelessWidget {
       color: Colors.transparent,
       child: TextFormField(
         style: TextStyle(fontWeight: FontWeight.w500),
+        keyboardType: keyboardType,
         initialValue: initialValue,
         maxLines: maxLines,
         onChanged: onChanged,

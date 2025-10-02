@@ -1,3 +1,4 @@
+import 'package:bluedock/common/widgets/card/card_container_widget.dart';
 import 'package:bluedock/common/widgets/text/text_widget.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
 import 'package:bluedock/features/product/domain/entities/product_categories_entity.dart';
@@ -22,60 +23,48 @@ class ProductCategoryCardWidget extends StatelessWidget {
           context.read<ProductCategoriesCubit>().displayProductCategories();
         }
       },
-      child: Material(
-        elevation: 4,
-        borderRadius: BorderRadius.circular(10),
-        child: Container(
-          width: double.maxFinite,
-          height: 72,
-          padding: EdgeInsets.symmetric(horizontal: 14),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: AppColors.white,
-            border: Border.all(color: AppColors.border, width: 1.5),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  SizedBox(
-                    width: 50,
-                    height: 50,
-                    child: Image.asset(product.image, fit: BoxFit.contain),
-                  ),
-                  SizedBox(width: 14),
-                  SizedBox(
-                    width: 200,
-                    child: TextWidget(
-                      overflow: TextOverflow.fade,
-                      text: product.title,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextWidget(
-                    text: 'Total Product',
+      child: CardContainerWidget(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: Image.asset(product.image, fit: BoxFit.contain),
+                ),
+                SizedBox(width: 14),
+                SizedBox(
+                  width: 200,
+                  child: TextWidget(
+                    overflow: TextOverflow.fade,
+                    text: product.title,
                     fontWeight: FontWeight.w700,
-                    fontSize: 10,
+                    fontSize: 16,
                   ),
-                  SizedBox(height: 6),
-                  TextWidget(
-                    text: '${product.totalProduct.toInt()} Products',
-                    color: AppColors.blue,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 12,
-                  ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextWidget(
+                  text: 'Total Product',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 10,
+                ),
+                SizedBox(height: 6),
+                TextWidget(
+                  text: '${product.totalProduct.toInt()} Products',
+                  color: AppColors.blue,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12,
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

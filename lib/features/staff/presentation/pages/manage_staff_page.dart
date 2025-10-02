@@ -119,7 +119,7 @@ class ManageStaffPage extends StatelessWidget {
         itemBuilder: (context, index) {
           return StaffCardWidget(staff: listStaff[index]);
         },
-        separatorBuilder: (context, index) => SizedBox(height: 8),
+        separatorBuilder: (context, index) => SizedBox(height: 10),
         itemCount: listStaff.length,
       ),
     );

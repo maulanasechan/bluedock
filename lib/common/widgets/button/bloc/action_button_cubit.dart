@@ -24,4 +24,6 @@ class ActionButtonCubit extends Cubit<ActionButtonState> {
       emit(ActionButtonFailure(errorMessage: e.toString()));
     }
   }
+
+  void reset() => emit(ActionButtonInitial());
 }
