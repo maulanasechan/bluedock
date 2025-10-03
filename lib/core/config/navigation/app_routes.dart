@@ -38,4 +38,6 @@ class AppRoutes {
   static const detegasaSewageTreatmentPlant = 'detegasaSewageTreatmentPlant';
   static const addDetegasaSewageTreatmentPlant =
       'addDetegasaSewageTreatmentPlant';
+  static const detegasaIncenerator = 'detegasaIncenerator';
+  static const addDetegasaIncenerator = 'addDetegasaIncenerator';
 }

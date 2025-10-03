@@ -5,18 +5,17 @@ import 'package:bluedock/common/widgets/button/bloc/action_button_state.dart';
 import 'package:bluedock/common/widgets/button/widgets/action_button_widget.dart';
 import 'package:bluedock/common/widgets/dropdown/widgets/dropdown_widget.dart';
 import 'package:bluedock/common/widgets/gradientScaffold/gradient_scaffold_widget.dart';
-import 'package:bluedock/common/widgets/input/radio_list_button.dart';
 import 'package:bluedock/common/widgets/modal/bottom_modal_widget.dart';
 import 'package:bluedock/common/helper/validator/validator_helper.dart';
 import 'package:bluedock/common/widgets/textfield/widgets/textfield_widget.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
-import 'package:bluedock/features/product/data/models/quantumFreshWaterGenerator/quantum_fresh_water_generator_form_req.dart';
+import 'package:bluedock/features/product/data/models/detegasaIncenerator/detegasa_incenerator_form_req.dart';
 import 'package:bluedock/features/product/data/models/selection/selection_req.dart';
-import 'package:bluedock/features/product/domain/entities/quantum_fresh_water_generator_entity.dart';
+import 'package:bluedock/features/product/domain/entities/detegasa_incenerator_entity.dart';
 import 'package:bluedock/features/product/domain/entities/selection_entity.dart';
-import 'package:bluedock/features/product/domain/usecases/quantumFreshWaterGenerator/add_quantum_fresh_water_generator_usecase.dart';
-import 'package:bluedock/features/product/domain/usecases/quantumFreshWaterGenerator/update_quantum_fresh_water_generator_usecase.dart';
-import 'package:bluedock/features/product/presentation/bloc/quantumFreshWaterGenerator/quantum_fresh_water_generator_form_cubit.dart';
+import 'package:bluedock/features/product/domain/usecases/detegasaIncenerator/add_detegasa_incenerator_usecase.dart';
+import 'package:bluedock/features/product/domain/usecases/detegasaIncenerator/update_detegasa_incenerator_usecase.dart';
+import 'package:bluedock/features/product/presentation/bloc/detegasaIncenerator/detegasa_incenerator_form_cubit.dart';
 import 'package:bluedock/features/product/presentation/bloc/selection/selection_display_cubit.dart';
 import 'package:bluedock/features/product/presentation/widgets/list_selection_button_widget.dart';
 import 'package:bluedock/features/product/presentation/widgets/selection_modal_widget.dart';
@@ -25,9 +24,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class AddQuantumFreshWaterGeneratorPage extends StatelessWidget {
-  final QuantumFreshWaterGeneratorEntity? product;
-  AddQuantumFreshWaterGeneratorPage({super.key, this.product});
+class AddDetegasaInceneratorPage extends StatelessWidget {
+  final DetegasaInceneratorEntity? product;
+  AddDetegasaInceneratorPage({super.key, this.product});
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -39,7 +38,7 @@ class AddQuantumFreshWaterGeneratorPage extends StatelessWidget {
         BlocProvider(create: (context) => ActionButtonCubit()),
         BlocProvider(
           create: (_) {
-            final c = QuantumFreshWaterGeneratorFormCubit();
+            final c = DetegasaInceneratorFormCubit();
             if (isUpdate) c.hydrateFromEntity(product!);
             return c;
           },
@@ -47,11 +46,10 @@ class AddQuantumFreshWaterGeneratorPage extends StatelessWidget {
         BlocProvider(create: (context) => SelectionDisplayCubit()),
       ],
       child: GradientScaffoldWidget(
-        fontSizeTitle: 15,
         hideBack: false,
         appbarTitle: isUpdate
-            ? 'Update Quantum-Fresh Water Generator'
-            : 'Add Quantum-Fresh Water Generator',
+            ? 'Update Detegasa-Incenerator'
+            : 'Add Detegasa-Incenerator',
         body: BlocListener<ActionButtonCubit, ActionButtonState>(
           listener: (context, state) async {
             if (state is ActionButtonFailure) {
@@ -75,8 +73,8 @@ class AddQuantumFreshWaterGeneratorPage extends StatelessWidget {
           child: SingleChildScrollView(
             child:
                 BlocBuilder<
-                  QuantumFreshWaterGeneratorFormCubit,
-                  QuantumFreshWaterGeneratorReq
+                  DetegasaInceneratorFormCubit,
+                  DetegasaInceneratorReq
                 >(
                   builder: (context, state) {
                     return Form(
@@ -86,66 +84,126 @@ class AddQuantumFreshWaterGeneratorPage extends StatelessWidget {
                         children: [
                           _selectionDropdown(
                             context: context,
-                            title: 'Water Solution Type',
-                            selected: state.waterSolutionType,
+                            title: 'Product Usage',
+                            selected: state.productUsage,
                             icon: PhosphorIconsBold.creditCard,
                             onPressed: (value) {
                               context
-                                  .read<QuantumFreshWaterGeneratorFormCubit>()
-                                  .setWaterSolutionType(value.title);
+                                  .read<DetegasaInceneratorFormCubit>()
+                                  .setProductUsage(value.title);
                               context.pop();
                             },
                           ),
                           SizedBox(height: 24),
                           TextfieldWidget(
                             validator: AppValidators.required(),
-                            hintText: 'Type Description',
-                            title: 'Type Description',
-                            initialValue: state.typeDescription,
+                            hintText: 'Product Model',
+                            title: 'Product Model',
+                            initialValue: state.productModel,
                             suffixIcon: PhosphorIconsBold.keyboard,
                             onChanged: (v) => context
-                                .read<QuantumFreshWaterGeneratorFormCubit>()
-                                .setTypeDescription(v),
+                                .read<DetegasaInceneratorFormCubit>()
+                                .setProductModel(v),
                           ),
                           SizedBox(height: 24),
                           TextfieldWidget(
                             validator: AppValidators.number(),
-                            hintText: 'Min. Production Capacity ( m3/day )',
-                            title: 'Min. Production Capacity',
+                            hintText: 'Heat Generate ( KCAL/Hr )',
+                            title: 'Heat Generate',
                             initialValue: removeCommas(
-                              stripSuffix(
-                                state.minProductionCapacity,
-                                'm3/day',
-                              ),
+                              stripSuffix(state.heatGenerate, 'KCAL/Hr'),
                             ),
-                            suffixIcon: PhosphorIconsBold.calendarMinus,
+                            suffixIcon: PhosphorIconsBold.thermometer,
                             onChanged: (v) => context
-                                .read<QuantumFreshWaterGeneratorFormCubit>()
-                                .setMinProductionCapacity(v),
+                                .read<DetegasaInceneratorFormCubit>()
+                                .setHeatGenerate(v),
                           ),
                           SizedBox(height: 24),
                           TextfieldWidget(
                             validator: AppValidators.number(),
-                            hintText: 'Max. Production Capacity ( m3/day )',
-                            title: 'Max. Production Capacity',
+                            hintText: 'Power Rating ( KW )',
+                            title: 'Power Rating',
                             initialValue: removeCommas(
-                              stripSuffix(
-                                state.maxProductionCapacity,
-                                'm3/day',
-                              ),
+                              stripSuffix(state.powerRating, 'KW'),
                             ),
-                            suffixIcon: PhosphorIconsBold.calendarPlus,
+                            suffixIcon: PhosphorIconsBold.handFist,
                             onChanged: (v) => context
-                                .read<QuantumFreshWaterGeneratorFormCubit>()
-                                .setMaxProductionCapacity(v),
+                                .read<DetegasaInceneratorFormCubit>()
+                                .setPowerRating(v),
                           ),
                           SizedBox(height: 24),
-                          RadioListButton(
-                            title: 'Tailor-Made design',
-                            state: state.tailorMadeDesign,
-                            onPressed: () => context
-                                .read<QuantumFreshWaterGeneratorFormCubit>()
-                                .setTailorMadeDesign(!state.tailorMadeDesign),
+                          TextfieldWidget(
+                            validator: AppValidators.number(),
+                            hintText: 'IMO Sludge ( L/H )',
+                            title: 'IMO Sludge',
+                            initialValue: stripSuffix(state.imoSludge, 'L/H'),
+                            suffixIcon: PhosphorIconsBold.washingMachine,
+                            onChanged: (v) => context
+                                .read<DetegasaInceneratorFormCubit>()
+                                .setImoSludge(v),
+                          ),
+                          SizedBox(height: 24),
+                          TextfieldWidget(
+                            validator: AppValidators.number(),
+                            hintText: 'Solid Waste ( kg/h )',
+                            title: 'Solid Waste',
+                            initialValue: stripSuffix(state.solidWaste, 'kg/h'),
+                            suffixIcon: PhosphorIconsBold.trash,
+                            onChanged: (v) => context
+                                .read<DetegasaInceneratorFormCubit>()
+                                .setSolidWaste(v),
+                          ),
+                          SizedBox(height: 24),
+                          TextfieldWidget(
+                            validator: AppValidators.numberOrDecimal(),
+                            hintText: 'Max. Burner Consumption ( kg/h )',
+                            title: 'Max. Burner Consumption',
+                            initialValue: stripSuffix(
+                              state.maxBurnerConsumption,
+                              'kg/h',
+                            ),
+                            suffixIcon: PhosphorIconsBold.blueprint,
+                            onChanged: (v) => context
+                                .read<DetegasaInceneratorFormCubit>()
+                                .setMaxBurnerConsumption(v),
+                          ),
+                          SizedBox(height: 24),
+                          TextfieldWidget(
+                            validator: AppValidators.numberOrDecimal(),
+                            hintText: 'Max. Electric Power ( KW )',
+                            title: 'Max. Electric Power',
+                            initialValue: stripSuffix(
+                              state.maxElectricPower,
+                              'KW',
+                            ),
+                            suffixIcon: PhosphorIconsBold.lightning,
+                            onChanged: (v) => context
+                                .read<DetegasaInceneratorFormCubit>()
+                                .setMaxElectricPower(v),
+                          ),
+                          SizedBox(height: 24),
+                          TextfieldWidget(
+                            validator: AppValidators.number(),
+                            hintText: 'Approx. Incenerator Weight ( kg )',
+                            title: 'Approx. Incenerator Weight',
+                            initialValue: removeCommas(
+                              stripSuffix(state.approxInceneratorWeight, 'kg'),
+                            ),
+                            suffixIcon: PhosphorIconsBold.barbell,
+                            onChanged: (v) => context
+                                .read<DetegasaInceneratorFormCubit>()
+                                .setApproxInceneratorWeight(v),
+                          ),
+                          SizedBox(height: 24),
+                          TextfieldWidget(
+                            validator: AppValidators.number(),
+                            hintText: 'Fan Weight',
+                            title: 'Fan Weight',
+                            initialValue: state.fanWeight,
+                            suffixIcon: PhosphorIconsBold.fan,
+                            onChanged: (v) => context
+                                .read<DetegasaInceneratorFormCubit>()
+                                .setFanWeight(v),
                           ),
                           SizedBox(height: 50),
                           ActionButtonWidget(
@@ -156,10 +214,10 @@ class AddQuantumFreshWaterGeneratorPage extends StatelessWidget {
 
                               context.read<ActionButtonCubit>().execute(
                                 usecase: isUpdate
-                                    ? UpdateQuantumFreshWaterGeneratorUseCase()
-                                    : AddQuantumFreshWaterGeneratorUseCase(),
+                                    ? UpdateDetegasaInceneratorUseCase()
+                                    : AddDetegasaInceneratorUseCase(),
                                 params: context
-                                    .read<QuantumFreshWaterGeneratorFormCubit>()
+                                    .read<DetegasaInceneratorFormCubit>()
                                     .state,
                               );
                             },
@@ -197,13 +255,13 @@ class AddQuantumFreshWaterGeneratorPage extends StatelessWidget {
           MultiBlocProvider(
             providers: [
               BlocProvider.value(
-                value: context.read<QuantumFreshWaterGeneratorFormCubit>(),
+                value: context.read<DetegasaInceneratorFormCubit>(),
               ),
               BlocProvider.value(
                 value: context.read<SelectionDisplayCubit>()
                   ..displaySelection(
                     SelectionReq(
-                      productTitle: 'Quantum Fresh Water Generator',
+                      productTitle: 'Detegasa Incenerator',
                       selectionTitle: title,
                     ),
                   ),
@@ -213,8 +271,8 @@ class AddQuantumFreshWaterGeneratorPage extends StatelessWidget {
               title: 'Choose one $title:',
               builder: (context, listSelection) {
                 return BlocBuilder<
-                  QuantumFreshWaterGeneratorFormCubit,
-                  QuantumFreshWaterGeneratorReq
+                  DetegasaInceneratorFormCubit,
+                  DetegasaInceneratorReq
                 >(
                   builder: (context, state) {
                     return ListSelectionButtonWidget(

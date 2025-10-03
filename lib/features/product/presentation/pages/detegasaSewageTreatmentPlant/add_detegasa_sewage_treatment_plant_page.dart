@@ -1,3 +1,4 @@
+import 'package:bluedock/common/helper/stringTrimmer/format_thousand_helper.dart';
 import 'package:bluedock/common/helper/stringTrimmer/string_trimmer_helper.dart';
 import 'package:bluedock/common/widgets/button/bloc/action_button_cubit.dart';
 import 'package:bluedock/common/widgets/button/bloc/action_button_state.dart';
@@ -123,9 +124,8 @@ class AddDetegasaSewageTreatmentPlantPage extends StatelessWidget {
                             validator: AppValidators.number(),
                             hintText: 'Product Capacity ( L/Day )',
                             title: 'Product Capacity',
-                            initialValue: stripSuffix(
-                              state.productCapacity,
-                              'L/Day',
+                            initialValue: removeCommas(
+                              stripSuffix(state.productCapacity, 'L/Day'),
                             ),
                             suffixIcon: PhosphorIconsBold.frameCorners,
                             onChanged: (v) => context

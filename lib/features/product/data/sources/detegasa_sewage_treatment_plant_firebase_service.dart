@@ -1,4 +1,5 @@
 import 'package:bluedock/common/helper/buildPrefix/build_prefixes_helper.dart';
+import 'package:bluedock/common/helper/stringTrimmer/format_thousand_helper.dart';
 import 'package:bluedock/common/helper/stringTrimmer/string_trimmer_helper.dart';
 import 'package:bluedock/features/product/data/models/detegasaSewageTreatmentPlant/detegasa_sewage_treatment_plant_form_req.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -94,7 +95,7 @@ class DetegasaSewageTreatmentPlantFirebaseServiceImpl
         'productUsage': req.productUsage,
         'productCrew': "${req.productCrew} Person",
         'productModel': req.productModel,
-        'productCapacity': "${req.productCapacity} L/Day",
+        'productCapacity': "${formatWithCommas(req.productCapacity)} L/Day",
         'kilogramsOfBiochemicalOxygen':
             "${req.kilogramsOfBiochemicalOxygen} KGBOD/Day",
         'favorites': req.favorites,
@@ -153,7 +154,8 @@ class DetegasaSewageTreatmentPlantFirebaseServiceImpl
         'productUsage': req.productUsage,
         'productModel': req.productModel,
         'productCrew': "${stripSuffix(req.productCrew, 'Person')} Person",
-        'productCapacity': "${stripSuffix(req.productCapacity, 'L/Day')} L/Day",
+        'productCapacity':
+            "${formatWithCommas(stripSuffix(req.productCapacity, 'L/Day'))} L/Day",
         'kilogramsOfBiochemicalOxygen':
             "${stripSuffix(req.kilogramsOfBiochemicalOxygen, 'KGBOD/Day')} KGBOD/Day",
         'favorites': req.favorites,

@@ -1,30 +1,26 @@
 import 'package:bluedock/common/helper/buildPrefix/build_prefixes_helper.dart';
 import 'package:bluedock/common/helper/stringTrimmer/format_thousand_helper.dart';
 import 'package:bluedock/common/helper/stringTrimmer/string_trimmer_helper.dart';
-import 'package:bluedock/features/product/data/models/quantumFreshWaterGenerator/quantum_fresh_water_generator_form_req.dart';
+import 'package:bluedock/features/product/data/models/detegasaIncenerator/detegasa_incenerator_form_req.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-abstract class QuantumFreshWaterGeneratorFirebaseService {
-  Future<Either> addQuantumFreshWaterGenerator(
-    QuantumFreshWaterGeneratorReq req,
-  );
-  Future<Either> searchQuantumFreshWaterGenerator(String query);
-  Future<Either> updateQuantumFreshWaterGenerator(
-    QuantumFreshWaterGeneratorReq req,
-  );
+abstract class DetegasaInceneratorFirebaseService {
+  Future<Either> addDetegasaIncenerator(DetegasaInceneratorReq req);
+  Future<Either> searchDetegasaIncenerator(String query);
+  Future<Either> updateDetegasaIncenerator(DetegasaInceneratorReq req);
 }
 
-class QuantumFreshWaterGeneratorFirebaseServiceImpl
-    extends QuantumFreshWaterGeneratorFirebaseService {
+class DetegasaInceneratorFirebaseServiceImpl
+    extends DetegasaInceneratorFirebaseService {
   final _auth = FirebaseAuth.instance;
   final _db = FirebaseFirestore.instance;
-  final _id = 'Quantum Fresh Water Generator';
-  final _catId = 'M3jvF7wXaZpL2yKsTbQr';
+  final _id = 'Detegasa Incenerator';
+  final _catId = 'L9cX2bTfVgP5zRjYhMwQ';
 
   @override
-  Future<Either> searchQuantumFreshWaterGenerator(String query) async {
+  Future<Either> searchDetegasaIncenerator(String query) async {
     try {
       final uid = _auth.currentUser?.uid;
       final q = query.trim().toLowerCase();
@@ -32,7 +28,7 @@ class QuantumFreshWaterGeneratorFirebaseServiceImpl
       final base = _db.collection('Products').doc(_id).collection('Items');
 
       final snap = q.isEmpty
-          ? await base.orderBy('waterSolutionType').get()
+          ? await base.orderBy('productUsage').get()
           : await base.where('searchKeywords', arrayContains: q).get();
 
       final items = snap.docs.map((d) {
@@ -51,8 +47,8 @@ class QuantumFreshWaterGeneratorFirebaseServiceImpl
       }
 
       int byType(Map<String, dynamic> a, Map<String, dynamic> b) =>
-          (a['waterSolutionType'] ?? '').toString().compareTo(
-            (b['waterSolutionType'] ?? '').toString(),
+          (a['productUsage'] ?? '').toString().compareTo(
+            (b['productUsage'] ?? '').toString(),
           );
       favs.sort(byType);
       others.sort(byType);
@@ -78,9 +74,7 @@ class QuantumFreshWaterGeneratorFirebaseServiceImpl
   }
 
   @override
-  Future<Either> addQuantumFreshWaterGenerator(
-    QuantumFreshWaterGeneratorReq req,
-  ) async {
+  Future<Either> addDetegasaIncenerator(DetegasaInceneratorReq req) async {
     try {
       final userEmail = _auth.currentUser?.email ?? '';
 
@@ -92,13 +86,17 @@ class QuantumFreshWaterGeneratorFirebaseServiceImpl
 
       final productMap = <String, dynamic>{
         'productId': productId,
-        'waterSolutionType': req.waterSolutionType,
-        'typeDescription': req.typeDescription,
-        'tailorMadeDesign': req.tailorMadeDesign,
-        'minProductionCapacity':
-            "${formatWithCommas(req.minProductionCapacity)} m3/day",
-        'maxProductionCapacity':
-            "${formatWithCommas(req.maxProductionCapacity)} m3/day",
+        'productUsage': req.productUsage,
+        'productModel': req.productModel,
+        'heatGenerate': "${formatWithCommas(req.heatGenerate)} KCAL/Hr",
+        'powerRating': "${formatWithCommas(req.powerRating)} KW",
+        'imoSludge': "${req.imoSludge} L/H",
+        'solidWaste': "${req.solidWaste} kg/h",
+        'maxBurnerConsumption': "${req.maxBurnerConsumption} kg/h",
+        'maxElectricPower': "${req.maxElectricPower} KW",
+        'approxInceneratorWeight':
+            "${formatWithCommas(req.approxInceneratorWeight)} kg",
+        'fanWeight': req.fanWeight,
         'favorites': req.favorites,
         'quantity': req.quantity,
         'image': req.image,
@@ -122,20 +120,24 @@ class QuantumFreshWaterGeneratorFirebaseServiceImpl
     }
   }
 
-  List<String> _buildAllPrefixes(QuantumFreshWaterGeneratorReq req) {
+  List<String> _buildAllPrefixes(DetegasaInceneratorReq req) {
     final all = [
-      req.typeDescription,
-      req.waterSolutionType,
-      req.minProductionCapacity,
-      req.maxProductionCapacity,
+      req.productUsage,
+      req.productModel,
+      req.heatGenerate,
+      req.powerRating,
+      req.imoSludge,
+      req.solidWaste,
+      req.maxBurnerConsumption,
+      req.maxElectricPower,
+      req.approxInceneratorWeight,
+      req.fanWeight,
     ].where((e) => e.trim().isNotEmpty).join(' ');
     return buildWordPrefixes(all);
   }
 
   @override
-  Future<Either> updateQuantumFreshWaterGenerator(
-    QuantumFreshWaterGeneratorReq req,
-  ) async {
+  Future<Either> updateDetegasaIncenerator(DetegasaInceneratorReq req) async {
     try {
       final userEmail = _auth.currentUser?.email ?? '';
 
@@ -151,13 +153,20 @@ class QuantumFreshWaterGeneratorFirebaseServiceImpl
 
       final updateMap = <String, dynamic>{
         'productId': req.productId,
-        'waterSolutionType': req.waterSolutionType,
-        'typeDescription': req.typeDescription,
-        'tailorMadeDesign': req.tailorMadeDesign,
-        'minProductionCapacity':
-            "${formatWithCommas(stripSuffix(req.minProductionCapacity, 'm3/day'))} m3/day",
-        'maxProductionCapacity':
-            "${formatWithCommas(stripSuffix(req.maxProductionCapacity, 'm3/day'))} m3/day",
+        'productUsage': req.productUsage,
+        'productModel': req.productModel,
+        'heatGenerate':
+            "${formatWithCommas(stripSuffix(req.heatGenerate, 'KCAL/Hr'))}  KCAL/Hr",
+        'powerRating':
+            "${formatWithCommas(stripSuffix(req.powerRating, 'KW'))} KW",
+        'imoSludge': "${stripSuffix(req.imoSludge, 'L/H')} L/H",
+        'solidWaste': "${stripSuffix(req.solidWaste, 'kg/h')} kg/h",
+        'maxBurnerConsumption':
+            "${stripSuffix(req.maxBurnerConsumption, 'kg/h')} kg/h",
+        'maxElectricPower': "${stripSuffix(req.maxElectricPower, 'KW')} KW",
+        'approxInceneratorWeight':
+            "${formatWithCommas(stripSuffix(req.approxInceneratorWeight, 'kg'))} kg",
+        'fanWeight': req.fanWeight,
         'favorites': req.favorites,
         'image': req.image,
         'updatedAt': FieldValue.serverTimestamp(),
