@@ -17,7 +17,7 @@ class ProductRichTextWidget extends StatelessWidget {
       text: TextSpan(
         text: title,
         style: const TextStyle(
-          fontSize: 40,
+          fontSize: 38,
           fontWeight: FontWeight.w700,
           color: AppColors.orange,
           height: 1.0,
