@@ -35,4 +35,7 @@ class AppRoutes {
   static const addSperreAirSystemSolutions = 'addSperreAirSystemSolutions';
   static const quantumFreshWaterGenerator = 'quantumFreshWaterGenerator';
   static const addQuantumFreshWaterGenerator = 'addQuantumFreshWaterGenerator';
+  static const detegasaSewageTreatmentPlant = 'detegasaSewageTreatmentPlant';
+  static const addDetegasaSewageTreatmentPlant =
+      'addDetegasaSewageTreatmentPlant';
 }

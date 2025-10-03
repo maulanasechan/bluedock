@@ -1,15 +1,15 @@
 import 'dart:convert';
-import 'package:bluedock/features/product/domain/entities/quantum_fresh_water_generator_entity.dart';
+import 'package:bluedock/features/product/domain/entities/detegasa_sewage_treatment_plant_entity.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class QuantumFreshWaterGeneratorModel {
+class DetegasaSewageTreatmentPlantModel {
   // Core fields
   final String productId;
-  final String waterSolutionType;
-  final String typeDescription;
-  final String minProductionCapacity;
-  final String maxProductionCapacity;
-  final bool tailorMadeDesign;
+  final String productUsage;
+  final String productModel;
+  final String productCrew;
+  final String productCapacity;
+  final String kilogramsOfBiochemicalOxygen;
   final List<String> favorites;
   final int quantity;
   final String image;
@@ -21,13 +21,13 @@ class QuantumFreshWaterGeneratorModel {
   final String createdBy;
   final List<String> searchKeywords;
 
-  QuantumFreshWaterGeneratorModel({
+  DetegasaSewageTreatmentPlantModel({
     required this.productId,
-    required this.waterSolutionType,
-    required this.typeDescription,
-    required this.minProductionCapacity,
-    required this.maxProductionCapacity,
-    required this.tailorMadeDesign,
+    required this.productUsage,
+    required this.productModel,
+    required this.productCrew,
+    required this.productCapacity,
+    required this.kilogramsOfBiochemicalOxygen,
     required this.favorites,
     required this.quantity,
     required this.image,
@@ -41,11 +41,11 @@ class QuantumFreshWaterGeneratorModel {
   Map<String, dynamic> toMap() {
     return {
       'productId': productId,
-      'waterSolutionType': waterSolutionType,
-      'typeDescription': typeDescription,
-      'minProductionCapacity': minProductionCapacity,
-      'maxProductionCapacity': maxProductionCapacity,
-      'tailorMadeDesign': tailorMadeDesign,
+      'productUsage': productUsage,
+      'productModel': productModel,
+      'productCrew': productCrew,
+      'productCapacity': productCapacity,
+      'kilogramsOfBiochemicalOxygen': kilogramsOfBiochemicalOxygen,
       'favorites': favorites,
       'quantity': quantity,
       'image': image,
@@ -57,14 +57,14 @@ class QuantumFreshWaterGeneratorModel {
     };
   }
 
-  factory QuantumFreshWaterGeneratorModel.fromMap(Map<String, dynamic> map) {
-    return QuantumFreshWaterGeneratorModel(
+  factory DetegasaSewageTreatmentPlantModel.fromMap(Map<String, dynamic> map) {
+    return DetegasaSewageTreatmentPlantModel(
       productId: map['productId'] ?? '',
-      waterSolutionType: map['waterSolutionType'] ?? '',
-      typeDescription: map['typeDescription'] ?? '',
-      minProductionCapacity: map['minProductionCapacity'] ?? '',
-      maxProductionCapacity: map['maxProductionCapacity'] ?? '',
-      tailorMadeDesign: map['tailorMadeDesign'] ?? false,
+      productUsage: map['productUsage'] ?? '',
+      productModel: map['productModel'] ?? '',
+      productCrew: map['productCrew'] ?? '',
+      productCapacity: map['productCapacity'] ?? '',
+      kilogramsOfBiochemicalOxygen: map['kilogramsOfBiochemicalOxygen'] ?? '',
       favorites: (map['favorites'] is List)
           ? List<String>.from(
               (map['favorites'] as List).map((e) => e.toString()),
@@ -88,19 +88,20 @@ class QuantumFreshWaterGeneratorModel {
 
   String toJson() => json.encode(toMap());
 
-  factory QuantumFreshWaterGeneratorModel.fromJson(String source) =>
-      QuantumFreshWaterGeneratorModel.fromMap(json.decode(source));
+  factory DetegasaSewageTreatmentPlantModel.fromJson(String source) =>
+      DetegasaSewageTreatmentPlantModel.fromMap(json.decode(source));
 }
 
-extension QuantumFreshWaterGeneratorXModel on QuantumFreshWaterGeneratorModel {
-  QuantumFreshWaterGeneratorEntity toEntity() {
-    return QuantumFreshWaterGeneratorEntity(
+extension DetegasaSewageTreatmentPlantXModel
+    on DetegasaSewageTreatmentPlantModel {
+  DetegasaSewageTreatmentPlantEntity toEntity() {
+    return DetegasaSewageTreatmentPlantEntity(
       productId: productId,
-      waterSolutionType: waterSolutionType,
-      typeDescription: typeDescription,
-      minProductionCapacity: minProductionCapacity,
-      maxProductionCapacity: maxProductionCapacity,
-      tailorMadeDesign: tailorMadeDesign,
+      productUsage: productUsage,
+      productModel: productModel,
+      productCrew: productCrew,
+      productCapacity: productCapacity,
+      kilogramsOfBiochemicalOxygen: kilogramsOfBiochemicalOxygen,
       favorites: favorites,
       quantity: quantity,
       image: image,

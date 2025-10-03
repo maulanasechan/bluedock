@@ -59,31 +59,36 @@ class GradientScaffoldWidget extends StatelessWidget {
                           Padding(
                             padding:
                                 padding ?? EdgeInsets.fromLTRB(0, 90, 0, 40),
-                            child: SizedBox(
-                              height: 40,
-                              child: Stack(
-                                children: [
-                                  IconButtonWidget(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 40,
+                                  height: 40,
+                                  child: IconButtonWidget(
                                     onPressed: () {
                                       context.pop(true);
                                     },
                                   ),
-                                  if (appbarTitle != null)
-                                    Align(
-                                      alignment: Alignment.center,
-                                      child: TextWidget(
-                                        text: appbarTitle!,
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: fontSizeTitle,
-                                      ),
+                                ),
+                                if (appbarTitle != null)
+                                  SizedBox(
+                                    width: 250,
+                                    child: TextWidget(
+                                      text: appbarTitle!,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: fontSizeTitle,
+                                      overflow: TextOverflow.fade,
+                                      align: TextAlign.center,
                                     ),
-                                  if (appbarAction != null)
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: appbarAction!,
-                                    ),
-                                ],
-                              ),
+                                  ),
+                                SizedBox(
+                                  width: 40,
+                                  height: 40,
+                                  child: appbarAction,
+                                ),
+                              ],
                             ),
                           ),
                         Expanded(child: body!),

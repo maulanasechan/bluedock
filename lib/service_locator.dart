@@ -10,21 +10,27 @@ import 'package:bluedock/features/login/domain/repositories/login_repository.dar
 import 'package:bluedock/features/login/domain/usecases/is_logged_in_usecase.dart';
 import 'package:bluedock/features/login/domain/usecases/login_usecase.dart';
 import 'package:bluedock/features/login/domain/usecases/send_password_reset_usecase.dart';
+import 'package:bluedock/features/product/data/repositories/detegasa_sewage_treatment_plant_repository_impl.dart';
 import 'package:bluedock/features/product/data/repositories/product_repository_impl.dart';
 import 'package:bluedock/features/product/data/repositories/quantum_fresh_water_generator_repository_impl.dart';
 import 'package:bluedock/features/product/data/repositories/sperre_air_compressor_repository_impl.dart';
 import 'package:bluedock/features/product/data/repositories/sperre_air_system_solutions_repository_impl.dart';
 import 'package:bluedock/features/product/data/repositories/sperre_screw_compressor_repository_impl.dart';
+import 'package:bluedock/features/product/data/sources/detegasa_sewage_treatment_plant_firebase_service.dart';
 import 'package:bluedock/features/product/data/sources/product_firebase_service.dart';
 import 'package:bluedock/features/product/data/sources/quantum_fresh_water_generator_firebase_service.dart';
 import 'package:bluedock/features/product/data/sources/sperre_air_compressor_firebase_service.dart';
 import 'package:bluedock/features/product/data/sources/sperre_air_system_solutions_firebase_service.dart';
 import 'package:bluedock/features/product/data/sources/sperre_screw_compressor_firebase_service.dart';
+import 'package:bluedock/features/product/domain/repositories/detegasa_sewage_treatment_plant_repository.dart';
 import 'package:bluedock/features/product/domain/repositories/product_repository.dart';
 import 'package:bluedock/features/product/domain/repositories/quantum_fresh_water_generator_repository.dart';
 import 'package:bluedock/features/product/domain/repositories/sperre_air_compressor_repository.dart';
 import 'package:bluedock/features/product/domain/repositories/sperre_air_system_solutions_repository.dart';
 import 'package:bluedock/features/product/domain/repositories/sperre_screw_compressor_repository.dart';
+import 'package:bluedock/features/product/domain/usecases/detegasaSewageTreatmentPlant/add_detegasa_sewage_treatment_plant_usecase.dart';
+import 'package:bluedock/features/product/domain/usecases/detegasaSewageTreatmentPlant/search_detegasa_sewage_treatment_plant_usecase.dart';
+import 'package:bluedock/features/product/domain/usecases/detegasaSewageTreatmentPlant/update_detegasa_sewage_treatment_plant_usecase.dart';
 import 'package:bluedock/features/product/domain/usecases/product/favorite_product_usecase.dart';
 import 'package:bluedock/features/product/domain/usecases/product/get_product_categories_usecase.dart';
 import 'package:bluedock/features/product/domain/usecases/product/get_selection_usecase.dart';
@@ -76,6 +82,9 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<QuantumFreshWaterGeneratorFirebaseService>(
     QuantumFreshWaterGeneratorFirebaseServiceImpl(),
   );
+  sl.registerSingleton<DetegasaSewageTreatmentPlantFirebaseService>(
+    DetegasaSewageTreatmentPlantFirebaseServiceImpl(),
+  );
 
   //Repositories
   sl.registerSingleton<RoleRepository>(RoleRepositoryImpl());
@@ -94,6 +103,9 @@ Future<void> initializeDependencies() async {
   );
   sl.registerSingleton<QuantumFreshWaterGeneratorRepository>(
     QuantumFreshWaterGeneratorRepositoryImpl(),
+  );
+  sl.registerSingleton<DetegasaSewageTreatmentPlantRepository>(
+    DetegasaSewageTreatmentPlantRepositoryImpl(),
   );
 
   //Role Usecases
@@ -166,5 +178,16 @@ Future<void> initializeDependencies() async {
   );
   sl.registerSingleton<UpdateQuantumFreshWaterGeneratorUseCase>(
     UpdateQuantumFreshWaterGeneratorUseCase(),
+  );
+
+  // Detegasa Sewage Treatment Plant
+  sl.registerSingleton<SearchDetegasaSewageTreatmentPlantUseCase>(
+    SearchDetegasaSewageTreatmentPlantUseCase(),
+  );
+  sl.registerSingleton<AddDetegasaSewageTreatmentPlantUseCase>(
+    AddDetegasaSewageTreatmentPlantUseCase(),
+  );
+  sl.registerSingleton<UpdateDetegasaSewageTreatmentPlantUseCase>(
+    UpdateDetegasaSewageTreatmentPlantUseCase(),
   );
 }

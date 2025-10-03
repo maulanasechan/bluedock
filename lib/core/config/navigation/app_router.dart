@@ -11,10 +11,13 @@ import 'package:bluedock/features/home/presentation/pages/profile/profile_page.d
 import 'package:bluedock/features/login/presentation/pages/forgot_password_page.dart';
 import 'package:bluedock/features/login/presentation/pages/login_page.dart';
 import 'package:bluedock/features/login/presentation/pages/send_email_page.dart';
+import 'package:bluedock/features/product/domain/entities/detegasa_sewage_treatment_plant_entity.dart';
 import 'package:bluedock/features/product/domain/entities/quantum_fresh_water_generator_entity.dart';
 import 'package:bluedock/features/product/domain/entities/sperre_air_compressor_entity.dart';
 import 'package:bluedock/features/product/domain/entities/sperre_air_system_solutions_entity.dart';
 import 'package:bluedock/features/product/domain/entities/sperre_screw_compressor_entity.dart';
+import 'package:bluedock/features/product/presentation/pages/detegasaSewageTreatmentPlant/add_detegasa_sewage_treatment_plant_page.dart';
+import 'package:bluedock/features/product/presentation/pages/detegasaSewageTreatmentPlant/detegasa_sewage_treatment_plant_page.dart';
 import 'package:bluedock/features/product/presentation/pages/productCategory/product_category_page.dart';
 import 'package:bluedock/features/product/presentation/pages/quantumFreshWaterGenerator/add_quantum_fresh_water_generator_page.dart';
 import 'package:bluedock/features/product/presentation/pages/quantumFreshWaterGenerator/quantum_fresh_water_generator_page.dart';
@@ -218,6 +221,24 @@ class AppRouter {
                   final extra =
                       state.extra as QuantumFreshWaterGeneratorEntity?;
                   return AddQuantumFreshWaterGeneratorPage(product: extra);
+                },
+              ),
+            ],
+          ),
+          GoRoute(
+            path: AppRoutes.detegasaSewageTreatmentPlant,
+            name: AppRoutes.detegasaSewageTreatmentPlant,
+            builder: (context, state) {
+              return DetegasaSewageTreatmentPlantPage();
+            },
+            routes: [
+              GoRoute(
+                path: AppRoutes.addDetegasaSewageTreatmentPlant,
+                name: AppRoutes.addDetegasaSewageTreatmentPlant,
+                builder: (context, state) {
+                  final extra =
+                      state.extra as DetegasaSewageTreatmentPlantEntity?;
+                  return AddDetegasaSewageTreatmentPlantPage(product: extra);
                 },
               ),
             ],

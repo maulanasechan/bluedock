@@ -10,11 +10,18 @@ class AppImages {
   static const appOffline = '${basePath}offline$format';
   static const appUserCreated = '${basePath}user_created$format';
   static const appUserDeleted = '${basePath}user_deleted$format';
+  static const appProductAdded = '${basePath}product_added$format';
+  static const appProductDeleted = '${basePath}product_deleted$format';
   static const appSperreAirCompressor = '${basePath}SperreAirCompressor$format';
   static const appSperreScrewCompressor =
       '${basePath}SperreScrewCompressor$format';
-  static const appProductAdded = '${basePath}product_added$format';
-  static const appProductDeleted = '${basePath}product_deleted$format';
+  static const appSperreAirSystemSolutions =
+      '${basePath}SperreAirSystemSolutions$format';
   static const appQuantumFreshWaterGenerator =
       '${basePath}QuantumFreshWaterGenerator$format';
+  static const appDetegasaSewageTreatmentPlant =
+      '${basePath}DetegasaSewageTreatmentPlant$format';
+  static const appDetegasaOilyWaterSeparator =
+      '${basePath}DetegasaOilyWaterSeparator$format';
+  static const appDetegasaIncenerator = '${basePath}DetegasaIncenerator$format';
 }

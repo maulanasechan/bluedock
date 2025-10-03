@@ -7,6 +7,7 @@ class AppValidators {
   static final RegExp _nikRegex = RegExp(r'^[0-9]+$');
   static final RegExp _digitsOnly = RegExp(r'^\d+$');
   static final RegExp _numberRange = RegExp(r'^\d+(-\d+)?$');
+  static final RegExp _numberDecimal = RegExp(r'^\d+(\.\d+)?$');
 
   static StringValidator required({String? field}) {
     return (v) =>
@@ -32,6 +33,17 @@ class AppValidators {
         }
       }
       return null;
+    };
+  }
+
+  static StringValidator numberOrDecimal({
+    String requiredMessage = 'This field is required.',
+    String invalidMessage = 'Enter a valid integer or decimal.',
+  }) {
+    return (v) {
+      final s = (v ?? '').trim();
+      if (s.isEmpty) return requiredMessage;
+      return _numberDecimal.hasMatch(s) ? null : invalidMessage;
     };
   }
 

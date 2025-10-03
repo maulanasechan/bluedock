@@ -7,10 +7,10 @@ import 'package:bluedock/core/config/assets/app_images.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
 import 'package:bluedock/features/product/data/models/product/product_req.dart';
-import 'package:bluedock/features/product/domain/entities/sperre_air_system_solutions_entity.dart';
+import 'package:bluedock/features/product/domain/entities/detegasa_sewage_treatment_plant_entity.dart';
 import 'package:bluedock/features/product/domain/usecases/product/delete_product_usecase.dart';
 import 'package:bluedock/features/product/domain/usecases/product/favorite_product_usecase.dart';
-import 'package:bluedock/features/product/presentation/bloc/sperreAirSystemSolutions/sperre_air_system_solutions_cubit.dart';
+import 'package:bluedock/features/product/presentation/bloc/detegasaSewageTreatmentPlant/detegasa_sewage_treatment_plant_cubit.dart';
 import 'package:bluedock/features/product/presentation/widgets/product_rich_text_widget.dart';
 import 'package:bluedock/features/product/presentation/widgets/title_subtitle_widget.dart';
 import 'package:bluedock/service_locator.dart';
@@ -20,17 +20,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class SperreAirSystemSolutionsCardWidget extends StatelessWidget {
-  final SperreAirSystemSolutionsEntity product;
-  const SperreAirSystemSolutionsCardWidget({super.key, required this.product});
+class DetegasaSewageTreatmentPlantCardWidget extends StatelessWidget {
+  final DetegasaSewageTreatmentPlantEntity product;
+  const DetegasaSewageTreatmentPlantCardWidget({
+    super.key,
+    required this.product,
+  });
 
   @override
   Widget build(BuildContext context) {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     final isFav = uid != null && product.favorites.contains(uid);
     final productReq = ProductReq(
-      productCategoriesId: 'tG6pN1yXcQwE9bJmRvUh',
-      productCategoriesTitle: 'Sperre Air System Solutions',
+      productCategoriesId: 'qY8kH4mTzRpG6nVxWdJo',
+      productCategoriesTitle: 'Detegasa Sewage Treatment Plant',
       productId: product.productId,
     );
 
@@ -39,13 +42,13 @@ class SperreAirSystemSolutionsCardWidget extends StatelessWidget {
       child: SlidableActionWidget(
         onUpdateTap: () async {
           final changed = await context.pushNamed(
-            AppRoutes.addSperreAirSystemSolutions,
+            AppRoutes.addDetegasaSewageTreatmentPlant,
             extra: product,
           );
           if (changed == true && context.mounted) {
             context
-                .read<SperreAirSystemSolutionsCubit>()
-                .displaySperreAirSystemSolutions(params: '');
+                .read<DetegasaSewageTreatmentPlantCubit>()
+                .displayDetegasaSewageTreatmentPlant(params: '');
           }
         },
         onDeleteTap: () async {
@@ -53,7 +56,7 @@ class SperreAirSystemSolutionsCardWidget extends StatelessWidget {
           final changed = await CenterModalWidget.display(
             context: context,
             title: 'Remove Product',
-            subtitle: "Are you sure to remove ${product.productName}?",
+            subtitle: "Are you sure to remove ${product.productModel}?",
             yesButton: 'Remove',
             actionCubit: actionCubit,
             yesButtonOnTap: () async {
@@ -61,8 +64,8 @@ class SperreAirSystemSolutionsCardWidget extends StatelessWidget {
                 usecase: DeleteProductUseCase(),
                 params: productReq,
               );
-
               final ok = await waitActionDone(actionCubit);
+              actionCubit.reset();
               if (ok && context.mounted) context.pop(true);
             },
           );
@@ -70,14 +73,14 @@ class SperreAirSystemSolutionsCardWidget extends StatelessWidget {
             final change = await context.pushNamed(
               AppRoutes.successProduct,
               extra: {
-                'title': '${product.productName} has been removed',
+                'title': '${product.productModel} has been removed',
                 'image': AppImages.appProductDeleted,
               },
             );
             if (change == true && context.mounted) {
               context
-                  .read<SperreAirSystemSolutionsCubit>()
-                  .displaySperreAirSystemSolutions(params: '');
+                  .read<DetegasaSewageTreatmentPlantCubit>()
+                  .displayDetegasaSewageTreatmentPlant(params: '');
             }
           }
         },
@@ -93,23 +96,26 @@ class SperreAirSystemSolutionsCardWidget extends StatelessWidget {
                   Row(
                     children: [
                       SizedBox(
-                        width: 140,
+                        width: 150,
                         child: TitleSubtitleWidget(
                           title: 'Product Usage',
                           subtitle: product.productUsage,
                         ),
                       ),
-                      SizedBox(width: 32),
-                      TitleSubtitleWidget(
-                        title: 'Product Name',
-                        subtitle: product.productName,
+                      SizedBox(width: 30),
+                      SizedBox(
+                        width: 120,
+                        child: TitleSubtitleWidget(
+                          title: 'Product Model',
+                          subtitle: product.productModel,
+                        ),
                       ),
                     ],
                   ),
                   GestureDetector(
                     onTap: () async {
                       final cubit = context
-                          .read<SperreAirSystemSolutionsCubit>();
+                          .read<DetegasaSewageTreatmentPlantCubit>();
                       final res = await sl<FavoriteProductUseCase>().call(
                         params: productReq,
                       );
@@ -118,7 +124,7 @@ class SperreAirSystemSolutionsCardWidget extends StatelessWidget {
 
                       final changed = res.isRight();
                       if (changed) {
-                        cubit.displaySperreAirSystemSolutions(params: '');
+                        cubit.displayDetegasaSewageTreatmentPlant(params: '');
                       }
                     },
                     child: PhosphorIcon(
@@ -131,37 +137,58 @@ class SperreAirSystemSolutionsCardWidget extends StatelessWidget {
               ),
               SizedBox(height: 22),
               Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 140,
-                        child: TitleSubtitleWidget(
-                          title: 'Product Category',
-                          subtitle: product.productCategory,
-                        ),
-                      ),
-                      SizedBox(width: 32),
-                      ProductRichTextWidget(title: product.quantity.toString()),
-                    ],
-                  ),
                   SizedBox(
-                    width: 90,
-                    height: 90,
-                    child: Image.asset(
-                      product.image == ""
-                          ? AppImages.appSperreAirSystemSolutions
-                          : product.image,
-                      fit: BoxFit.contain,
+                    width: 150,
+                    child: TitleSubtitleWidget(
+                      title: 'Capacity',
+                      subtitle: product.productCapacity,
+                    ),
+                  ),
+                  SizedBox(width: 30),
+                  SizedBox(
+                    width: 120,
+                    child: TitleSubtitleWidget(
+                      title: 'Crew',
+                      subtitle: product.productCrew,
                     ),
                   ),
                 ],
               ),
-              TitleSubtitleWidget(
-                title: 'Product Explanation',
-                subtitle: product.productExplanation,
+              SizedBox(height: 22),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: 150,
+                    child: TitleSubtitleWidget(
+                      title: 'Kilograms of Biochemical Oxygen Demand / Day',
+                      subtitle: product.kilogramsOfBiochemicalOxygen,
+                    ),
+                  ),
+                  SizedBox(width: 30),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ProductRichTextWidget(
+                          title: product.quantity.toString(),
+                        ),
+                        SizedBox(
+                          width: 100,
+                          height: 100,
+                          child: Image.asset(
+                            product.image == ""
+                                ? AppImages.appDetegasaSewageTreatmentPlant
+                                : product.image,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
