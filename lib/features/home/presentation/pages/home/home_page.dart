@@ -1,7 +1,6 @@
 import 'package:bluedock/common/widgets/gradientScaffold/gradient_scaffold_widget.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
-import 'package:bluedock/features/home/domain/entities/app_menu_entity.dart';
 import 'package:bluedock/features/home/domain/entities/user_entity.dart';
 import 'package:bluedock/features/home/presentation/bloc/app_menu_cubit.dart';
 import 'package:bluedock/features/home/presentation/bloc/app_menu_state.dart';
@@ -23,25 +22,36 @@ class HomePage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => UserInfoCubit()..displayUserInfo()),
-        BlocProvider(create: (context) => AppMenuCubit()..displayAppMenu()),
+        BlocProvider(create: (context) => AppMenuCubit()),
       ],
       child: GradientScaffoldWidget(
         hideBack: true,
-        body: BlocBuilder<UserInfoCubit, UserInfoState>(
-          builder: (context, state) {
-            if (state is UserInfoLoading) {
-              return _homeLoading();
-            }
-            if (state is UserInfoFetched) {
-              return _homeFetched(context, state.user);
-            }
-            if (state is UserInfoFailure) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                context.goNamed(AppRoutes.login);
-              });
-            }
-            return Column();
-          },
+        body: MultiBlocListener(
+          listeners: [
+            BlocListener<UserInfoCubit, UserInfoState>(
+              listenWhen: (prev, curr) => curr is UserInfoFetched,
+              listener: (context, state) {
+                final user = (state as UserInfoFetched).user;
+                context.read<AppMenuCubit>().displayAppMenu(user);
+              },
+            ),
+          ],
+          child: BlocBuilder<UserInfoCubit, UserInfoState>(
+            builder: (context, state) {
+              if (state is UserInfoLoading) {
+                return _homeLoading();
+              }
+              if (state is UserInfoFetched) {
+                return _homeFetched(context, state.user);
+              }
+              if (state is UserInfoFailure) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  context.goNamed(AppRoutes.login);
+                });
+              }
+              return Column();
+            },
+          ),
         ),
       ),
     );
@@ -66,17 +76,6 @@ class HomePage extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  List<AppMenuEntity> _filterMenusByRole(
-    UserEntity user,
-    List<AppMenuEntity> listAppMenu,
-  ) {
-    final allowedIds = user.role.listAppMenu;
-    if (allowedIds.isEmpty) return const <AppMenuEntity>[];
-
-    final allowedSet = allowedIds.toSet();
-    return listAppMenu.where((m) => allowedSet.contains(m.appMenuId)).toList();
   }
 
   Widget _homeFetched(BuildContext context, UserEntity user) {
@@ -105,9 +104,7 @@ class HomePage extends StatelessWidget {
                 );
               }
               if (state is AppMenuFetched) {
-                return MenuListWidget(
-                  listAppMenu: _filterMenusByRole(user, state.appMenu),
-                );
+                return MenuListWidget(listAppMenu: state.appMenu);
               }
               return SizedBox();
             },

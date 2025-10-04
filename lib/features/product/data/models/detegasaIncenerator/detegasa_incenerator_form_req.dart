@@ -30,7 +30,7 @@ class DetegasaInceneratorReq {
     this.fanWeight = '',
     this.favorites = const <String>[],
     this.quantity = 0,
-    this.image = '',
+    this.image = 'assets/images/DetegasaIncenerator.png',
   });
 
   DetegasaInceneratorReq copyWith({

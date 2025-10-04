@@ -30,8 +30,7 @@ class SperreScrewCompressorCardWidget extends StatelessWidget {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     final isFav = uid != null && product.favorites.contains(uid);
     final productReq = ProductReq(
-      productCategoriesId: 'Zx4nB8qHtUvL5rOaWsKd',
-      productCategoriesTitle: 'Sperre Screw Compressor',
+      categoryId: 'Zx4nB8qHtUvL5rOaWsKd',
       productId: product.productId,
     );
 

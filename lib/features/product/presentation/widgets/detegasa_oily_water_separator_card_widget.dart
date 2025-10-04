@@ -32,8 +32,7 @@ class DetegasaOilyWaterSeparatorCardWidget extends StatelessWidget {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     final isFav = uid != null && product.favorites.contains(uid);
     final productReq = ProductReq(
-      productCategoriesId: 'A7b3C9d2E6f1G5h8J0k4',
-      productCategoriesTitle: 'Detegasa Oily Water Separator',
+      categoryId: 'A7b3C9d2E6f1G5h8J0k4',
       productId: product.productId,
     );
 

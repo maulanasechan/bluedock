@@ -1,12 +1,12 @@
 class SelectionReq {
-  final String productTitle;
+  final String categoryId;
   final String selectionTitle;
 
-  const SelectionReq({this.productTitle = '', this.selectionTitle = ''});
+  const SelectionReq({this.categoryId = '', this.selectionTitle = ''});
 
-  SelectionReq copyWith({String? productTitle, String? selectionTitle}) {
+  SelectionReq copyWith({String? categoryId, String? selectionTitle}) {
     return SelectionReq(
-      productTitle: productTitle ?? this.productTitle,
+      categoryId: categoryId ?? this.categoryId,
       selectionTitle: selectionTitle ?? this.selectionTitle,
     );
   }

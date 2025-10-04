@@ -29,8 +29,7 @@ class DetegasaInceneratorCardWidget extends StatelessWidget {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     final isFav = uid != null && product.favorites.contains(uid);
     final productReq = ProductReq(
-      productCategoriesId: 'L9cX2bTfVgP5zRjYhMwQ',
-      productCategoriesTitle: 'Detegasa Incenerator',
+      categoryId: 'L9cX2bTfVgP5zRjYhMwQ',
       productId: product.productId,
     );
 

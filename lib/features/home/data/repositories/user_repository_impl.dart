@@ -2,6 +2,7 @@ import 'package:bluedock/features/home/data/models/app_menu_model.dart';
 import 'package:bluedock/features/home/data/models/change_password_req.dart';
 import 'package:bluedock/features/home/data/models/user_model.dart';
 import 'package:bluedock/features/home/data/sources/user_firebase_service.dart';
+import 'package:bluedock/features/home/domain/entities/user_entity.dart';
 import 'package:bluedock/features/home/domain/repositories/user_repository.dart';
 import 'package:bluedock/service_locator.dart';
 import 'package:dartz/dartz.dart';
@@ -34,8 +35,8 @@ class UserRepositoryImpl extends UserRepository {
   }
 
   @override
-  Future<Either> getAppMenu() async {
-    var returnedData = await sl<UserFirebaseService>().getAppMenu();
+  Future<Either> getAppMenu(UserEntity user) async {
+    var returnedData = await sl<UserFirebaseService>().getAppMenu(user);
     return returnedData.fold(
       (error) {
         return Left(error);

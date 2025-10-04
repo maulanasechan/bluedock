@@ -204,7 +204,7 @@ class AddDetegasaSewageTreatmentPlantPage extends StatelessWidget {
                 value: context.read<SelectionDisplayCubit>()
                   ..displaySelection(
                     SelectionReq(
-                      productTitle: 'Detegasa Sewage Treatment Plant',
+                      categoryId: 'qY8kH4mTzRpG6nVxWdJo',
                       selectionTitle: title,
                     ),
                   ),

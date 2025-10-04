@@ -261,7 +261,7 @@ class AddDetegasaInceneratorPage extends StatelessWidget {
                 value: context.read<SelectionDisplayCubit>()
                   ..displaySelection(
                     SelectionReq(
-                      productTitle: 'Detegasa Incenerator',
+                      categoryId: 'L9cX2bTfVgP5zRjYhMwQ',
                       selectionTitle: title,
                     ),
                   ),

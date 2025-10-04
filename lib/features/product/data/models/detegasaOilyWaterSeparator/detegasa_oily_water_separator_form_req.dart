@@ -20,7 +20,7 @@ class DetegasaOilyWaterSeparatorReq {
     this.productHeight = '',
     this.favorites = const <String>[],
     this.quantity = 0,
-    this.image = '',
+    this.image = 'assets/images/DetegasaOilyWaterSeparator.png',
   });
 
   DetegasaOilyWaterSeparatorReq copyWith({

@@ -214,7 +214,7 @@ class AddSperreAirCompressorPage extends StatelessWidget {
                 value: context.read<SelectionDisplayCubit>()
                   ..displaySelection(
                     SelectionReq(
-                      productTitle: 'Sperre Air Compressor',
+                      categoryId: 'aP9xG7kLmQzR2VtYcJwE',
                       selectionTitle: title,
                     ),
                   ),

@@ -32,8 +32,7 @@ class DetegasaSewageTreatmentPlantCardWidget extends StatelessWidget {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     final isFav = uid != null && product.favorites.contains(uid);
     final productReq = ProductReq(
-      productCategoriesId: 'qY8kH4mTzRpG6nVxWdJo',
-      productCategoriesTitle: 'Detegasa Sewage Treatment Plant',
+      categoryId: 'qY8kH4mTzRpG6nVxWdJo',
       productId: product.productId,
     );
 

@@ -24,7 +24,7 @@ class SperreScrewCompressorReq {
     this.chargingCapacity12_5Bar = '',
     this.favorites = const <String>[],
     this.quantity = 0,
-    this.image = '',
+    this.image = 'assets/images/SperreScrewCompressor.png',
   });
 
   SperreScrewCompressorReq copyWith({

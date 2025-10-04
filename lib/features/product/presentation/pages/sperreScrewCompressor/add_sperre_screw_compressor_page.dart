@@ -231,7 +231,7 @@ class AddSperreScrewCompressorPage extends StatelessWidget {
                 value: context.read<SelectionDisplayCubit>()
                   ..displaySelection(
                     SelectionReq(
-                      productTitle: 'Sperre Screw Compressor',
+                      categoryId: 'Zx4nB8qHtUvL5rOaWsKd',
                       selectionTitle: title,
                     ),
                   ),

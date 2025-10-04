@@ -203,7 +203,7 @@ class AddQuantumFreshWaterGeneratorPage extends StatelessWidget {
                 value: context.read<SelectionDisplayCubit>()
                   ..displaySelection(
                     SelectionReq(
-                      productTitle: 'Quantum Fresh Water Generator',
+                      categoryId: 'M3jvF7wXaZpL2yKsTbQr',
                       selectionTitle: title,
                     ),
                   ),

@@ -20,7 +20,7 @@ class DetegasaSewageTreatmentPlantReq {
     this.kilogramsOfBiochemicalOxygen = '',
     this.favorites = const <String>[],
     this.quantity = 0,
-    this.image = '',
+    this.image = 'assets/images/DetegasaSewageTreatmentPlant.png',
   });
 
   DetegasaSewageTreatmentPlantReq copyWith({

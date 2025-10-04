@@ -22,7 +22,7 @@ class SperreAirCompressorReq {
     this.maxDeliveryPressure = '',
     this.favorites = const <String>[],
     this.quantity = 0,
-    this.image = '',
+    this.image = 'assets/images/SperreAirCompressor.png',
   });
 
   SperreAirCompressorReq copyWith({

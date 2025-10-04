@@ -29,8 +29,7 @@ class SperreAirSystemSolutionsCardWidget extends StatelessWidget {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     final isFav = uid != null && product.favorites.contains(uid);
     final productReq = ProductReq(
-      productCategoriesId: 'tG6pN1yXcQwE9bJmRvUh',
-      productCategoriesTitle: 'Sperre Air System Solutions',
+      categoryId: 'tG6pN1yXcQwE9bJmRvUh',
       productId: product.productId,
     );
 

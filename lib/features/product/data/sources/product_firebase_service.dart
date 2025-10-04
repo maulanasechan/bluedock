@@ -21,7 +21,7 @@ class ProductFirebaseServiceImpl extends ProductFirebaseService {
     try {
       final listData = await _db
           .collection('Products')
-          .doc(selection.productTitle)
+          .doc(selection.categoryId)
           .collection(selection.selectionTitle)
           .orderBy('title')
           .get();
@@ -40,25 +40,19 @@ class ProductFirebaseServiceImpl extends ProductFirebaseService {
   @override
   Future<Either> deleteProduct(ProductReq product) async {
     try {
-      final docRef = _db
-          .collection('Products')
-          .doc(product.productCategoriesTitle)
-          .collection('Items')
-          .doc(product.productId);
+      final docRef = _db.collection('Products').doc(product.categoryId);
 
-      final catDocRef = _db
-          .collection('ProductCategories')
-          .doc(product.productCategoriesId);
+      final prodRef = docRef.collection('Items').doc(product.productId);
 
       await _db.runTransaction((tx) async {
-        final productSnap = await tx.get(docRef);
+        final productSnap = await tx.get(prodRef);
         if (!productSnap.exists) {
           throw Exception('Product not found');
         }
 
-        tx.delete(docRef);
+        tx.delete(prodRef);
 
-        tx.set(catDocRef, {
+        tx.set(docRef, {
           'totalProduct': FieldValue.increment(-1),
         }, SetOptions(merge: true));
       });
@@ -79,7 +73,7 @@ class ProductFirebaseServiceImpl extends ProductFirebaseService {
 
       final docRef = _db
           .collection('Products')
-          .doc(product.productCategoriesTitle)
+          .doc(product.categoryId)
           .collection('Items')
           .doc(product.productId);
 
@@ -116,10 +110,7 @@ class ProductFirebaseServiceImpl extends ProductFirebaseService {
   @override
   Future<Either> getProductCategories() async {
     try {
-      final listData = await _db
-          .collection('ProductCategories')
-          .orderBy('index')
-          .get();
+      final listData = await _db.collection('Products').orderBy('index').get();
       if (listData.docs.isEmpty) {
         return Left('Product Categories Not Found');
       }

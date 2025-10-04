@@ -32,8 +32,7 @@ class QuantumFreshWaterGeneratorCardWidget extends StatelessWidget {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     final isFav = uid != null && product.favorites.contains(uid);
     final productReq = ProductReq(
-      productCategoriesId: 'M3jvF7wXaZpL2yKsTbQr',
-      productCategoriesTitle: 'Quantum Fresh Water Generator',
+      categoryId: 'M3jvF7wXaZpL2yKsTbQr',
       productId: product.productId,
     );
 

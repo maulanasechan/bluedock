@@ -182,7 +182,7 @@ class AddSperreAirSystemSolutionsPage extends StatelessWidget {
                 value: context.read<SelectionDisplayCubit>()
                   ..displaySelection(
                     SelectionReq(
-                      productTitle: 'Sperre Air System Solutions',
+                      categoryId: 'tG6pN1yXcQwE9bJmRvUh',
                       selectionTitle: title,
                     ),
                   ),

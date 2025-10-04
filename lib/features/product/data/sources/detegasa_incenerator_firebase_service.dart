@@ -15,9 +15,9 @@ abstract class DetegasaInceneratorFirebaseService {
 class DetegasaInceneratorFirebaseServiceImpl
     extends DetegasaInceneratorFirebaseService {
   final _auth = FirebaseAuth.instance;
-  final _db = FirebaseFirestore.instance;
-  final _id = 'Detegasa Incenerator';
-  final _catId = 'L9cX2bTfVgP5zRjYhMwQ';
+  final _db = FirebaseFirestore.instance
+      .collection('Products')
+      .doc('L9cX2bTfVgP5zRjYhMwQ');
 
   @override
   Future<Either> searchDetegasaIncenerator(String query) async {
@@ -25,7 +25,7 @@ class DetegasaInceneratorFirebaseServiceImpl
       final uid = _auth.currentUser?.uid;
       final q = query.trim().toLowerCase();
 
-      final base = _db.collection('Products').doc(_id).collection('Items');
+      final base = _db.collection('Items');
 
       final snap = q.isEmpty
           ? await base.orderBy('productUsage').get()
@@ -78,11 +78,19 @@ class DetegasaInceneratorFirebaseServiceImpl
     try {
       final userEmail = _auth.currentUser?.email ?? '';
 
-      final colRef = _db.collection('Products').doc(_id).collection('Items');
+      final colRef = _db.collection('Items');
+      final selRef = _db.collection('Selection');
 
       final productId = req.productId.isNotEmpty
           ? req.productId
           : colRef.doc().id;
+
+      final selectionMap = <String, dynamic>{
+        'productId': productId,
+        'productModel': req.productModel,
+        'image': req.image,
+        'quantity': req.quantity,
+      };
 
       final productMap = <String, dynamic>{
         'productId': productId,
@@ -108,9 +116,9 @@ class DetegasaInceneratorFirebaseServiceImpl
       };
 
       await colRef.doc(productId).set(productMap, SetOptions(merge: true));
+      await selRef.doc(productId).set(selectionMap, SetOptions(merge: true));
 
-      final catDocRef = _db.collection('ProductCategories').doc(_catId);
-      await catDocRef.set({
+      await _db.set({
         'totalProduct': FieldValue.increment(1),
       }, SetOptions(merge: true));
 
@@ -145,11 +153,15 @@ class DetegasaInceneratorFirebaseServiceImpl
         return const Left('Product ID is required for update.');
       }
 
-      final docRef = _db
-          .collection('Products')
-          .doc(_id)
-          .collection('Items')
-          .doc(req.productId);
+      final docRef = _db.collection('Items').doc(req.productId);
+      final selRef = _db.collection('Selection').doc(req.productId);
+
+      final selectionMap = <String, dynamic>{
+        'productId': req.productId,
+        'productModel': req.productModel,
+        'image': req.image,
+        'quantity': req.quantity,
+      };
 
       final updateMap = <String, dynamic>{
         'productId': req.productId,
@@ -177,6 +189,7 @@ class DetegasaInceneratorFirebaseServiceImpl
       updateMap.removeWhere((_, v) => v == null);
 
       await docRef.set(updateMap, SetOptions(merge: true));
+      await selRef.set(selectionMap, SetOptions(merge: true));
 
       return const Right('Product has been updated successfully.');
     } catch (_) {

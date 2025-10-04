@@ -18,7 +18,7 @@ class SperreAirSystemSolutionsReq {
     this.productExplanation = '',
     this.favorites = const <String>[],
     this.quantity = 0,
-    this.image = '',
+    this.image = 'assets/images/SperreAirSystemSolutions.png',
   });
 
   SperreAirSystemSolutionsReq copyWith({

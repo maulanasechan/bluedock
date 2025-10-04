@@ -1,4 +1,5 @@
 import 'package:bluedock/common/helper/authError/auth_error_helper.dart';
+import 'package:bluedock/features/home/domain/entities/user_entity.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,7 +13,7 @@ abstract class UserFirebaseService {
     required String newPassword,
   });
 
-  Future<Either> getAppMenu();
+  Future<Either> getAppMenu(UserEntity user);
 }
 
 class UserFirebaseServiceImpl extends UserFirebaseService {
@@ -93,16 +94,62 @@ class UserFirebaseServiceImpl extends UserFirebaseService {
   }
 
   @override
-  Future<Either> getAppMenu() async {
+  Future<Either> getAppMenu(UserEntity user) async {
     try {
-      final listData = await _db.collection('AppMenu').orderBy('index').get();
-      if (listData.docs.isEmpty) {
-        return Left('App Menu Not Found');
+      final db = FirebaseFirestore.instance;
+
+      final roleSnap = await db.collection('Roles').doc(user.role.roleId).get();
+      if (!roleSnap.exists) return const Left('Role not found');
+
+      final roleData = roleSnap.data()!;
+      final roleId = roleSnap.id;
+      final List<String> menuIds = List<String>.from(
+        roleData['listAppMenu'] ?? const [],
+      );
+
+      await db.collection('Staff').doc(user.staffId).set({
+        'roleId': roleId,
+        'role': {...roleData, 'roleId': roleId},
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+
+      if (menuIds.isEmpty) return const Right(<Map<String, dynamic>>[]);
+
+      final Map<String, Map<String, dynamic>> dataById = {};
+      for (int i = 0; i < menuIds.length; i += 10) {
+        final chunk = menuIds.sublist(
+          i,
+          (i + 10 > menuIds.length) ? menuIds.length : i + 10,
+        );
+        final snap = await db
+            .collection('AppMenu')
+            .where(FieldPath.documentId, whereIn: chunk)
+            .get();
+
+        for (final d in snap.docs) {
+          dataById[d.id] = d.data();
+        }
       }
 
-      return Right(listData.docs.map((e) => e.data()).toList());
+      final List<Map<String, dynamic>> orderedData = [
+        for (final id in menuIds)
+          if (dataById.containsKey(id)) dataById[id]!,
+      ];
+
+      int toIndex(dynamic v) {
+        if (v is int) return v;
+        if (v is num) return v.toInt();
+        if (v is String) return int.tryParse(v) ?? 1 << 30;
+        return 1 << 30;
+      }
+
+      orderedData.sort(
+        (a, b) => toIndex(a['index']).compareTo(toIndex(b['index'])),
+      );
+
+      return Right(orderedData);
     } catch (e) {
-      return Left('Please try again');
+      return const Left('Please try again');
     }
   }
 }

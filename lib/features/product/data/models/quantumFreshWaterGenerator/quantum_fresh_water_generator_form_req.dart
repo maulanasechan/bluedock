@@ -20,7 +20,7 @@ class QuantumFreshWaterGeneratorReq {
     this.tailorMadeDesign = false,
     this.favorites = const <String>[],
     this.quantity = 0,
-    this.image = '',
+    this.image = 'assets/images/QuantumFreshWaterGenerator.png',
   });
 
   QuantumFreshWaterGeneratorReq copyWith({
