@@ -17,6 +17,7 @@ import 'package:bluedock/features/staff/presentation/bloc/staff_form_cubit.dart'
 import 'package:bluedock/features/staff/presentation/bloc/role_display_cubit.dart';
 import 'package:bluedock/features/staff/presentation/widgets/role_modal_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -89,6 +90,11 @@ class AddOrUpdateStaffPage extends StatelessWidget {
                         title: 'NIP',
                         initialValue: state.nip,
                         suffixIcon: PhosphorIconsBold.cardholder,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(6),
+                        ],
                         onChanged: (v) =>
                             context.read<StaffFormCubit>().setNIP(v),
                       ),
@@ -98,7 +104,12 @@ class AddOrUpdateStaffPage extends StatelessWidget {
                         hintText: 'NIK',
                         title: 'NIK',
                         initialValue: state.nik,
+                        keyboardType: TextInputType.number,
                         suffixIcon: PhosphorIconsBold.creditCard,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(16),
+                        ],
                         onChanged: (v) =>
                             context.read<StaffFormCubit>().setNIK(v),
                       ),
@@ -109,6 +120,7 @@ class AddOrUpdateStaffPage extends StatelessWidget {
                           hintText: 'Email',
                           title: 'Email',
                           initialValue: state.email,
+                          keyboardType: TextInputType.emailAddress,
                           suffixIcon: PhosphorIconsFill.envelopeSimple,
                           onChanged: (v) =>
                               context.read<StaffFormCubit>().setEmail(v),
@@ -130,6 +142,20 @@ class AddOrUpdateStaffPage extends StatelessWidget {
                         maxLines: 4,
                         onChanged: (v) =>
                             context.read<StaffFormCubit>().setAddress(v),
+                      ),
+                      SizedBox(height: 24),
+                      TextfieldWidget(
+                        validator: AppValidators.number(),
+                        hintText: 'Phone Number',
+                        title: 'Phone Number',
+                        initialValue: state.phoneNumber,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(12),
+                        ],
+                        onChanged: (v) =>
+                            context.read<StaffFormCubit>().setPhoneNumber(v),
                       ),
                       SizedBox(height: 24),
                       DropdownWidget(
@@ -172,6 +198,7 @@ class AddOrUpdateStaffPage extends StatelessWidget {
                         title: isUpdate ? 'Update Staff' : 'Add New Staff',
                         fontSize: 16,
                       ),
+                      SizedBox(height: 6),
                     ],
                   ),
                 );

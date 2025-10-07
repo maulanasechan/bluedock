@@ -17,7 +17,7 @@ class ProductCategoryCardWidget extends StatelessWidget {
       onTap: () async {
         final changed = await context.pushNamed(
           product.route,
-          extra: product.productCategoriesId,
+          extra: product.categoryId,
         );
         if (changed == true && context.mounted) {
           context.read<ProductCategoriesCubit>().displayProductCategories();

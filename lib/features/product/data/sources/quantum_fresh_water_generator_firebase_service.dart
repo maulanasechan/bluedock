@@ -95,6 +95,7 @@ class QuantumFreshWaterGeneratorFirebaseServiceImpl
         'productId': productId,
         'productModel': req.waterSolutionType,
         'image': req.image,
+        'searchKeywords': _buildAllPrefixes(req),
         'quantity': req.quantity,
       };
 
@@ -158,6 +159,7 @@ class QuantumFreshWaterGeneratorFirebaseServiceImpl
         'productId': req.productId,
         'productModel': req.waterSolutionType,
         'image': req.image,
+        'searchKeywords': _buildAllPrefixes(req),
         'quantity': req.quantity,
       };
 

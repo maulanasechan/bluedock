@@ -10,6 +10,7 @@ class StaffModel {
   final String nik;
   final String email;
   final String address;
+  final String phoneNumber;
   final String image;
   final RoleEntity role;
   final String updatedBy;
@@ -25,6 +26,7 @@ class StaffModel {
     required this.nip,
     required this.email,
     required this.address,
+    required this.phoneNumber,
     required this.image,
     required this.role,
     required this.updatedBy,
@@ -42,6 +44,7 @@ class StaffModel {
       'nip': nip,
       'email': email,
       'address': address,
+      'phoneNumber': phoneNumber,
       'image': image,
       'role': role.toJson(),
       'updatedBy': updatedBy,
@@ -60,6 +63,7 @@ class StaffModel {
       nip: map['nip'] ?? '',
       email: map['email'] ?? '',
       address: map['address'] ?? '',
+      phoneNumber: map['phoneNumber'] ?? '',
       image: map['image'] ?? '',
       role: RoleEntity.fromMap(map['role']),
       updatedBy: map['updatedBy'] ?? '',
@@ -89,6 +93,7 @@ extension StaffXModel on StaffModel {
       nip: nip,
       email: email,
       address: address,
+      phoneNumber: phoneNumber,
       image: image,
       role: role,
       updatedBy: updatedBy,

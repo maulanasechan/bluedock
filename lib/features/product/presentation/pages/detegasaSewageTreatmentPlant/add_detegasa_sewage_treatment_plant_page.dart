@@ -20,6 +20,7 @@ import 'package:bluedock/features/product/presentation/bloc/selection/selection_
 import 'package:bluedock/features/product/presentation/widgets/list_selection_button_widget.dart';
 import 'package:bluedock/features/product/presentation/widgets/selection_modal_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -114,6 +115,10 @@ class AddDetegasaSewageTreatmentPlantPage extends StatelessWidget {
                               state.productCrew,
                               'Person',
                             ),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
                             suffixIcon: PhosphorIconsBold.usersThree,
                             onChanged: (v) => context
                                 .read<DetegasaSewageTreatmentPlantFormCubit>()
@@ -127,6 +132,10 @@ class AddDetegasaSewageTreatmentPlantPage extends StatelessWidget {
                             initialValue: removeCommas(
                               stripSuffix(state.productCapacity, 'L/Day'),
                             ),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
                             suffixIcon: PhosphorIconsBold.frameCorners,
                             onChanged: (v) => context
                                 .read<DetegasaSewageTreatmentPlantFormCubit>()
@@ -141,6 +150,14 @@ class AddDetegasaSewageTreatmentPlantPage extends StatelessWidget {
                               state.kilogramsOfBiochemicalOxygen,
                               'KGBOD/Day',
                             ),
+                            keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true,
+                            ),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                RegExp(r'^\d*[.]?\d*$'),
+                              ),
+                            ],
                             suffixIcon: PhosphorIconsBold.calendarX,
                             onChanged: (v) => context
                                 .read<DetegasaSewageTreatmentPlantFormCubit>()
@@ -169,6 +186,7 @@ class AddDetegasaSewageTreatmentPlantPage extends StatelessWidget {
                                 : 'Add New Product',
                             fontSize: 16,
                           ),
+                          SizedBox(height: 6),
                         ],
                       ),
                     );

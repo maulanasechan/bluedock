@@ -2,11 +2,11 @@ class ProductCategoriesEntity {
   final String title;
   final String image;
   final String route;
-  final String productCategoriesId;
+  final String categoryId;
   final double totalProduct;
 
   ProductCategoriesEntity({
-    required this.productCategoriesId,
+    required this.categoryId,
     required this.title,
     required this.image,
     required this.route,
@@ -17,11 +17,11 @@ class ProductCategoriesEntity {
     String? title,
     String? image,
     String? route,
-    String? productCategoriesId,
+    String? categoryId,
     double? totalProduct,
   }) {
     return ProductCategoriesEntity(
-      productCategoriesId: productCategoriesId ?? this.productCategoriesId,
+      categoryId: categoryId ?? this.categoryId,
       title: title ?? this.title,
       image: image ?? this.image,
       route: route ?? this.route,

@@ -12,6 +12,8 @@ class AppImages {
   static const appUserDeleted = '${basePath}user_deleted$format';
   static const appProductAdded = '${basePath}product_added$format';
   static const appProductDeleted = '${basePath}product_deleted$format';
+  static const appProjectAdded = '${basePath}project_added$format';
+  static const appProjectDeleted = '${basePath}project_deleted$format';
   static const appSperreAirCompressor = '${basePath}SperreAirCompressor$format';
   static const appSperreScrewCompressor =
       '${basePath}SperreScrewCompressor$format';

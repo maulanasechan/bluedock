@@ -11,6 +11,7 @@ class StaffFormCubit extends Cubit<StaffFormReq> {
   void setEmail(String v) => emit(state.copyWith(email: v));
   void setPassword(String v) => emit(state.copyWith(password: v));
   void setAddress(String v) => emit(state.copyWith(address: v));
+  void setPhoneNumber(String v) => emit(state.copyWith(phoneNumber: v));
   void setRole(RoleEntity v) => emit(state.copyWith(role: v));
 
   void hydrateFromEntity(StaffEntity e) {

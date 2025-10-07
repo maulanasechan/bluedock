@@ -10,6 +10,7 @@ class UserModel {
   final String nik;
   final String nip;
   final String email;
+  final String phoneNumber;
   final String address;
   final String image;
   final RoleEntity role;
@@ -24,6 +25,7 @@ class UserModel {
     required this.nik,
     required this.nip,
     required this.email,
+    required this.phoneNumber,
     required this.address,
     required this.image,
     required this.role,
@@ -41,6 +43,7 @@ class UserModel {
       'nip': nip,
       'email': email,
       'address': address,
+      'phoneNumber': phoneNumber,
       'image': image,
       'role': role.toJson(),
       'updatedBy': updatedBy,
@@ -57,6 +60,7 @@ class UserModel {
       nik: map['nik'] ?? '',
       nip: map['nip'] ?? '',
       email: map['email'] ?? '',
+      phoneNumber: map['phoneNumber'] ?? '',
       address: map['address'] ?? '',
       image: map['image'] ?? '',
       role: RoleEntity.fromMap(map['role']),
@@ -81,6 +85,7 @@ extension UserXModel on UserModel {
       nik: nik,
       nip: nip,
       email: email,
+      phoneNumber: phoneNumber,
       address: address,
       image: image,
       role: role,

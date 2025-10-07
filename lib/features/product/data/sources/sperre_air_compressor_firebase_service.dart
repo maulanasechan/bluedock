@@ -88,6 +88,7 @@ class SperreAirCompressorFirebaseServiceImpl
         'productId': productId,
         'productModel': req.productTypeCode,
         'image': req.image,
+        'searchKeywords': _buildAllPrefixes(req),
         'quantity': req.quantity,
       };
 
@@ -152,6 +153,7 @@ class SperreAirCompressorFirebaseServiceImpl
         'productModel': req.productTypeCode,
         'image': req.image,
         'quantity': req.quantity,
+        'searchKeywords': _buildAllPrefixes(req),
       };
 
       final updateMap = <String, dynamic>{

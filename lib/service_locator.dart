@@ -59,6 +59,12 @@ import 'package:bluedock/features/product/domain/usecases/sperreAirSystemSolutio
 import 'package:bluedock/features/product/domain/usecases/sperreScrewCompressor/add_sperre_screw_compressor_usecase.dart';
 import 'package:bluedock/features/product/domain/usecases/sperreScrewCompressor/search_sperre_screw_compressor_usecase.dart';
 import 'package:bluedock/features/product/domain/usecases/sperreScrewCompressor/update_sperre_screw_compressor_usecase.dart';
+import 'package:bluedock/features/project/data/repositories/project_repository_impl.dart';
+import 'package:bluedock/features/project/data/sources/project_firebase_service.dart';
+import 'package:bluedock/features/project/domain/repositories/project_repository.dart';
+import 'package:bluedock/features/project/domain/usecases/get_category_selection_usecase.dart';
+import 'package:bluedock/features/project/domain/usecases/get_product_selection_usecase.dart';
+import 'package:bluedock/features/project/domain/usecases/get_project_selection_usecase.dart';
 import 'package:bluedock/features/staff/data/repositories/role_repository_impl.dart';
 import 'package:bluedock/features/staff/data/repositories/staff_repository_impl.dart';
 import 'package:bluedock/features/staff/data/sources/role_firebase_service.dart';
@@ -103,6 +109,7 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<DetegasaOilyWaterSeparatorFirebaseService>(
     DetegasaOilyWaterSeparatorFirebaseServiceImpl(),
   );
+  sl.registerSingleton<ProjectFirebaseService>(ProjectFirebaseServiceImpl());
 
   //Repositories
   sl.registerSingleton<RoleRepository>(RoleRepositoryImpl());
@@ -131,6 +138,7 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<DetegasaOilyWaterSeparatorRepository>(
     DetegasaOilyWaterSeparatorRepositoryImpl(),
   );
+  sl.registerSingleton<ProjectRepository>(ProjectRepositoryImpl());
 
   //Role Usecases
   sl.registerSingleton<GetRolesUseCase>(GetRolesUseCase());
@@ -235,5 +243,16 @@ Future<void> initializeDependencies() async {
   );
   sl.registerSingleton<UpdateDetegasaOilyWaterSeparatorUseCase>(
     UpdateDetegasaOilyWaterSeparatorUseCase(),
+  );
+
+  // Project Separator
+  sl.registerSingleton<GetProjectSelectionUseCase>(
+    GetProjectSelectionUseCase(),
+  );
+  sl.registerSingleton<GetCategorySelectionUseCase>(
+    GetCategorySelectionUseCase(),
+  );
+  sl.registerSingleton<GetProductSelectionUseCase>(
+    GetProductSelectionUseCase(),
   );
 }

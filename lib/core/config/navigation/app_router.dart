@@ -34,6 +34,8 @@ import 'package:bluedock/features/product/presentation/pages/sperreAirSystemSolu
 import 'package:bluedock/features/product/presentation/pages/sperreScrewCompressor/add_sperre_screw_compressor_page.dart';
 import 'package:bluedock/features/product/presentation/pages/sperreScrewCompressor/sperre_screw_compressor_page.dart';
 import 'package:bluedock/features/product/presentation/pages/successProduct/success_product_page.dart';
+import 'package:bluedock/features/project/presentation/pages/project_form_page.dart';
+import 'package:bluedock/features/project/presentation/pages/manage_project_page.dart';
 import 'package:bluedock/features/splash/pages/splash_page.dart';
 import 'package:bluedock/features/staff/domain/entities/staff_entity.dart';
 import 'package:bluedock/features/staff/presentation/pages/add_or_update_staff_page.dart';
@@ -65,6 +67,30 @@ class AppRouter {
             path: AppRoutes.sendEmail,
             name: AppRoutes.sendEmail,
             builder: (context, state) => const SendEmailPage(),
+          ),
+        ],
+      ),
+      GoRoute(
+        path: formatRoute(AppRoutes.manageProject),
+        name: AppRoutes.manageProject,
+        builder: (context, state) => ManageProjectPage(),
+        routes: [
+          GoRoute(
+            path: AppRoutes.formProject,
+            name: AppRoutes.formProject,
+            builder: (context, state) => ProjectFormPage(),
+          ),
+          GoRoute(
+            path: AppRoutes.successProject,
+            name: AppRoutes.successProject,
+            builder: (context, state) {
+              final map = (state.extra is Map)
+                  ? Map<String, dynamic>.from(state.extra as Map)
+                  : const <String, dynamic>{};
+              final title = map['title'] as String? ?? '';
+              final image = map['image'] as String? ?? '';
+              return SuccessProductPage(title: title, image: image);
+            },
           ),
         ],
       ),

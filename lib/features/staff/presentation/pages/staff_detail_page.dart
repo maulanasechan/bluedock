@@ -127,6 +127,15 @@ class StaffDetailPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 16, 0, 4),
               child: TextWidget(
+                text: 'Phone Number',
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+              ),
+            ),
+            TextWidget(text: staff.phoneNumber, fontSize: 16),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 16, 0, 4),
+              child: TextWidget(
                 text: 'Address',
                 fontWeight: FontWeight.w700,
                 fontSize: 16,

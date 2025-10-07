@@ -8,6 +8,7 @@ class StaffFormReq {
   final String email;
   final String password;
   final String address;
+  final String phoneNumber;
   final RoleEntity? role;
   const StaffFormReq({
     this.staffId = '',
@@ -17,6 +18,7 @@ class StaffFormReq {
     this.email = '',
     this.password = '',
     this.address = '',
+    this.phoneNumber = '',
     this.role,
   });
 
@@ -28,6 +30,7 @@ class StaffFormReq {
     String? email,
     String? password,
     String? address,
+    String? phoneNumber,
     RoleEntity? role,
   }) => StaffFormReq(
     staffId: staffId ?? this.staffId,
@@ -37,6 +40,7 @@ class StaffFormReq {
     email: email ?? this.email,
     password: password ?? this.password,
     address: address ?? this.address,
+    phoneNumber: phoneNumber ?? this.phoneNumber,
     role: role ?? this.role,
   );
 }

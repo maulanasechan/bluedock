@@ -157,6 +157,7 @@ class DetegasaOilyWaterSeparatorFirebaseServiceImpl
         'productId': req.productId,
         'productModel': req.productModel,
         'image': req.image,
+        'searchKeywords': _buildAllPrefixes(req),
         'quantity': req.quantity,
       };
 

@@ -1,3 +1,4 @@
+import 'package:bluedock/common/widgets/text/text_widget.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -36,9 +37,7 @@ class ButtonWidget extends StatelessWidget {
       height: height,
       child: Material(
         elevation: 4,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(height! / 2),
-        ),
+        borderRadius: BorderRadius.circular(height! / 2),
         child: ElevatedButton(
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
@@ -60,12 +59,14 @@ class ButtonWidget extends StatelessWidget {
                       child: SizedBox(height: 25, width: 25, child: prefix),
                     ),
                   ],
-                  Text(
-                    title,
-                    style: TextStyle(
+                  Expanded(
+                    child: TextWidget(
+                      text: title,
                       color: fontColor,
                       fontWeight: fontWeight,
                       fontSize: fontSize,
+                      overflow: TextOverflow.fade,
+                      align: TextAlign.center,
                     ),
                   ),
                   if (prefix != null || suffix != null) ...[

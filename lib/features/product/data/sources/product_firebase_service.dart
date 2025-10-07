@@ -43,6 +43,7 @@ class ProductFirebaseServiceImpl extends ProductFirebaseService {
       final docRef = _db.collection('Products').doc(product.categoryId);
 
       final prodRef = docRef.collection('Items').doc(product.productId);
+      final selRef = docRef.collection('Selection').doc(product.productId);
 
       await _db.runTransaction((tx) async {
         final productSnap = await tx.get(prodRef);
@@ -51,6 +52,7 @@ class ProductFirebaseServiceImpl extends ProductFirebaseService {
         }
 
         tx.delete(prodRef);
+        tx.delete(selRef);
 
         tx.set(docRef, {
           'totalProduct': FieldValue.increment(-1),

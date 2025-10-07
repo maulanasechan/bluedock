@@ -5,7 +5,9 @@ class AppRoutes {
   static const forgotPassword = 'forgotPassword';
   static const sendEmail = 'sendEmail';
   static const createUpdateStaff = 'createUpdateStaff';
-  static const project = 'project';
+  static const manageProject = 'manageProject';
+  static const formProject = 'formProject';
+  static const successProject = 'successProject';
   static const inventory = 'inventory';
   static const afterSales = 'afterSales';
   static const products = 'products';

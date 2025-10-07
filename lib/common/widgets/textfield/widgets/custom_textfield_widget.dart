@@ -1,5 +1,6 @@
 import 'package:bluedock/core/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class CustomTextfieldWidget extends StatelessWidget {
@@ -16,6 +17,7 @@ class CustomTextfieldWidget extends StatelessWidget {
   final Color? iconColor;
   final bool hasError;
   final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
 
   const CustomTextfieldWidget({
     super.key,
@@ -32,6 +34,7 @@ class CustomTextfieldWidget extends StatelessWidget {
     this.iconColor,
     this.hasError = false,
     this.keyboardType = TextInputType.text,
+    this.inputFormatters,
   });
 
   @override
@@ -58,6 +61,7 @@ class CustomTextfieldWidget extends StatelessWidget {
         onChanged: onChanged,
         controller: controller,
         obscureText: obscure,
+        inputFormatters: inputFormatters,
         decoration: InputDecoration(
           border: OutlineInputBorder(),
           error: null,

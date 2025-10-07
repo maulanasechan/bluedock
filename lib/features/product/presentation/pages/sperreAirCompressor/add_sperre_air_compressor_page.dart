@@ -19,6 +19,7 @@ import 'package:bluedock/features/product/presentation/bloc/sperreAirCompressor/
 import 'package:bluedock/features/product/presentation/widgets/list_selection_button_widget.dart';
 import 'package:bluedock/features/product/presentation/widgets/selection_modal_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -106,7 +107,6 @@ class AddSperreAirCompressorPage extends StatelessWidget {
                             },
                           ),
                           SizedBox(height: 24),
-
                           _selectionDropdown(
                             context: context,
                             title: 'Cooling System',
@@ -139,6 +139,10 @@ class AddSperreAirCompressorPage extends StatelessWidget {
                               state.chargingCapacity50Hz1500rpm,
                               'm3/h',
                             ),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
                             suffixIcon: PhosphorIconsBold.chargingStation,
                             onChanged: (v) => context
                                 .read<SperreAirCompressorFormCubit>()
@@ -153,6 +157,10 @@ class AddSperreAirCompressorPage extends StatelessWidget {
                               state.maxDeliveryPressure,
                               'Bar',
                             ),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
                             suffixIcon: PhosphorIconsBold.gauge,
                             onChanged: (v) => context
                                 .read<SperreAirCompressorFormCubit>()
@@ -179,6 +187,7 @@ class AddSperreAirCompressorPage extends StatelessWidget {
                                 : 'Add New Product',
                             fontSize: 16,
                           ),
+                          SizedBox(height: 6),
                         ],
                       ),
                     );

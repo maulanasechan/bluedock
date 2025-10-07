@@ -91,6 +91,7 @@ class SperreAirSystemSolutionsFirebaseServiceImpl
         'productId': productId,
         'productModel': req.productName,
         'image': req.image,
+        'searchKeywords': _buildAllPrefixes(req),
         'quantity': req.quantity,
       };
 
@@ -150,6 +151,7 @@ class SperreAirSystemSolutionsFirebaseServiceImpl
         'productId': req.productId,
         'productModel': req.productName,
         'image': req.image,
+        'searchKeywords': _buildAllPrefixes(req),
         'quantity': req.quantity,
       };
 

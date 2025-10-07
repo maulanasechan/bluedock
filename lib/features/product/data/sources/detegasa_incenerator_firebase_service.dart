@@ -28,7 +28,7 @@ class DetegasaInceneratorFirebaseServiceImpl
       final base = _db.collection('Items');
 
       final snap = q.isEmpty
-          ? await base.orderBy('productUsage').get()
+          ? await base.orderBy('productModel').get()
           : await base.where('searchKeywords', arrayContains: q).get();
 
       final items = snap.docs.map((d) {
@@ -47,8 +47,8 @@ class DetegasaInceneratorFirebaseServiceImpl
       }
 
       int byType(Map<String, dynamic> a, Map<String, dynamic> b) =>
-          (a['productUsage'] ?? '').toString().compareTo(
-            (b['productUsage'] ?? '').toString(),
+          (a['productModel'] ?? '').toString().compareTo(
+            (b['productModel'] ?? '').toString(),
           );
       favs.sort(byType);
       others.sort(byType);
@@ -89,6 +89,7 @@ class DetegasaInceneratorFirebaseServiceImpl
         'productId': productId,
         'productModel': req.productModel,
         'image': req.image,
+        'searchKeywords': _buildAllPrefixes(req),
         'quantity': req.quantity,
       };
 
@@ -160,6 +161,7 @@ class DetegasaInceneratorFirebaseServiceImpl
         'productId': req.productId,
         'productModel': req.productModel,
         'image': req.image,
+        'searchKeywords': _buildAllPrefixes(req),
         'quantity': req.quantity,
       };
 

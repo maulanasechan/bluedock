@@ -12,6 +12,8 @@ class DropdownWidget extends StatelessWidget {
   final String state;
   final Function() onTap;
   final PhosphorIconData? icon;
+  final bool? withoutIcon;
+  final TextAlign? align;
 
   const DropdownWidget({
     super.key,
@@ -22,6 +24,8 @@ class DropdownWidget extends StatelessWidget {
     this.content,
     this.fontSize = 14,
     this.icon,
+    this.withoutIcon = false,
+    this.align = TextAlign.start,
   });
 
   @override
@@ -46,8 +50,7 @@ class DropdownWidget extends StatelessWidget {
                 elevation: 4,
                 borderRadius: BorderRadius.circular(12),
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  height: 55,
+                  padding: EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: AppColors.white,
                     border: Border.all(
@@ -59,18 +62,23 @@ class DropdownWidget extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      TextWidget(
-                        text: state,
-                        fontWeight: FontWeight.w500,
-                        fontSize: fontSize,
+                      Expanded(
+                        child: TextWidget(
+                          text: state,
+                          fontWeight: FontWeight.w500,
+                          overflow: TextOverflow.fade,
+                          fontSize: fontSize,
+                          align: align,
+                        ),
                       ),
-                      content != null
-                          ? _contentWidget()
-                          : PhosphorIcon(
-                              icon ?? PhosphorIconsBold.caretDown,
-                              size: fontSize + 10,
-                              color: AppColors.blue,
-                            ),
+                      if (withoutIcon == false)
+                        content != null
+                            ? _contentWidget()
+                            : PhosphorIcon(
+                                icon ?? PhosphorIconsBold.caretDown,
+                                size: fontSize + 10,
+                                color: AppColors.blue,
+                              ),
                     ],
                   ),
                 ),

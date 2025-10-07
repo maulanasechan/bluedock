@@ -7,6 +7,7 @@ class UserEntity {
   final String nik;
   final String nip;
   final String email;
+  final String phoneNumber;
   final String address;
   final String image;
   final RoleEntity role;
@@ -20,6 +21,7 @@ class UserEntity {
     required this.nik,
     required this.nip,
     required this.email,
+    required this.phoneNumber,
     required this.address,
     required this.image,
     required this.role,
@@ -34,6 +36,7 @@ class UserEntity {
     String? nik,
     String? nip,
     String? email,
+    String? phoneNumber,
     String? address,
     String? image,
     RoleEntity? role,
@@ -47,6 +50,7 @@ class UserEntity {
       nik: nik ?? this.nik,
       nip: nip ?? this.nip,
       email: email ?? this.email,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
       address: address ?? this.address,
       image: image ?? this.image,
       role: role ?? this.role,

@@ -158,6 +158,7 @@ class AddDetegasaOilyWaterSeparatorPage extends StatelessWidget {
                                 : 'Add New Product',
                             fontSize: 16,
                           ),
+                          SizedBox(height: 6),
                         ],
                       ),
                     );

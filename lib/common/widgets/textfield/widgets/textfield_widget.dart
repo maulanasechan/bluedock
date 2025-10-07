@@ -3,6 +3,7 @@ import 'package:bluedock/common/helper/validator/validator_helper.dart';
 import 'package:bluedock/common/widgets/textfield/widgets/custom_textfield_widget.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class TextfieldWidget extends StatelessWidget {
@@ -20,6 +21,7 @@ class TextfieldWidget extends StatelessWidget {
   final double borderRadius;
   final Color? iconColor;
   final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
 
   const TextfieldWidget({
     super.key,
@@ -37,6 +39,7 @@ class TextfieldWidget extends StatelessWidget {
     this.borderRadius = 10,
     this.iconColor,
     this.keyboardType,
+    this.inputFormatters,
   });
 
   @override
@@ -70,6 +73,7 @@ class TextfieldWidget extends StatelessWidget {
               borderRadius: borderRadius,
               iconColor: iconColor,
               hasError: hasError,
+              inputFormatters: inputFormatters,
               onChanged: (value) {
                 field.didChange(value);
                 if (onChanged != null) onChanged!(value);

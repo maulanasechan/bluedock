@@ -8,6 +8,7 @@ class StaffEntity {
   final String nip;
   final String email;
   final String address;
+  final String phoneNumber;
   final String image;
   final RoleEntity role;
   final String updatedBy;
@@ -22,6 +23,7 @@ class StaffEntity {
     required this.nik,
     required this.email,
     required this.address,
+    required this.phoneNumber,
     required this.image,
     required this.role,
     required this.updatedBy,
@@ -38,6 +40,7 @@ class StaffEntity {
     String? nip,
     String? email,
     String? address,
+    String? phoneNumber,
     String? image,
     RoleEntity? role,
     String? updatedBy,
@@ -51,6 +54,7 @@ class StaffEntity {
       nip: nip ?? this.nip,
       email: email ?? this.email,
       address: address ?? this.address,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
       image: image ?? this.image,
       role: role ?? this.role,
       updatedBy: updatedBy ?? this.updatedBy,

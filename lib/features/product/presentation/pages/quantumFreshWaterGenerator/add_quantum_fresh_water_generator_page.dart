@@ -21,6 +21,7 @@ import 'package:bluedock/features/product/presentation/bloc/selection/selection_
 import 'package:bluedock/features/product/presentation/widgets/list_selection_button_widget.dart';
 import 'package:bluedock/features/product/presentation/widgets/selection_modal_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -118,6 +119,10 @@ class AddQuantumFreshWaterGeneratorPage extends StatelessWidget {
                                 'm3/day',
                               ),
                             ),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
                             suffixIcon: PhosphorIconsBold.calendarMinus,
                             onChanged: (v) => context
                                 .read<QuantumFreshWaterGeneratorFormCubit>()
@@ -134,6 +139,10 @@ class AddQuantumFreshWaterGeneratorPage extends StatelessWidget {
                                 'm3/day',
                               ),
                             ),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
                             suffixIcon: PhosphorIconsBold.calendarPlus,
                             onChanged: (v) => context
                                 .read<QuantumFreshWaterGeneratorFormCubit>()
@@ -168,6 +177,7 @@ class AddQuantumFreshWaterGeneratorPage extends StatelessWidget {
                                 : 'Add New Product',
                             fontSize: 16,
                           ),
+                          SizedBox(height: 6),
                         ],
                       ),
                     );

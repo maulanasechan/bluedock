@@ -50,7 +50,6 @@ class SperreScrewCompressorPage extends StatelessWidget {
             );
           },
         ),
-
         body: Column(
           children: [
             Builder(

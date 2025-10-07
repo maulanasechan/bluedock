@@ -88,6 +88,7 @@ class SperreScrewCompressorFirebaseServiceImpl
         'productId': productId,
         'productModel': req.productTypeCode,
         'image': req.image,
+        'searchKeywords': _buildAllPrefixes(req),
         'quantity': req.quantity,
       };
 
@@ -154,6 +155,7 @@ class SperreScrewCompressorFirebaseServiceImpl
         'productId': req.productId,
         'productModel': req.productTypeCode,
         'image': req.image,
+        'searchKeywords': _buildAllPrefixes(req),
         'quantity': req.quantity,
       };
 

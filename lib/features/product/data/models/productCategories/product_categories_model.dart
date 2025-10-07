@@ -5,11 +5,11 @@ class ProductCategoriesModel {
   final String title;
   final String image;
   final String route;
-  final String productCategoriesId;
+  final String categoryId;
   final double totalProduct;
 
   ProductCategoriesModel({
-    required this.productCategoriesId,
+    required this.categoryId,
     required this.title,
     required this.image,
     required this.route,
@@ -21,7 +21,7 @@ class ProductCategoriesModel {
       'title': title,
       'image': image,
       'route': route,
-      'productCategoriesId': productCategoriesId,
+      'categoryId': categoryId,
       'totalProduct': totalProduct,
     };
   }
@@ -31,7 +31,7 @@ class ProductCategoriesModel {
       title: map['title'] ?? '',
       image: map['image'] ?? '',
       route: map['route'] ?? '',
-      productCategoriesId: map['productCategoriesId'] ?? '',
+      categoryId: map['categoryId'] ?? '',
       totalProduct: (map['totalProduct'] is num)
           ? (map['totalProduct'] as num).toDouble()
           : 0.0,
@@ -49,7 +49,7 @@ class ProductCategoriesModel {
 extension ProductCategoriesXModel on ProductCategoriesModel {
   ProductCategoriesEntity toEntity() {
     return ProductCategoriesEntity(
-      productCategoriesId: productCategoriesId,
+      categoryId: categoryId,
       title: title,
       image: image,
       route: route,

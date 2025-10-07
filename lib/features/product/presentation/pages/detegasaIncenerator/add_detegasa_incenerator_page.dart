@@ -20,6 +20,7 @@ import 'package:bluedock/features/product/presentation/bloc/selection/selection_
 import 'package:bluedock/features/product/presentation/widgets/list_selection_button_widget.dart';
 import 'package:bluedock/features/product/presentation/widgets/selection_modal_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -113,6 +114,10 @@ class AddDetegasaInceneratorPage extends StatelessWidget {
                             initialValue: removeCommas(
                               stripSuffix(state.heatGenerate, 'KCAL/Hr'),
                             ),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
                             suffixIcon: PhosphorIconsBold.thermometer,
                             onChanged: (v) => context
                                 .read<DetegasaInceneratorFormCubit>()
@@ -126,6 +131,10 @@ class AddDetegasaInceneratorPage extends StatelessWidget {
                             initialValue: removeCommas(
                               stripSuffix(state.powerRating, 'KW'),
                             ),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
                             suffixIcon: PhosphorIconsBold.handFist,
                             onChanged: (v) => context
                                 .read<DetegasaInceneratorFormCubit>()
@@ -138,6 +147,10 @@ class AddDetegasaInceneratorPage extends StatelessWidget {
                             title: 'IMO Sludge',
                             initialValue: stripSuffix(state.imoSludge, 'L/H'),
                             suffixIcon: PhosphorIconsBold.washingMachine,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
                             onChanged: (v) => context
                                 .read<DetegasaInceneratorFormCubit>()
                                 .setImoSludge(v),
@@ -149,6 +162,10 @@ class AddDetegasaInceneratorPage extends StatelessWidget {
                             title: 'Solid Waste',
                             initialValue: stripSuffix(state.solidWaste, 'kg/h'),
                             suffixIcon: PhosphorIconsBold.trash,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
                             onChanged: (v) => context
                                 .read<DetegasaInceneratorFormCubit>()
                                 .setSolidWaste(v),
@@ -163,6 +180,14 @@ class AddDetegasaInceneratorPage extends StatelessWidget {
                               'kg/h',
                             ),
                             suffixIcon: PhosphorIconsBold.blueprint,
+                            keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true,
+                            ),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                RegExp(r'^\d*[.]?\d*$'),
+                              ),
+                            ],
                             onChanged: (v) => context
                                 .read<DetegasaInceneratorFormCubit>()
                                 .setMaxBurnerConsumption(v),
@@ -176,6 +201,10 @@ class AddDetegasaInceneratorPage extends StatelessWidget {
                               state.maxElectricPower,
                               'KW',
                             ),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
                             suffixIcon: PhosphorIconsBold.lightning,
                             onChanged: (v) => context
                                 .read<DetegasaInceneratorFormCubit>()
@@ -189,6 +218,10 @@ class AddDetegasaInceneratorPage extends StatelessWidget {
                             initialValue: removeCommas(
                               stripSuffix(state.approxInceneratorWeight, 'kg'),
                             ),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
                             suffixIcon: PhosphorIconsBold.barbell,
                             onChanged: (v) => context
                                 .read<DetegasaInceneratorFormCubit>()
@@ -201,6 +234,10 @@ class AddDetegasaInceneratorPage extends StatelessWidget {
                             title: 'Fan Weight',
                             initialValue: state.fanWeight,
                             suffixIcon: PhosphorIconsBold.fan,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
                             onChanged: (v) => context
                                 .read<DetegasaInceneratorFormCubit>()
                                 .setFanWeight(v),
@@ -226,6 +263,7 @@ class AddDetegasaInceneratorPage extends StatelessWidget {
                                 : 'Add New Product',
                             fontSize: 16,
                           ),
+                          SizedBox(height: 6),
                         ],
                       ),
                     );
