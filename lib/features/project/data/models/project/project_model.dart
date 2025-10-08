@@ -3,6 +3,7 @@ import 'package:bluedock/features/project/domain/entities/project_entity.dart';
 import 'package:bluedock/features/project/data/models/selection/category_selection_model.dart';
 import 'package:bluedock/features/project/data/models/selection/product_selection_model.dart';
 import 'package:bluedock/features/project/domain/entities/selection/staff_selection_entity.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProjectModel {
   final String projectId;
@@ -25,8 +26,14 @@ class ProjectModel {
   final int maintenancePeriod;
   final String maintenanceCurrency;
   final String customerContact;
+  final String customerCompany;
   final List<String> favorites;
   final List<StaffSelectionEntity> listTeam;
+
+  final String updatedBy;
+  final Timestamp? updatedAt;
+  final Timestamp createdAt;
+  final String createdBy;
 
   const ProjectModel({
     required this.projectId,
@@ -49,6 +56,11 @@ class ProjectModel {
     required this.customerContact,
     required this.listTeam,
     required this.payment,
+    required this.customerCompany,
+    required this.updatedBy,
+    required this.updatedAt,
+    required this.createdAt,
+    required this.createdBy,
   });
 
   ProjectModel copyWith({
@@ -70,8 +82,14 @@ class ProjectModel {
     int? maintenancePeriod,
     String? maintenanceCurrency,
     String? customerContact,
+    String? customerCompany,
     List<String>? favorites,
     List<StaffSelectionEntity>? listTeam,
+
+    String? updatedBy,
+    Timestamp? updatedAt,
+    Timestamp? createdAt,
+    String? createdBy,
   }) {
     return ProjectModel(
       projectId: projectId ?? this.projectId,
@@ -82,6 +100,7 @@ class ProjectModel {
       projectName: projectName ?? this.projectName,
       projectCode: projectCode ?? this.projectCode,
       customerName: customerName ?? this.customerName,
+      customerCompany: customerCompany ?? this.customerCompany,
       productCategory: productCategory ?? this.productCategory,
       productSelection: productSelection ?? this.productSelection,
       price: price ?? this.price,
@@ -95,6 +114,10 @@ class ProjectModel {
       customerContact: customerContact ?? this.customerContact,
       listTeam: listTeam ?? this.listTeam,
       favorites: favorites ?? this.favorites,
+      updatedBy: updatedBy ?? this.updatedBy,
+      updatedAt: updatedAt ?? this.updatedAt,
+      createdAt: createdAt ?? this.createdAt,
+      createdBy: createdBy ?? this.createdBy,
     );
   }
 
@@ -107,6 +130,7 @@ class ProjectModel {
       'projectName': projectName,
       'projectCode': projectCode,
       'customerName': customerName,
+      'customerCompany': customerCompany,
       'productCategory': productCategory.toMap(),
       'productSelection': productSelection.toMap(),
       'price': price,
@@ -120,6 +144,10 @@ class ProjectModel {
       'customerContact': customerContact,
       'favorites': favorites,
       'listTeam': listTeam.map((e) => e.toJson()).toList(),
+      'updatedBy': updatedBy,
+      'updatedAt': updatedAt,
+      'createdAt': createdAt,
+      'createdBy': createdBy,
     };
   }
 
@@ -135,6 +163,7 @@ class ProjectModel {
       projectId: (map['projectId'] ?? '') as String,
       invoiceId: (map['invoiceId'] ?? '') as String,
       payment: (map['payment'] ?? '') as String,
+      customerCompany: (map['customerCompany'] ?? '') as String,
       purchaseContractNumber: (map['purchaseContractNumber'] ?? '') as String,
       projectName: (map['projectName'] ?? '') as String,
       projectCode: (map['projectCode'] ?? '') as String,
@@ -170,6 +199,10 @@ class ProjectModel {
                 )
                 .toList()
           : const <StaffSelectionEntity>[],
+      updatedBy: map['updatedBy'] ?? '',
+      updatedAt: map['updatedAt'],
+      createdAt: map['createdAt'] ?? Timestamp(0, 0),
+      createdBy: map['createdBy'] ?? '',
     );
   }
 
@@ -189,6 +222,7 @@ extension ProjectXModel on ProjectModel {
       projectName: projectName,
       projectCode: projectCode,
       customerName: customerName,
+      customerCompany: customerCompany,
       productCategory: productCategory.toEntity(),
       productSelection: productSelection.toEntity(),
       price: price,
@@ -202,6 +236,10 @@ extension ProjectXModel on ProjectModel {
       customerContact: customerContact,
       favorites: favorites,
       listTeam: listTeam,
+      updatedBy: updatedBy,
+      updatedAt: updatedAt,
+      createdAt: createdAt,
+      createdBy: createdBy,
     );
   }
 }

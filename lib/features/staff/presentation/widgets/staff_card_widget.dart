@@ -104,7 +104,14 @@ class StaffCardWidget extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        TextWidget(text: staff.role.title, fontSize: 12),
+                        SizedBox(
+                          width: 150,
+                          child: TextWidget(
+                            text: staff.role.title,
+                            fontSize: 12,
+                            overflow: TextOverflow.fade,
+                          ),
+                        ),
                         TextWidget(
                           text: staff.lastOnline != Timestamp(0, 0)
                               ? timeago.format(staff.lastOnline.toDate())

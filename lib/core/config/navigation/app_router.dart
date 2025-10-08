@@ -35,6 +35,7 @@ import 'package:bluedock/features/product/presentation/pages/sperreScrewCompress
 import 'package:bluedock/features/product/presentation/pages/sperreScrewCompressor/sperre_screw_compressor_page.dart';
 import 'package:bluedock/features/product/presentation/pages/successProduct/success_product_page.dart';
 import 'package:bluedock/features/project/domain/entities/project_entity.dart';
+import 'package:bluedock/features/project/presentation/pages/project_detail_page.dart';
 import 'package:bluedock/features/project/presentation/pages/project_form_page.dart';
 import 'package:bluedock/features/project/presentation/pages/manage_project_page.dart';
 import 'package:bluedock/features/project/presentation/pages/success_project_page.dart';
@@ -83,6 +84,14 @@ class AppRouter {
             builder: (context, state) {
               final extra = state.extra as ProjectEntity?;
               return ProjectFormPage(project: extra);
+            },
+          ),
+          GoRoute(
+            path: AppRoutes.projectDetail,
+            name: AppRoutes.projectDetail,
+            builder: (context, state) {
+              final extra = state.extra as ProjectEntity;
+              return ProjectDetailPage(project: extra);
             },
           ),
           GoRoute(

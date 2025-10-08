@@ -7,6 +7,7 @@ class AppRoutes {
   static const createUpdateStaff = 'createUpdateStaff';
   static const manageProject = 'manageProject';
   static const formProject = 'formProject';
+  static const projectDetail = 'projectDetail';
   static const successProject = 'successProject';
   static const inventory = 'inventory';
   static const afterSales = 'afterSales';

@@ -34,7 +34,7 @@ class ProductCategoryCardWidget extends StatelessWidget {
                   height: 50,
                   child: Image.asset(product.image, fit: BoxFit.contain),
                 ),
-                SizedBox(width: 14),
+                SizedBox(width: 20),
                 SizedBox(
                   width: 200,
                   child: TextWidget(

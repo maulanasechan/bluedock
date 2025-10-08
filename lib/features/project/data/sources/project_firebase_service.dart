@@ -289,11 +289,25 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
   }
 
   @override
-  @override
   Future<Either> searchProject(String query) async {
     try {
-      final uid = _auth.currentUser?.uid;
+      final user = _auth.currentUser;
+      final uid = user?.uid ?? '';
+      final emailLower = (user?.email ?? '').toLowerCase();
       final q = query.trim().toLowerCase();
+
+      String safeRoleTitle(Map<String, dynamic>? m) {
+        if (m == null) return '';
+        final t = (m['title'] ?? '').toString();
+        return t.toLowerCase().replaceAll(RegExp(r'\s+'), '');
+      }
+
+      final meDoc = await _db.collection('Staff').doc(uid).get();
+      final me = meDoc.data() as Map<String, dynamic>;
+      final roleTitle = safeRoleTitle(
+        (me['role'] as Map?)?.cast<String, dynamic>(),
+      );
+      final isPD = roleTitle == 'presidentdirector';
 
       final col = _db
           .collection('Projects')
@@ -304,19 +318,51 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
           ? await col.get()
           : await col.where('searchKeywords', arrayContains: q).get();
 
-      final items = snap.docs.map((d) {
+      final all = snap.docs.map((d) {
         final m = d.data();
         m['projectId'] = (m['projectId'] ?? d.id).toString();
         return m;
       }).toList();
 
-      // pisahkan favorit & non-favorit
+      bool containsCurrentUser(Map<String, dynamic> m) {
+        if (isPD) return true;
+        if (uid.isEmpty) return false;
+
+        final ids =
+            (m['listTeamIds'] as List?)?.map((e) => e.toString()).toSet() ??
+            const <String>{};
+        if (ids.contains(uid)) return true;
+
+        final lt = m['listTeam'];
+        if (lt is List) {
+          for (final it in lt) {
+            if (it is Map) {
+              final mm = it.cast<String, dynamic>();
+              final sid = (mm['staffId'] ?? mm['staffID'] ?? mm['uid'] ?? '')
+                  .toString();
+              if (sid == uid) return true;
+
+              final mail = (mm['email'] ?? mm['mail'] ?? '')
+                  .toString()
+                  .toLowerCase();
+              if (mail.isNotEmpty && mail == emailLower) return true;
+            }
+          }
+        }
+        return false;
+      }
+
+      final visible = <Map<String, dynamic>>[];
+      for (final m in all) {
+        final ok = containsCurrentUser(m);
+        if (ok) visible.add(m);
+      }
+
       final favs = <Map<String, dynamic>>[];
       final others = <Map<String, dynamic>>[];
-
-      for (final m in items) {
+      for (final m in visible) {
         final favList = List<String>.from(m['favorites'] ?? const <String>[]);
-        final isFav = uid != null && favList.contains(uid);
+        final isFav = uid.isNotEmpty && favList.contains(uid);
         (isFav ? favs : others).add(m);
       }
 
@@ -330,7 +376,6 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
 
       final seen = <String>{};
       final result = <Map<String, dynamic>>[];
-
       void addUnique(List<Map<String, dynamic>> src) {
         for (final m in src) {
           final id = (m['projectId'] ?? '').toString();

@@ -3,7 +3,6 @@ import 'package:bluedock/common/widgets/button/bloc/action_button_cubit.dart';
 import 'package:bluedock/common/widgets/card/card_container_widget.dart';
 import 'package:bluedock/common/widgets/card/slidable_action_widget.dart';
 import 'package:bluedock/common/widgets/modal/center_modal_widget.dart';
-import 'package:bluedock/common/widgets/text/text_widget.dart';
 import 'package:bluedock/core/config/assets/app_images.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
@@ -73,6 +72,15 @@ class ProjectCardWidget extends StatelessWidget {
         },
         deleteParams: project.projectId,
         child: CardContainerWidget(
+          onTap: () async {
+            final changed = await context.pushNamed(
+              AppRoutes.projectDetail,
+              extra: project,
+            );
+            if (changed == true && context.mounted) {
+              context.read<ProjectDisplayCubit>().displayProject(params: '');
+            }
+          },
           child: Stack(
             children: [
               Positioned(
@@ -126,37 +134,47 @@ class ProjectCardWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
-                        width: 140,
+                        width: 155,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             TitleSubtitleWidget(
-                              title: 'Product Usage',
+                              title: 'Project Name',
                               subtitle: project.projectName,
                             ),
                             SizedBox(height: 14),
                             TitleSubtitleWidget(
-                              title: 'Product Type',
-                              subtitle: project.productCategory.title,
+                              title: 'Purchase Contract Number',
+                              subtitle: project.purchaseContractNumber,
+                            ),
+                            SizedBox(height: 14),
+                            TitleSubtitleWidget(
+                              title: 'Custommer Company',
+                              subtitle: project.customerCompany,
                             ),
                           ],
                         ),
                       ),
                       SizedBox(width: 32),
                       SizedBox(
-                        width: 140,
+                        width: 120,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             TitleSubtitleWidget(
-                              title: 'Cooling System',
-                              subtitle: project.productSelection.productModel,
+                              title: 'Project Code',
+                              subtitle: project.projectCode,
                             ),
                             SizedBox(height: 14),
                             TitleSubtitleWidget(
-                              title: 'Product Type Code',
+                              title: 'Custommer Name',
+                              subtitle: project.customerName,
+                            ),
+                            SizedBox(height: 14),
+                            TitleSubtitleWidget(
+                              title: 'Custommer Contact',
                               subtitle: project.customerContact,
                             ),
                           ],
@@ -164,13 +182,15 @@ class ProjectCardWidget extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 26),
-                  TextWidget(
-                    text: 'Charging Capacity for Working Pressure',
-                    fontSize: 12,
-                    overflow: TextOverflow.fade,
+                  SizedBox(height: 14),
+                  SizedBox(
+                    width: 230,
+                    child: TitleSubtitleWidget(
+                      title: 'Project Description',
+                      subtitle: project.projectDescription,
+                    ),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 80),
                 ],
               ),
             ],

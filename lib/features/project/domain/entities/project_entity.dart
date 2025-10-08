@@ -1,6 +1,7 @@
 import 'package:bluedock/features/project/domain/entities/selection/product_selection_entity.dart';
 import 'package:bluedock/features/project/domain/entities/selection/category_selection_entity.dart';
 import 'package:bluedock/features/project/domain/entities/selection/staff_selection_entity.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProjectEntity {
   final String projectId;
@@ -9,6 +10,7 @@ class ProjectEntity {
   final String projectName;
   final String projectCode;
   final String customerName;
+  final String customerCompany;
   final String payment;
   final CategorySelectionEntity productCategory;
   final ProductSelectionEntity productSelection;
@@ -23,6 +25,11 @@ class ProjectEntity {
   final String customerContact;
   final List<String> favorites;
   final List<StaffSelectionEntity> listTeam;
+
+  final String updatedBy;
+  final Timestamp? updatedAt;
+  final Timestamp createdAt;
+  final String createdBy;
 
   ProjectEntity({
     required this.projectId,
@@ -45,6 +52,11 @@ class ProjectEntity {
     required this.favorites,
     required this.listTeam,
     required this.payment,
+    required this.customerCompany,
+    required this.updatedBy,
+    required this.updatedAt,
+    required this.createdAt,
+    required this.createdBy,
   });
 
   ProjectEntity copyWith({
@@ -54,6 +66,7 @@ class ProjectEntity {
     String? projectName,
     String? projectCode,
     String? customerName,
+    String? customerCompany,
     String? payment,
     List<String>? favorites,
     CategorySelectionEntity? productCategory,
@@ -68,11 +81,17 @@ class ProjectEntity {
     String? maintenanceCurrency,
     String? customerContact,
     List<StaffSelectionEntity>? listTeam,
+
+    String? updatedBy,
+    Timestamp? updatedAt,
+    Timestamp? createdAt,
+    String? createdBy,
   }) {
     return ProjectEntity(
       projectId: projectId ?? this.projectId,
       invoiceId: invoiceId ?? this.invoiceId,
       favorites: favorites ?? this.favorites,
+      customerCompany: customerCompany ?? this.customerCompany,
       payment: payment ?? this.payment,
       purchaseContractNumber:
           purchaseContractNumber ?? this.purchaseContractNumber,
@@ -91,6 +110,10 @@ class ProjectEntity {
       maintenanceCurrency: maintenanceCurrency ?? this.maintenanceCurrency,
       customerContact: customerContact ?? this.customerContact,
       listTeam: listTeam ?? this.listTeam,
+      updatedBy: updatedBy ?? this.updatedBy,
+      updatedAt: updatedAt ?? this.updatedAt,
+      createdAt: createdAt ?? this.createdAt,
+      createdBy: createdBy ?? this.createdBy,
     );
   }
 }

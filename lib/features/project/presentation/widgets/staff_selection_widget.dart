@@ -76,7 +76,6 @@ class StaffSelectionWidget extends StatelessWidget {
                                   .displayStaffSelection(value);
                             },
                           ),
-
                           const SizedBox(height: 24),
                           Expanded(
                             child:
@@ -102,8 +101,6 @@ class StaffSelectionWidget extends StatelessWidget {
                                           child: Text('No staff found'),
                                         );
                                       }
-
-                                      // Gunakan formState agar highlight ter-update realtime
                                       return BlocBuilder<
                                         ProjectFormCubit,
                                         ProjectFormReq
@@ -129,20 +126,19 @@ class StaffSelectionWidget extends StatelessWidget {
                                               );
 
                                               return ButtonWidget(
-                                                height: 100,
+                                                height: 90,
                                                 background: isSelected
                                                     ? AppColors.blue
                                                     : AppColors.white,
                                                 title: value.fullName,
-                                                // Konten kustom (foto + nama)
                                                 content: Padding(
                                                   padding: EdgeInsets.symmetric(
-                                                    horizontal: 16,
+                                                    horizontal: 12,
                                                   ),
                                                   child: Row(
                                                     children: [
                                                       CircleAvatar(
-                                                        radius: 40,
+                                                        radius: 35,
                                                         backgroundImage:
                                                             NetworkImage(
                                                               value.image,
@@ -165,9 +161,9 @@ class StaffSelectionWidget extends StatelessWidget {
                                                                       .white
                                                                 : AppColors
                                                                       .darkBlue,
-                                                            fontSize: 18,
+                                                            fontSize: 16,
                                                             fontWeight:
-                                                                FontWeight.w700,
+                                                                FontWeight.w500,
                                                           ),
                                                           SizedBox(height: 8),
                                                           TextWidget(
@@ -178,7 +174,9 @@ class StaffSelectionWidget extends StatelessWidget {
                                                                 ? AppColors
                                                                       .white
                                                                 : AppColors
-                                                                      .darkBlue,
+                                                                      .blue,
+                                                            fontWeight:
+                                                                FontWeight.w500,
                                                             fontSize: 14,
                                                           ),
                                                           SizedBox(height: 8),
@@ -190,7 +188,7 @@ class StaffSelectionWidget extends StatelessWidget {
                                                                       .white
                                                                 : AppColors
                                                                       .darkBlue,
-                                                            fontSize: 16,
+                                                            fontSize: 14,
                                                             fontWeight:
                                                                 FontWeight.w500,
                                                           ),
@@ -235,11 +233,10 @@ class StaffSelectionWidget extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // daftar pilihan yang sudah dipilih
                       Expanded(
                         child: selected.isEmpty
                             ? TextWidget(
-                                text: title, // placeholder
+                                text: title,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
                                 color: AppColors.darkBlue,
@@ -260,9 +257,6 @@ class StaffSelectionWidget extends StatelessWidget {
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        // kalau mau ada avatar kecil:
-                                        // CircleAvatar(radius: 10, backgroundImage: NetworkImage(s.image)),
-                                        // const SizedBox(width: 6),
                                         TextWidget(
                                           text: s.fullName,
                                           color: AppColors.white,

@@ -71,7 +71,7 @@ class ProjectFormCubit extends Cubit<ProjectFormReq> {
         warrantyOfGoods: e.warrantyOfGoods,
         quantity: e.quantity,
         projectDescription: e.projectDescription,
-        customerCompany: e.customerContact,
+        customerCompany: e.customerCompany,
         customerName: e.customerName,
         customerContact: e.customerContact,
         listTeam: e.listTeam,

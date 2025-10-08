@@ -18,7 +18,7 @@ class TitleSubtitleWidget extends StatelessWidget {
         TextWidget(text: title, fontSize: 12, overflow: TextOverflow.fade),
         SizedBox(height: 4),
         TextWidget(
-          text: subtitle,
+          text: subtitle == '' ? "-" : subtitle,
           fontSize: 14,
           fontWeight: FontWeight.w700,
           overflow: TextOverflow.fade,
