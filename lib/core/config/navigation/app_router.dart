@@ -34,8 +34,10 @@ import 'package:bluedock/features/product/presentation/pages/sperreAirSystemSolu
 import 'package:bluedock/features/product/presentation/pages/sperreScrewCompressor/add_sperre_screw_compressor_page.dart';
 import 'package:bluedock/features/product/presentation/pages/sperreScrewCompressor/sperre_screw_compressor_page.dart';
 import 'package:bluedock/features/product/presentation/pages/successProduct/success_product_page.dart';
+import 'package:bluedock/features/project/domain/entities/project_entity.dart';
 import 'package:bluedock/features/project/presentation/pages/project_form_page.dart';
 import 'package:bluedock/features/project/presentation/pages/manage_project_page.dart';
+import 'package:bluedock/features/project/presentation/pages/success_project_page.dart';
 import 'package:bluedock/features/splash/pages/splash_page.dart';
 import 'package:bluedock/features/staff/domain/entities/staff_entity.dart';
 import 'package:bluedock/features/staff/presentation/pages/add_or_update_staff_page.dart';
@@ -78,7 +80,10 @@ class AppRouter {
           GoRoute(
             path: AppRoutes.formProject,
             name: AppRoutes.formProject,
-            builder: (context, state) => ProjectFormPage(),
+            builder: (context, state) {
+              final extra = state.extra as ProjectEntity?;
+              return ProjectFormPage(project: extra);
+            },
           ),
           GoRoute(
             path: AppRoutes.successProject,
@@ -89,7 +94,7 @@ class AppRouter {
                   : const <String, dynamic>{};
               final title = map['title'] as String? ?? '';
               final image = map['image'] as String? ?? '';
-              return SuccessProductPage(title: title, image: image);
+              return SuccessProjecttPage(title: title, image: image);
             },
           ),
         ],

@@ -6,13 +6,16 @@ import 'package:bluedock/common/helper/validator/validator_helper.dart';
 import 'package:bluedock/common/widgets/text/text_widget.dart';
 import 'package:bluedock/common/widgets/textfield/widgets/textfield_widget.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
-import 'package:bluedock/features/project/data/models/project_form_req.dart';
+import 'package:bluedock/features/project/data/models/project/project_form_req.dart';
 import 'package:bluedock/features/project/domain/entities/project_entity.dart';
+import 'package:bluedock/features/project/domain/usecases/add_project_usecase.dart';
+import 'package:bluedock/features/project/domain/usecases/update_project_usecase.dart';
 import 'package:bluedock/features/project/presentation/bloc/project/project_form_cubit.dart';
 import 'package:bluedock/features/project/presentation/bloc/selection/project_selection_display_cubit.dart';
 import 'package:bluedock/features/project/presentation/widgets/category_selection_widget.dart';
 import 'package:bluedock/features/project/presentation/widgets/product_selection_widget.dart';
 import 'package:bluedock/features/project/presentation/widgets/project_selection_widget.dart';
+import 'package:bluedock/features/project/presentation/widgets/staff_selection_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -104,6 +107,17 @@ class ProjectFormPage extends StatelessWidget {
                       SizedBox(height: 24),
                       TextfieldWidget(
                         validator: AppValidators.required(),
+                        hintText: 'Customer Company',
+                        title: 'Customer Company',
+                        initialValue: state.customerCompany,
+                        suffixIcon: PhosphorIconsBold.buildingOffice,
+                        onChanged: (v) => context
+                            .read<ProjectFormCubit>()
+                            .setCustomerCompany(v),
+                      ),
+                      SizedBox(height: 24),
+                      TextfieldWidget(
+                        validator: AppValidators.required(),
                         hintText: 'Customer Name',
                         title: 'Customer Name',
                         initialValue: state.customerName,
@@ -151,6 +165,43 @@ class ProjectFormPage extends StatelessWidget {
                           context.pop();
                         },
                         icon: PhosphorIconsBold.washingMachine,
+                      ),
+                      SizedBox(height: 24),
+                      StaffSelectionWidget(
+                        title: 'Team',
+                        selected: state.listTeam,
+                        onPressed: (value) {
+                          context.read<ProjectFormCubit>().toggleTeamByEntity(
+                            value,
+                          );
+                        },
+                        icon: PhosphorIconsBold.userList,
+                      ),
+                      SizedBox(height: 24),
+                      TextfieldWidget(
+                        validator: AppValidators.number(),
+                        hintText: 'Product Quantity',
+                        title: 'Product Quantity',
+                        initialValue: state.quantity.toString(),
+                        suffixIcon: PhosphorIconsBold.package,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        onChanged: (v) => context
+                            .read<ProjectFormCubit>()
+                            .setQuantity(int.parse(v)),
+                      ),
+                      SizedBox(height: 24),
+                      TextfieldWidget(
+                        hintText: 'Project Description',
+                        title: 'Project Description',
+                        initialValue: state.projectDescription,
+                        suffixIcon: PhosphorIconsBold.keyboard,
+                        maxLines: 4,
+                        onChanged: (v) => context
+                            .read<ProjectFormCubit>()
+                            .setProjectDescription(v),
                       ),
                       SizedBox(height: 24),
                       TextWidget(
@@ -287,16 +338,14 @@ class ProjectFormPage extends StatelessWidget {
                               _formKey.currentState?.validate() ?? false;
                           if (!isValid) return;
 
-                          // context.read<ActionButtonCubit>().execute(
-                          //   usecase: isUpdate
-                          //       ? UpdateSperreScrewCompressorUseCase()
-                          //       : AddSperreScrewCompressorUseCase(),
-                          //   params: context
-                          //       .read<SperreScrewCompressorFormCubit>()
-                          //       .state,
-                          // );
+                          context.read<ActionButtonCubit>().execute(
+                            usecase: isUpdate
+                                ? UpdateProjectUseCase()
+                                : AddProjectUseCase(),
+                            params: context.read<ProjectFormCubit>().state,
+                          );
                         },
-                        title: isUpdate ? 'Update Product' : 'Add New Product',
+                        title: isUpdate ? 'Update Project' : 'Add New Project',
                         fontSize: 16,
                       ),
                       SizedBox(height: 6),

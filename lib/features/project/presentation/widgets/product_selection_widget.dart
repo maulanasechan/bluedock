@@ -4,7 +4,7 @@ import 'package:bluedock/common/widgets/modal/bottom_modal_widget.dart';
 import 'package:bluedock/common/widgets/text/text_widget.dart';
 import 'package:bluedock/common/widgets/textfield/widgets/textfield_widget.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
-import 'package:bluedock/features/project/data/models/project_form_req.dart';
+import 'package:bluedock/features/project/data/models/project/project_form_req.dart';
 import 'package:bluedock/features/project/data/models/selection/product_selection_req.dart';
 import 'package:bluedock/features/project/domain/entities/selection/product_selection_entity.dart';
 import 'package:bluedock/features/project/presentation/bloc/project/project_form_cubit.dart';

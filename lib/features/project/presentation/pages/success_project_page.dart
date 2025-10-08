@@ -4,16 +4,16 @@ import 'package:bluedock/core/config/assets/app_images.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class SuccessProductPage extends StatelessWidget {
+class SuccessProjecttPage extends StatelessWidget {
   final String title;
   final String? image;
-  const SuccessProductPage({super.key, required this.title, this.image});
+  const SuccessProjecttPage({super.key, required this.title, this.image});
 
   @override
   Widget build(BuildContext context) {
     return GradientScaffoldWidget(
       body: SuccessPageWidget(
-        image: image == '' ? AppImages.appProductAdded : image!,
+        image: image == '' ? AppImages.appProjectSuccess : image!,
         title: title,
         onPressed: () {
           context.pop(true);

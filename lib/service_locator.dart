@@ -62,9 +62,14 @@ import 'package:bluedock/features/product/domain/usecases/sperreScrewCompressor/
 import 'package:bluedock/features/project/data/repositories/project_repository_impl.dart';
 import 'package:bluedock/features/project/data/sources/project_firebase_service.dart';
 import 'package:bluedock/features/project/domain/repositories/project_repository.dart';
+import 'package:bluedock/features/project/domain/usecases/add_project_usecase.dart';
+import 'package:bluedock/features/project/domain/usecases/delete_project_usecase.dart';
+import 'package:bluedock/features/project/domain/usecases/favorite_project_usecase.dart';
 import 'package:bluedock/features/project/domain/usecases/get_category_selection_usecase.dart';
 import 'package:bluedock/features/project/domain/usecases/get_product_selection_usecase.dart';
 import 'package:bluedock/features/project/domain/usecases/get_project_selection_usecase.dart';
+import 'package:bluedock/features/project/domain/usecases/get_staff_selection_usecase.dart';
+import 'package:bluedock/features/project/domain/usecases/search_project_usecase.dart';
 import 'package:bluedock/features/staff/data/repositories/role_repository_impl.dart';
 import 'package:bluedock/features/staff/data/repositories/staff_repository_impl.dart';
 import 'package:bluedock/features/staff/data/sources/role_firebase_service.dart';
@@ -255,4 +260,9 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<GetProductSelectionUseCase>(
     GetProductSelectionUseCase(),
   );
+  sl.registerSingleton<GetStaffSelectionUseCase>(GetStaffSelectionUseCase());
+  sl.registerSingleton<AddProjectUseCase>(AddProjectUseCase());
+  sl.registerSingleton<SearchProjectUseCase>(SearchProjectUseCase());
+  sl.registerSingleton<DeleteProjectUseCase>(DeleteProjectUseCase());
+  sl.registerSingleton<FavoriteProjectUseCase>(FavoriteProjectUseCase());
 }

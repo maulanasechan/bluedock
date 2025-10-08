@@ -3,7 +3,7 @@ import 'package:bluedock/common/widgets/dropdown/widgets/dropdown_widget.dart';
 import 'package:bluedock/common/widgets/modal/bottom_modal_widget.dart';
 import 'package:bluedock/common/widgets/text/text_widget.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
-import 'package:bluedock/features/project/data/models/project_form_req.dart';
+import 'package:bluedock/features/project/data/models/project/project_form_req.dart';
 import 'package:bluedock/features/project/domain/entities/selection/category_selection_entity.dart';
 import 'package:bluedock/features/project/presentation/bloc/project/project_form_cubit.dart';
 import 'package:bluedock/features/project/presentation/bloc/selection/project_selection_display_cubit.dart';

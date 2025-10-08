@@ -28,4 +28,12 @@ class ProductSelectionEntity {
       quantity: quantity ?? this.quantity,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'productId': productId,
+    'productModel': productModel,
+    'image': image,
+    'route': route,
+    'quantity': quantity,
+  };
 }

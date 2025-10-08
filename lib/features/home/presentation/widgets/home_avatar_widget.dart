@@ -23,7 +23,9 @@ class HomeAvatarWidget extends StatelessWidget {
             elevation: 4,
             child: CircleAvatar(
               radius: 25,
-              backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=3'),
+              backgroundImage: NetworkImage(
+                user != null ? user!.image : 'https://i.pravatar.cc/150?img=3',
+              ),
             ),
           ),
         ),

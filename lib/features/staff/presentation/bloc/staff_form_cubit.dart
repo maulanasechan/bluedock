@@ -22,6 +22,7 @@ class StaffFormCubit extends Cubit<StaffFormReq> {
         nip: e.nip,
         nik: e.nik,
         email: e.email,
+        phoneNumber: e.phoneNumber,
         address: e.address,
         role: e.role,
         password: '',

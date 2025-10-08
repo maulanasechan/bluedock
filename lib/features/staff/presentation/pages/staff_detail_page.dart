@@ -59,7 +59,7 @@ class StaffDetailPage extends StatelessWidget {
             ),
             child: CircleAvatar(
               radius: 50,
-              backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=2'),
+              backgroundImage: NetworkImage(staff.image),
             ),
           ),
         ),

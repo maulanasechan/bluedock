@@ -77,9 +77,7 @@ class StaffCardWidget extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 25,
-                backgroundImage: NetworkImage(
-                  'https://i.pravatar.cc/150?img=2',
-                ),
+                backgroundImage: NetworkImage(staff.image),
               ),
               SizedBox(width: 14),
               Expanded(

@@ -28,4 +28,12 @@ class CategorySelectionEntity {
       totalProduct: totalProduct ?? this.totalProduct,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'categoryId': categoryId,
+    'title': title,
+    'image': image,
+    'route': route,
+    'totalProduct': totalProduct,
+  };
 }

@@ -5,10 +5,10 @@ import 'package:bluedock/common/widgets/text/text_widget.dart';
 import 'package:bluedock/common/widgets/textfield/widgets/textfield_widget.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
-import 'package:bluedock/features/product/presentation/bloc/sperreScrewCompressor/sperre_screw_compressor_state.dart';
-import 'package:bluedock/features/product/presentation/bloc/sperreScrewCompressor/sperre_screw_compressor_cubit.dart';
-import 'package:bluedock/features/product/presentation/widgets/product_loading_widget.dart';
-import 'package:bluedock/features/product/presentation/widgets/sperre_screw_compressor_card_widget.dart';
+import 'package:bluedock/features/project/presentation/bloc/project/project_display_cubit.dart';
+import 'package:bluedock/features/project/presentation/bloc/project/project_display_state.dart';
+import 'package:bluedock/features/project/presentation/widgets/project_card_widget.dart';
+import 'package:bluedock/features/project/presentation/widgets/project_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -23,8 +23,7 @@ class ManageProjectPage extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) =>
-              SperreScrewCompressorCubit()
-                ..displaySperreScrewCompressor(params: ''),
+              ProjectDisplayCubit()..displayProject(params: ''),
         ),
         BlocProvider(create: (context) => ActionButtonCubit()),
       ],
@@ -39,10 +38,10 @@ class ManageProjectPage extends StatelessWidget {
               icon: PhosphorIconsFill.boat,
               iconSize: 24,
               onPressed: () async {
-                final sperreCubit = ctx.read<SperreScrewCompressorCubit>();
+                final sperreCubit = ctx.read<ProjectDisplayCubit>();
                 final changed = await ctx.pushNamed(AppRoutes.formProject);
                 if (changed == true && ctx.mounted) {
-                  sperreCubit.displaySperreScrewCompressor(params: '');
+                  sperreCubit.displayProject(params: '');
                 }
               },
             );
@@ -59,13 +58,11 @@ class ManageProjectPage extends StatelessWidget {
                   hintText: 'Search',
                   onChanged: (value) {
                     if (value.isEmpty) {
-                      context
-                          .read<SperreScrewCompressorCubit>()
-                          .displayInitial();
+                      context.read<ProjectDisplayCubit>().displayInitial();
                     } else {
-                      context
-                          .read<SperreScrewCompressorCubit>()
-                          .displaySperreScrewCompressor(params: value);
+                      context.read<ProjectDisplayCubit>().displayProject(
+                        params: value,
+                      );
                     }
                   },
                 );
@@ -73,38 +70,34 @@ class ManageProjectPage extends StatelessWidget {
             ),
             SizedBox(height: 24),
             Expanded(
-              child:
-                  BlocBuilder<
-                    SperreScrewCompressorCubit,
-                    SperreScrewCompressorState
-                  >(
-                    builder: (context, state) {
-                      if (state is SperreScrewCompressorLoading) {
-                        return ProductLoadingWidget();
-                      }
-                      if (state is SperreScrewCompressorFetched) {
-                        if (state.sperreScrewCompressor.isEmpty) {
-                          return Center(
-                            child: TextWidget(text: "There isn't any product."),
+              child: BlocBuilder<ProjectDisplayCubit, ProjectDisplayState>(
+                builder: (context, state) {
+                  if (state is ProjectDisplayLoading) {
+                    return ProjectLoadingWidget();
+                  }
+                  if (state is ProjectDisplayFetched) {
+                    if (state.listProject.isEmpty) {
+                      return Center(
+                        child: TextWidget(text: "There isn't any project."),
+                      );
+                    } else {
+                      return ListView.separated(
+                        padding: EdgeInsets.zero,
+                        itemBuilder: (context, index) {
+                          return ProjectCardWidget(
+                            project: state.listProject[index],
                           );
-                        } else {
-                          return ListView.separated(
-                            padding: EdgeInsets.zero,
-                            itemBuilder: (context, index) {
-                              return SperreScrewCompressorCardWidget(
-                                product: state.sperreScrewCompressor[index],
-                              );
-                            },
-                            separatorBuilder: (context, index) {
-                              return SizedBox(height: 12);
-                            },
-                            itemCount: state.sperreScrewCompressor.length,
-                          );
-                        }
-                      }
-                      return SizedBox();
-                    },
-                  ),
+                        },
+                        separatorBuilder: (context, index) {
+                          return SizedBox(height: 12);
+                        },
+                        itemCount: state.listProject.length,
+                      );
+                    }
+                  }
+                  return SizedBox();
+                },
+              ),
             ),
           ],
         ),

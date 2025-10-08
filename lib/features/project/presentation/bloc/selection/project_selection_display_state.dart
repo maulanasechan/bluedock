@@ -1,6 +1,7 @@
 import 'package:bluedock/features/project/domain/entities/selection/product_selection_entity.dart';
 import 'package:bluedock/features/project/domain/entities/selection/category_selection_entity.dart';
 import 'package:bluedock/features/project/domain/entities/selection/project_selection_entity.dart';
+import 'package:bluedock/features/project/domain/entities/selection/staff_selection_entity.dart';
 
 abstract class ProjectSelectionDisplayState {}
 
@@ -28,4 +29,10 @@ class ProductSelectionDisplayFetched extends ProjectSelectionDisplayState {
   final List<ProductSelectionEntity> listSelection;
 
   ProductSelectionDisplayFetched({required this.listSelection});
+}
+
+class StaffSelectionDisplayFetched extends ProjectSelectionDisplayState {
+  final List<StaffSelectionEntity> listSelection;
+
+  StaffSelectionDisplayFetched({required this.listSelection});
 }
