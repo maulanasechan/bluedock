@@ -4,9 +4,9 @@ import 'package:bluedock/common/widgets/gradientScaffold/gradient_scaffold_widge
 import 'package:bluedock/common/widgets/textfield/widgets/textfield_widget.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
-import 'package:bluedock/features/staff/domain/entities/staff_entity.dart';
-import 'package:bluedock/features/staff/presentation/bloc/staff_display_cubit.dart';
-import 'package:bluedock/features/staff/presentation/bloc/staff_display_state.dart';
+import 'package:bluedock/common/domain/entities/staff_entity.dart';
+import 'package:bluedock/common/bloc/staff/staff_display_cubit.dart';
+import 'package:bluedock/common/bloc/staff/staff_display_state.dart';
 import 'package:bluedock/features/staff/presentation/widgets/staff_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

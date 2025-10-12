@@ -30,6 +30,13 @@ class AppColors {
     stops: [0.0, 0.15, 0.80, 1.0],
   );
 
+  static const LinearGradient navbarBackground = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [AppColors.blueSecondary, AppColors.white],
+    stops: [0.0, 0.55],
+  );
+
   static const LinearGradient gradientModal = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,

@@ -2,6 +2,7 @@ class AppRoutes {
   static const splash = 'splash';
   static const login = 'login';
   static const home = 'home';
+  static const notification = 'notification';
   static const forgotPassword = 'forgotPassword';
   static const sendEmail = 'sendEmail';
   static const createUpdateStaff = 'createUpdateStaff';
@@ -17,6 +18,9 @@ class AppRoutes {
   static const receipt = 'receipt';
   static const deliveryOrder = 'deliveryOrder';
   static const dailyTask = 'dailyTask';
+  static const formDailyTask = 'formDailyTask';
+  static const detailDailyTask = 'detailDailyTask';
+  static const successDaily = 'successDaily';
   static const pageNotFound = 'pageNotFound';
   static const underConstruction = 'underConstruction';
   static const accessDenied = 'accessDenied';

@@ -1,21 +1,23 @@
+import 'package:bluedock/common/bloc/productSection/product_section_cubit.dart';
+import 'package:bluedock/common/bloc/staff/staff_display_cubit.dart';
 import 'package:bluedock/common/widgets/button/bloc/action_button_cubit.dart';
 import 'package:bluedock/common/widgets/button/bloc/action_button_state.dart';
 import 'package:bluedock/common/widgets/button/widgets/action_button_widget.dart';
 import 'package:bluedock/common/widgets/gradientScaffold/gradient_scaffold_widget.dart';
 import 'package:bluedock/common/helper/validator/validator_helper.dart';
+import 'package:bluedock/common/widgets/selection/item_selection_modal_widget.dart';
+import 'package:bluedock/common/widgets/selection/staff_selection_widget.dart';
 import 'package:bluedock/common/widgets/text/text_widget.dart';
 import 'package:bluedock/common/widgets/textfield/widgets/textfield_widget.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
-import 'package:bluedock/features/project/data/models/project/project_form_req.dart';
-import 'package:bluedock/features/project/domain/entities/project_entity.dart';
+import 'package:bluedock/features/project/data/models/project_form_req.dart';
+import 'package:bluedock/common/domain/entities/project_entity.dart';
 import 'package:bluedock/features/project/domain/usecases/add_project_usecase.dart';
 import 'package:bluedock/features/project/domain/usecases/update_project_usecase.dart';
-import 'package:bluedock/features/project/presentation/bloc/project/project_form_cubit.dart';
-import 'package:bluedock/features/project/presentation/bloc/selection/project_selection_display_cubit.dart';
-import 'package:bluedock/features/project/presentation/widgets/category_selection_widget.dart';
-import 'package:bluedock/features/project/presentation/widgets/product_selection_widget.dart';
-import 'package:bluedock/features/project/presentation/widgets/project_selection_widget.dart';
-import 'package:bluedock/features/project/presentation/widgets/staff_selection_widget.dart';
+import 'package:bluedock/features/project/presentation/bloc/project_form_cubit.dart';
+import 'package:bluedock/common/widgets/selection/product_category_selection_widget.dart';
+import 'package:bluedock/common/widgets/selection/product_selection_widget.dart';
+import 'package:bluedock/common/bloc/itemSelection/item_selection_display_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,6 +32,8 @@ class ProjectFormPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isUpdate = project != null;
+    final collection = 'Projects';
+    final document = 'Selection';
 
     return MultiBlocProvider(
       providers: [
@@ -41,7 +45,9 @@ class ProjectFormPage extends StatelessWidget {
             return c;
           },
         ),
-        BlocProvider(create: (context) => ProjectSelectionDisplayCubit()),
+        BlocProvider(create: (context) => ProductSectionCubit()),
+        BlocProvider(create: (context) => ItemSelectionDisplayCubit()),
+        BlocProvider(create: (context) => StaffDisplayCubit()),
       ],
       child: GradientScaffoldWidget(
         hideBack: false,
@@ -75,7 +81,9 @@ class ProjectFormPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextfieldWidget(
-                        validator: AppValidators.required(),
+                        validator: AppValidators.required(
+                          field: 'Purchase Contract Number',
+                        ),
                         hintText: 'Purchase Contract Number',
                         title: 'Purchase Contract Number',
                         initialValue: state.purchaseContractNumber,
@@ -86,7 +94,9 @@ class ProjectFormPage extends StatelessWidget {
                       ),
                       SizedBox(height: 24),
                       TextfieldWidget(
-                        validator: AppValidators.required(),
+                        validator: AppValidators.required(
+                          field: 'Project Name',
+                        ),
                         hintText: 'Project Name',
                         title: 'Project Name',
                         initialValue: state.projectName,
@@ -96,7 +106,9 @@ class ProjectFormPage extends StatelessWidget {
                       ),
                       SizedBox(height: 24),
                       TextfieldWidget(
-                        validator: AppValidators.required(),
+                        validator: AppValidators.required(
+                          field: 'Project Code',
+                        ),
                         hintText: 'Project Code',
                         title: 'Project Code',
                         initialValue: state.projectCode,
@@ -106,7 +118,9 @@ class ProjectFormPage extends StatelessWidget {
                       ),
                       SizedBox(height: 24),
                       TextfieldWidget(
-                        validator: AppValidators.required(),
+                        validator: AppValidators.required(
+                          field: 'Customer Company',
+                        ),
                         hintText: 'Customer Company',
                         title: 'Customer Company',
                         initialValue: state.customerCompany,
@@ -117,7 +131,9 @@ class ProjectFormPage extends StatelessWidget {
                       ),
                       SizedBox(height: 24),
                       TextfieldWidget(
-                        validator: AppValidators.required(),
+                        validator: AppValidators.required(
+                          field: 'Customer Name',
+                        ),
                         hintText: 'Customer Name',
                         title: 'Customer Name',
                         initialValue: state.customerName,
@@ -142,7 +158,7 @@ class ProjectFormPage extends StatelessWidget {
                             .setCustomerContact(v),
                       ),
                       SizedBox(height: 24),
-                      CategorySelectionWidget(
+                      ProductCategorySelectionWidget(
                         title: 'Product Category',
                         selected: state.productCategory?.title ?? '',
                         onPressed: (value) {
@@ -151,11 +167,16 @@ class ProjectFormPage extends StatelessWidget {
                           );
                           context.pop();
                         },
+                        extraProviders: [
+                          BlocProvider.value(
+                            value: context.read<ProjectFormCubit>(),
+                          ),
+                        ],
                         icon: PhosphorIconsBold.archive,
                       ),
                       SizedBox(height: 24),
                       ProductSelectionWidget(
-                        title: 'Product',
+                        title: 'Product Model',
                         categoryId: state.productCategory?.categoryId ?? '',
                         selected: state.productSelection?.productModel ?? '',
                         onPressed: (value) {
@@ -164,6 +185,11 @@ class ProjectFormPage extends StatelessWidget {
                           );
                           context.pop();
                         },
+                        extraProviders: [
+                          BlocProvider.value(
+                            value: context.read<ProjectFormCubit>(),
+                          ),
+                        ],
                         icon: PhosphorIconsBold.washingMachine,
                       ),
                       SizedBox(height: 24),
@@ -175,6 +201,11 @@ class ProjectFormPage extends StatelessWidget {
                             value,
                           );
                         },
+                        extraProviders: [
+                          BlocProvider.value(
+                            value: context.read<ProjectFormCubit>(),
+                          ),
+                        ],
                         icon: PhosphorIconsBold.userList,
                       ),
                       SizedBox(height: 24),
@@ -215,18 +246,26 @@ class ProjectFormPage extends StatelessWidget {
                         children: [
                           SizedBox(
                             width: 65,
-                            child: ProjectSelectionWidget(
-                              align: TextAlign.center,
+                            child: ItemSelectionModalWidget(
                               withoutIcon: true,
                               withoutTitle: true,
-                              title: 'Currency',
+                              align: TextAlign.center,
+                              collection: collection,
+                              document: document,
+                              subCollection: 'Currency',
                               selected: state.currency,
-                              onPressed: (value) {
+                              icon: PhosphorIconsBold.creditCard,
+                              onSelected: (value) {
                                 context.read<ProjectFormCubit>().setCurrency(
                                   value.title,
                                 );
                                 context.pop();
                               },
+                              extraProviders: [
+                                BlocProvider.value(
+                                  value: context.read<ProjectFormCubit>(),
+                                ),
+                              ],
                             ),
                           ),
                           SizedBox(width: 12),
@@ -249,29 +288,42 @@ class ProjectFormPage extends StatelessWidget {
                         ],
                       ),
                       SizedBox(height: 24),
-                      ProjectSelectionWidget(
-                        title: 'Payment',
+                      ItemSelectionModalWidget(
+                        collection: collection,
+                        document: document,
+                        subCollection: 'Payment',
                         selected: state.payment,
                         icon: PhosphorIconsBold.wallet,
-                        onPressed: (value) {
+                        onSelected: (value) {
                           context.read<ProjectFormCubit>().setPayment(
                             value.title,
                           );
                           context.pop();
                         },
+                        extraProviders: [
+                          BlocProvider.value(
+                            value: context.read<ProjectFormCubit>(),
+                          ),
+                        ],
                       ),
                       SizedBox(height: 24),
-                      ProjectSelectionWidget(
-                        title: 'Warranty of Goods',
+                      ItemSelectionModalWidget(
+                        collection: collection,
+                        document: document,
+                        subCollection: 'Warranty of Goods',
                         selected: state.warrantyOfGoods,
                         icon: PhosphorIconsBold.heartbeat,
-                        heightButton: 80,
-                        onPressed: (value) {
+                        onSelected: (value) {
                           context.read<ProjectFormCubit>().setWarrantyOfGoods(
                             value.title,
                           );
                           context.pop();
                         },
+                        extraProviders: [
+                          BlocProvider.value(
+                            value: context.read<ProjectFormCubit>(),
+                          ),
+                        ],
                       ),
                       SizedBox(height: 24),
                       TextWidget(
@@ -303,33 +355,48 @@ class ProjectFormPage extends StatelessWidget {
                           SizedBox(width: 12),
                           SizedBox(
                             width: 80,
-                            child: ProjectSelectionWidget(
+                            child: ItemSelectionModalWidget(
+                              icon: PhosphorIconsBold.addressBook,
                               align: TextAlign.center,
                               withoutIcon: true,
                               withoutTitle: true,
-                              title: 'Maintenance Currency',
+                              collection: collection,
+                              document: document,
+                              subCollection: 'Maintenance Currency',
                               selected: state.maintenanceCurrency,
-                              onPressed: (value) {
+                              onSelected: (value) {
                                 context
                                     .read<ProjectFormCubit>()
                                     .setMaintenanceCurrency(value.title);
                                 context.pop();
                               },
+                              extraProviders: [
+                                BlocProvider.value(
+                                  value: context.read<ProjectFormCubit>(),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
                       SizedBox(height: 24),
-                      ProjectSelectionWidget(
-                        title: 'Delivery',
+                      ItemSelectionModalWidget(
+                        collection: collection,
+                        document: document,
+                        subCollection: 'Delivery',
                         selected: state.delivery,
-                        icon: PhosphorIconsBold.truck,
-                        onPressed: (value) {
+                        icon: PhosphorIconsBold.heartbeat,
+                        onSelected: (value) {
                           context.read<ProjectFormCubit>().setDelivery(
                             value.title,
                           );
                           context.pop();
                         },
+                        extraProviders: [
+                          BlocProvider.value(
+                            value: context.read<ProjectFormCubit>(),
+                          ),
+                        ],
                       ),
                       SizedBox(height: 50),
                       ActionButtonWidget(

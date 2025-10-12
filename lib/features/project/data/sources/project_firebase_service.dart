@@ -1,16 +1,11 @@
 import 'package:bluedock/common/helper/buildPrefix/build_prefixes_helper.dart';
-import 'package:bluedock/features/project/data/models/project/project_form_req.dart';
-import 'package:bluedock/features/project/data/models/selection/product_selection_req.dart';
-import 'package:bluedock/features/project/domain/entities/project_entity.dart';
+import 'package:bluedock/features/project/data/models/project_form_req.dart';
+import 'package:bluedock/common/domain/entities/project_entity.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class ProjectFirebaseService {
-  Future<Either> getProjectSelection(String title);
-  Future<Either> getCategorySelection();
-  Future<Either> getProductSelection(ProductSelectionReq req);
-  Future<Either> getStaffSelection(String query);
   Future<Either> addProject(ProjectFormReq req);
   Future<Either> updateProject(ProjectFormReq req);
   Future<Either> searchProject(String query);
@@ -21,92 +16,6 @@ abstract class ProjectFirebaseService {
 class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
   final _auth = FirebaseAuth.instance;
   final _db = FirebaseFirestore.instance;
-
-  // Selection
-  @override
-  Future<Either> getProjectSelection(String title) async {
-    try {
-      final listData = await _db
-          .collection('Projects')
-          .doc('Selection')
-          .collection(title)
-          .orderBy('title')
-          .get();
-
-      if (listData.docs.isEmpty) {
-        return Left('Selection Not Found');
-      }
-
-      return Right(listData.docs.map((e) => e.data()).toList());
-    } catch (e) {
-      return Left('Please try again');
-    }
-  }
-
-  // Categories
-  @override
-  Future<Either> getCategorySelection() async {
-    try {
-      final listData = await _db.collection('Products').orderBy('index').get();
-      if (listData.docs.isEmpty) {
-        return Left('Product Categories Not Found');
-      }
-
-      return Right(listData.docs.map((e) => e.data()).toList());
-    } catch (e) {
-      return Left('Please try again');
-    }
-  }
-
-  // Product
-  @override
-  Future<Either> getProductSelection(ProductSelectionReq req) async {
-    try {
-      final q = req.keyword.trim().toLowerCase();
-      final docRef = _db
-          .collection('Products')
-          .doc(req.categoryId)
-          .collection('Selection');
-
-      if (q.isEmpty) {
-        final snap = await docRef.orderBy('productModel').get();
-
-        return Right(snap.docs.map((e) => e.data()).toList());
-      }
-
-      final snap = await docRef.where('searchKeywords', arrayContains: q).get();
-
-      return Right(snap.docs.map((e) => e.data()).toList());
-    } catch (e) {
-      return Left('Please try again');
-    }
-  }
-
-  // Staff
-  @override
-  Future<Either> getStaffSelection(String query) async {
-    try {
-      final q = query.trim().toLowerCase();
-
-      if (q.isEmpty) {
-        final snap = await FirebaseFirestore.instance
-            .collection('Staff')
-            .orderBy('fullName')
-            .get();
-
-        return Right(snap.docs.map((e) => e.data()).toList());
-      }
-
-      final snap = await FirebaseFirestore.instance
-          .collection('Staff')
-          .where('fullNameWordPrefixes', arrayContains: q)
-          .get();
-
-      return Right(snap.docs.map((e) => e.data()).toList());
-    } catch (e) {
-      return Left('Please try again');
-    }
-  }
 
   // Project
   List<String> _buildAllPrefixes(ProjectFormReq req) {
@@ -151,6 +60,12 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
 
       final invoiceId = invRef.doc().id;
       final listPrice = extractPercentFractions(req.payment);
+
+      final teamIds = req.listTeam
+          .map((m) => m.staffId)
+          .where((id) => id.isNotEmpty)
+          .toSet()
+          .toList();
 
       final invoiceMap = <String, dynamic>{
         'invoiceId': invoiceId,
@@ -197,6 +112,7 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
         'maintenancePeriod': req.maintenancePeriod,
         'maintenanceCurrency': req.maintenanceCurrency,
         'listTeam': req.listTeam.map((m) => m.toJson()).toList(),
+        'listTeamIds': teamIds,
         'quantity': req.quantity,
         'status': false,
         'createdAt': FieldValue.serverTimestamp(),
@@ -253,6 +169,12 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
         'searchKeywords': _buildAllPrefixes(req),
       };
 
+      final teamIds = req.listTeam
+          .map((m) => m.staffId)
+          .where((id) => id.isNotEmpty)
+          .toSet()
+          .toList();
+
       final projectMap = <String, dynamic>{
         'purchaseContractNumber': req.purchaseContractNumber,
         'projectName': req.projectName,
@@ -271,6 +193,7 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
         'maintenancePeriod': req.maintenancePeriod,
         'maintenanceCurrency': req.maintenanceCurrency,
         'listTeam': req.listTeam.map((m) => m.toJson()).toList(),
+        'listTeamIds': teamIds,
         'quantity': req.quantity,
         'status': false,
         'updatedAt': FieldValue.serverTimestamp(),
@@ -410,7 +333,7 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
           .doc(req.projectId)
           .delete();
 
-      return Right('Remove product succesfull');
+      return Right('Remove project succesfull');
     } catch (e) {
       return Left('Please try again');
     }

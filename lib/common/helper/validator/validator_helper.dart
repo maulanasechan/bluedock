@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 typedef StringValidator = String? Function(String?);
 
 class AppValidators {
@@ -150,6 +152,44 @@ class AppValidators {
       for (final fn in validators) {
         final res = fn(v);
         if (res != null) return res;
+      }
+      return null;
+    };
+  }
+
+  static FormFieldValidator<TimeOfDay?> requiredTime({required String field}) {
+    return (value) => value == null ? '$field is required.' : null;
+  }
+
+  static FormFieldValidator<TimeOfDay?> endAfterStart({
+    required DateTime? date,
+    required TimeOfDay? start,
+    String? requiredMsg,
+    String? invalidMsg,
+  }) {
+    return (end) {
+      if (end == null) return requiredMsg ?? 'End time is required.';
+      if (date == null || start == null) {
+        return null;
+      }
+
+      final startDt = DateTime(
+        date.year,
+        date.month,
+        date.day,
+        start.hour,
+        start.minute,
+      );
+      final endDt = DateTime(
+        date.year,
+        date.month,
+        date.day,
+        end.hour,
+        end.minute,
+      );
+
+      if (!endDt.isAfter(startDt)) {
+        return invalidMsg ?? 'End time must be later than start time.';
       }
       return null;
     };

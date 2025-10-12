@@ -1,8 +1,23 @@
+import 'package:bluedock/common/data/repositories/item_selection_repository_impl.dart';
+import 'package:bluedock/common/data/repositories/product_section_repository_impl.dart';
+import 'package:bluedock/common/data/sources/item_selection_firebase_service.dart';
+import 'package:bluedock/common/data/sources/product_section_firebase_service.dart';
+import 'package:bluedock/common/domain/repositories/item_selection_repository.dart';
+import 'package:bluedock/common/domain/repositories/product_section_repository.dart';
+import 'package:bluedock/common/domain/usecases/get_product_selection_usecase.dart';
+import 'package:bluedock/common/domain/usecases/get_type_category_selection_usecase.dart';
+import 'package:bluedock/features/dailyTask/data/repositories/daily_task_repository_impl.dart';
+import 'package:bluedock/features/dailyTask/data/sources/daily_task_firebase_service.dart';
+import 'package:bluedock/features/dailyTask/domain/repositories/daily_task_repository.dart';
+import 'package:bluedock/features/dailyTask/domain/usecases/add_daily_task_usecase.dart';
+import 'package:bluedock/features/dailyTask/domain/usecases/delete_daily_task_usecase.dart';
+import 'package:bluedock/features/dailyTask/domain/usecases/get_all_daily_task_usecase.dart';
+import 'package:bluedock/features/dailyTask/domain/usecases/update_detegasa_incenerator_usecase.dart';
 import 'package:bluedock/features/home/data/repositories/user_repository_impl.dart';
 import 'package:bluedock/features/home/data/sources/user_firebase_service.dart';
 import 'package:bluedock/features/home/domain/repositories/user_repository.dart';
 import 'package:bluedock/features/home/domain/usecases/get_app_menu_usecase.dart';
-import 'package:bluedock/features/home/domain/usecases/get_user_usecase.dart';
+import 'package:bluedock/common/domain/usecases/get_user_usecase.dart';
 import 'package:bluedock/features/home/domain/usecases/logout_usecase.dart';
 import 'package:bluedock/features/login/data/repositories/login_repository_impl.dart';
 import 'package:bluedock/features/login/data/sources/login_firebase_service.dart';
@@ -44,8 +59,8 @@ import 'package:bluedock/features/product/domain/usecases/detegasaSewageTreatmen
 import 'package:bluedock/features/product/domain/usecases/detegasaSewageTreatmentPlant/search_detegasa_sewage_treatment_plant_usecase.dart';
 import 'package:bluedock/features/product/domain/usecases/detegasaSewageTreatmentPlant/update_detegasa_sewage_treatment_plant_usecase.dart';
 import 'package:bluedock/features/product/domain/usecases/product/favorite_product_usecase.dart';
-import 'package:bluedock/features/product/domain/usecases/product/get_product_categories_usecase.dart';
-import 'package:bluedock/features/product/domain/usecases/product/get_selection_usecase.dart';
+import 'package:bluedock/common/domain/usecases/get_product_categories_usecase.dart';
+import 'package:bluedock/common/domain/usecases/get_item_selection_usecase.dart';
 import 'package:bluedock/features/product/domain/usecases/quantumFreshWaterGenerator/add_quantum_fresh_water_generator_usecase.dart';
 import 'package:bluedock/features/product/domain/usecases/quantumFreshWaterGenerator/search_quantum_fresh_water_generator_usecase.dart';
 import 'package:bluedock/features/product/domain/usecases/quantumFreshWaterGenerator/update_quantum_fresh_water_generator_usecase.dart';
@@ -65,22 +80,17 @@ import 'package:bluedock/features/project/domain/repositories/project_repository
 import 'package:bluedock/features/project/domain/usecases/add_project_usecase.dart';
 import 'package:bluedock/features/project/domain/usecases/delete_project_usecase.dart';
 import 'package:bluedock/features/project/domain/usecases/favorite_project_usecase.dart';
-import 'package:bluedock/features/project/domain/usecases/get_category_selection_usecase.dart';
-import 'package:bluedock/features/project/domain/usecases/get_product_selection_usecase.dart';
-import 'package:bluedock/features/project/domain/usecases/get_project_selection_usecase.dart';
-import 'package:bluedock/features/project/domain/usecases/get_staff_selection_usecase.dart';
 import 'package:bluedock/features/project/domain/usecases/search_project_usecase.dart';
 import 'package:bluedock/features/staff/data/repositories/role_repository_impl.dart';
-import 'package:bluedock/features/staff/data/repositories/staff_repository_impl.dart';
+import 'package:bluedock/common/data/repositories/staff_repository_impl.dart';
 import 'package:bluedock/features/staff/data/sources/role_firebase_service.dart';
-import 'package:bluedock/features/staff/data/sources/staff_firebase_service.dart';
+import 'package:bluedock/common/data/sources/staff_firebase_service.dart';
 import 'package:bluedock/features/staff/domain/repositories/role_repository.dart';
-import 'package:bluedock/features/staff/domain/repositories/staff_repository.dart';
+import 'package:bluedock/common/domain/repositories/staff_repository.dart';
 import 'package:bluedock/features/staff/domain/usecases/add_staff_usecase.dart';
 import 'package:bluedock/features/staff/domain/usecases/delete_staff_usecase.dart';
-import 'package:bluedock/features/staff/domain/usecases/get_all_staff_usecase.dart';
 import 'package:bluedock/features/staff/domain/usecases/get_roles_usecase.dart';
-import 'package:bluedock/features/staff/domain/usecases/search_staff_by_name_usecase.dart';
+import 'package:bluedock/common/domain/usecases/search_staff_by_name_usecase.dart';
 import 'package:bluedock/features/staff/domain/usecases/update_staff_usecase.dart';
 import 'package:get_it/get_it.dart';
 
@@ -115,6 +125,15 @@ Future<void> initializeDependencies() async {
     DetegasaOilyWaterSeparatorFirebaseServiceImpl(),
   );
   sl.registerSingleton<ProjectFirebaseService>(ProjectFirebaseServiceImpl());
+  sl.registerSingleton<ProductSectionFirebaseService>(
+    ProductSectionFirebaseServiceImpl(),
+  );
+  sl.registerSingleton<ItemSelectionFirebaseService>(
+    ItemSelectionFirebaseServiceImpl(),
+  );
+  sl.registerSingleton<DailyTaskFirebaseService>(
+    DailyTaskFirebaseServiceImpl(),
+  );
 
   //Repositories
   sl.registerSingleton<RoleRepository>(RoleRepositoryImpl());
@@ -144,13 +163,17 @@ Future<void> initializeDependencies() async {
     DetegasaOilyWaterSeparatorRepositoryImpl(),
   );
   sl.registerSingleton<ProjectRepository>(ProjectRepositoryImpl());
+  sl.registerSingleton<ProductSectionRepository>(
+    ProductSectionRepositoryImpl(),
+  );
+  sl.registerSingleton<ItemSelectionRepository>(ItemSelectionRepositoryImpl());
+  sl.registerSingleton<DailyTaskRepository>(DailyTaskRepositoryImpl());
 
   //Role Usecases
   sl.registerSingleton<GetRolesUseCase>(GetRolesUseCase());
 
   //Staff Usecases
   sl.registerSingleton<AddStaffUseCase>(AddStaffUseCase());
-  sl.registerSingleton<GetAllStaffUseCase>(GetAllStaffUseCase());
   sl.registerSingleton<DeleteStaffUseCase>(DeleteStaffUseCase());
   sl.registerSingleton<UpdateStaffUseCase>(UpdateStaffUseCase());
   sl.registerSingleton<SearchStaffByNameUseCase>(SearchStaffByNameUseCase());
@@ -165,13 +188,31 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<LogoutUseCase>(LogoutUseCase());
   sl.registerSingleton<GetAppMenuUseCase>(GetAppMenuUseCase());
 
-  //Product Usecases
+  //Product Categories Usecases
   sl.registerSingleton<GetProductCategoriesUseCase>(
     GetProductCategoriesUseCase(),
   );
+
+  //Daily Task Usecases
+  sl.registerSingleton<GetAllDailyTaskUseCase>(GetAllDailyTaskUseCase());
+  sl.registerSingleton<UpdateDailyTaskUseCase>(UpdateDailyTaskUseCase());
+  sl.registerSingleton<AddDailyTaskUseCase>(AddDailyTaskUseCase());
+  sl.registerSingleton<DeleteDailyTaskUseCase>(DeleteDailyTaskUseCase());
+
+  //Product Selection Usecases
+  sl.registerSingleton<GetProductSelectionUseCase>(
+    GetProductSelectionUseCase(),
+  );
+
+  //Item Selection Usecases
+  sl.registerSingleton<GetItemSelectionUseCase>(GetItemSelectionUseCase());
+  sl.registerSingleton<GetTypeCategorySelectionUseCase>(
+    GetTypeCategorySelectionUseCase(),
+  );
+
+  //Product Usecases
   sl.registerSingleton<DeleteProductUseCase>(DeleteProductUseCase());
   sl.registerSingleton<FavoriteProductUseCase>(FavoriteProductUseCase());
-  sl.registerSingleton<GetSelectionUseCase>(GetSelectionUseCase());
 
   // Sperre Air Compressor
   sl.registerSingleton<SearchSperreAirCompressorUseCase>(
@@ -250,17 +291,7 @@ Future<void> initializeDependencies() async {
     UpdateDetegasaOilyWaterSeparatorUseCase(),
   );
 
-  // Project Separator
-  sl.registerSingleton<GetProjectSelectionUseCase>(
-    GetProjectSelectionUseCase(),
-  );
-  sl.registerSingleton<GetCategorySelectionUseCase>(
-    GetCategorySelectionUseCase(),
-  );
-  sl.registerSingleton<GetProductSelectionUseCase>(
-    GetProductSelectionUseCase(),
-  );
-  sl.registerSingleton<GetStaffSelectionUseCase>(GetStaffSelectionUseCase());
+  // Project
   sl.registerSingleton<AddProjectUseCase>(AddProjectUseCase());
   sl.registerSingleton<SearchProjectUseCase>(SearchProjectUseCase());
   sl.registerSingleton<DeleteProjectUseCase>(DeleteProjectUseCase());

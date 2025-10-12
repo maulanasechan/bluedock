@@ -1,27 +1,34 @@
+import 'package:bluedock/common/bloc/staff/staff_display_cubit.dart';
+import 'package:bluedock/common/bloc/staff/staff_display_state.dart';
+import 'package:bluedock/common/domain/entities/staff_entity.dart';
 import 'package:bluedock/common/widgets/button/bloc/action_button_cubit.dart';
 import 'package:bluedock/common/widgets/button/bloc/action_button_state.dart';
 import 'package:bluedock/common/widgets/button/widgets/action_button_widget.dart';
 import 'package:bluedock/common/widgets/button/widgets/button_widget.dart';
-import 'package:bluedock/common/widgets/button/widgets/icon_button_widget.dart';
 import 'package:bluedock/common/widgets/gradientScaffold/gradient_scaffold_widget.dart';
 import 'package:bluedock/common/widgets/text/text_widget.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
-import 'package:bluedock/features/home/domain/entities/user_entity.dart';
 import 'package:bluedock/features/home/domain/usecases/logout_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class ProfilePage extends StatelessWidget {
-  final UserEntity staff;
-  const ProfilePage({super.key, required this.staff});
+  const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [BlocProvider(create: (context) => ActionButtonCubit())],
+      providers: [
+        BlocProvider(create: (context) => ActionButtonCubit()),
+        BlocProvider(
+          create: (context) => StaffDisplayCubit()..displayUserInfo(),
+        ),
+      ],
       child: GradientScaffoldWidget(
+        currentIndex: 3,
+        showBottomNavigation: true,
         body: Padding(
           padding: const EdgeInsets.fromLTRB(0, 90, 0, 20),
           child: BlocListener<ActionButtonCubit, ActionButtonState>(
@@ -34,24 +41,28 @@ class ProfilePage extends StatelessWidget {
                 context.goNamed(AppRoutes.login);
               }
             },
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: IconButtonWidget(),
-                    ),
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: _avatarWidget(),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 32),
-                _bottomNavWidget(context),
-              ],
+            child: BlocBuilder<StaffDisplayCubit, StaffDisplayState>(
+              builder: (context, state) {
+                if (state is StaffDisplayLoading) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                if (state is UserInfoFetched) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Center(child: _avatarWidget(state.user)),
+                      SizedBox(height: 32),
+                      _bottomNavWidget(context, state.user),
+                    ],
+                  );
+                }
+                if (state is StaffDisplayFailure) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    context.goNamed(AppRoutes.login);
+                  });
+                }
+                return Column();
+              },
             ),
           ),
         ),
@@ -59,7 +70,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _avatarWidget() {
+  Widget _avatarWidget(StaffEntity staff) {
     return Column(
       children: [
         Material(
@@ -71,7 +82,7 @@ class ProfilePage extends StatelessWidget {
             ),
             child: CircleAvatar(
               radius: 50,
-              backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=2'),
+              backgroundImage: NetworkImage(staff.image),
             ),
           ),
         ),
@@ -85,7 +96,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _contentWidget() {
+  Widget _contentWidget(StaffEntity staff) {
     return Material(
       elevation: 4,
       borderRadius: BorderRadius.circular(10),
@@ -186,14 +197,14 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _bottomNavWidget(BuildContext context) {
+  Widget _bottomNavWidget(BuildContext context, StaffEntity staff) {
     return Builder(
       builder: (context) {
         return Expanded(
           child: SingleChildScrollView(
             child: Column(
               children: [
-                _contentWidget(),
+                _contentWidget(staff),
                 SizedBox(height: 50),
                 ButtonWidget(
                   onPressed: () {
@@ -214,6 +225,7 @@ class ProfilePage extends StatelessWidget {
                   title: 'Logout',
                   fontSize: 16,
                 ),
+                SizedBox(height: 40),
               ],
             ),
           ),

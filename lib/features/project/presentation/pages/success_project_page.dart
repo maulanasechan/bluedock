@@ -4,10 +4,10 @@ import 'package:bluedock/core/config/assets/app_images.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class SuccessProjecttPage extends StatelessWidget {
+class SuccessProjectPage extends StatelessWidget {
   final String title;
   final String? image;
-  const SuccessProjecttPage({super.key, required this.title, this.image});
+  const SuccessProjectPage({super.key, required this.title, this.image});
 
   @override
   Widget build(BuildContext context) {

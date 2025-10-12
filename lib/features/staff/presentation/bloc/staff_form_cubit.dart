@@ -1,6 +1,6 @@
 import 'package:bluedock/features/staff/data/models/staff_form_req.dart';
-import 'package:bluedock/features/staff/domain/entities/role_entity.dart';
-import 'package:bluedock/features/staff/domain/entities/staff_entity.dart';
+import 'package:bluedock/common/domain/entities/role_entity.dart';
+import 'package:bluedock/common/domain/entities/staff_entity.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StaffFormCubit extends Cubit<StaffFormReq> {

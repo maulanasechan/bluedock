@@ -10,6 +10,8 @@ class AppImages {
   static const appOffline = '${basePath}offline$format';
   static const appUserCreated = '${basePath}user_created$format';
   static const appUserDeleted = '${basePath}user_deleted$format';
+  static const appTaskCreated = '${basePath}task_created$format';
+  static const appTaskDeleted = '${basePath}task_deleted$format';
   static const appProductAdded = '${basePath}product_added$format';
   static const appProductDeleted = '${basePath}product_deleted$format';
   static const appProjectSuccess = '${basePath}project_success$format';

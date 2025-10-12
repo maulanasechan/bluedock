@@ -1,11 +1,11 @@
+import 'package:bluedock/common/bloc/staff/staff_display_cubit.dart';
+import 'package:bluedock/common/bloc/staff/staff_display_state.dart';
+import 'package:bluedock/common/domain/entities/staff_entity.dart';
 import 'package:bluedock/common/widgets/gradientScaffold/gradient_scaffold_widget.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
-import 'package:bluedock/features/home/domain/entities/user_entity.dart';
 import 'package:bluedock/features/home/presentation/bloc/app_menu_cubit.dart';
 import 'package:bluedock/features/home/presentation/bloc/app_menu_state.dart';
-import 'package:bluedock/features/home/presentation/bloc/user_info_cubit.dart';
-import 'package:bluedock/features/home/presentation/bloc/user_info_state.dart';
 import 'package:bluedock/features/home/presentation/widgets/home_avatar_widget.dart';
 import 'package:bluedock/features/home/presentation/widgets/menu_list_widget.dart';
 import 'package:bluedock/features/home/presentation/widgets/notification_button_widget.dart';
@@ -21,14 +21,17 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => UserInfoCubit()..displayUserInfo()),
+        BlocProvider(
+          create: (context) => StaffDisplayCubit()..displayUserInfo(),
+        ),
         BlocProvider(create: (context) => AppMenuCubit()),
       ],
       child: GradientScaffoldWidget(
         hideBack: true,
+        showBottomNavigation: true,
         body: MultiBlocListener(
           listeners: [
-            BlocListener<UserInfoCubit, UserInfoState>(
+            BlocListener<StaffDisplayCubit, StaffDisplayState>(
               listenWhen: (prev, curr) => curr is UserInfoFetched,
               listener: (context, state) {
                 final user = (state as UserInfoFetched).user;
@@ -36,15 +39,15 @@ class HomePage extends StatelessWidget {
               },
             ),
           ],
-          child: BlocBuilder<UserInfoCubit, UserInfoState>(
+          child: BlocBuilder<StaffDisplayCubit, StaffDisplayState>(
             builder: (context, state) {
-              if (state is UserInfoLoading) {
+              if (state is StaffDisplayLoading) {
                 return _homeLoading();
               }
               if (state is UserInfoFetched) {
                 return _homeFetched(context, state.user);
               }
-              if (state is UserInfoFailure) {
+              if (state is StaffDisplayFailure) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   context.goNamed(AppRoutes.login);
                 });
@@ -78,7 +81,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _homeFetched(BuildContext context, UserEntity user) {
+  Widget _homeFetched(BuildContext context, StaffEntity user) {
     return Column(
       children: [
         SizedBox(height: 90),

@@ -1,11 +1,10 @@
+import 'package:bluedock/common/domain/entities/staff_entity.dart';
 import 'package:bluedock/common/helper/authError/auth_error_helper.dart';
-import 'package:bluedock/features/home/domain/entities/user_entity.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class UserFirebaseService {
-  Future<Either> getUser();
   Future<Either> logout();
 
   Future<Either> changePassword({
@@ -13,30 +12,12 @@ abstract class UserFirebaseService {
     required String newPassword,
   });
 
-  Future<Either> getAppMenu(UserEntity user);
+  Future<Either> getAppMenu(StaffEntity user);
 }
 
 class UserFirebaseServiceImpl extends UserFirebaseService {
   final _auth = FirebaseAuth.instance;
   final _db = FirebaseFirestore.instance;
-
-  @override
-  Future<Either> getUser() async {
-    try {
-      final user = _auth.currentUser;
-      if (user == null) return Left('USER_NOT_LOGGED_IN');
-
-      final snap = await _db.collection('Staff').doc(user.uid).get();
-      if (!snap.exists) {
-        await _auth.signOut();
-        return Left('STAFF_NOT_FOUND');
-      }
-
-      return Right(snap.data());
-    } catch (e) {
-      return Left('Please try again');
-    }
-  }
 
   @override
   Future<Either> logout() async {
@@ -94,7 +75,7 @@ class UserFirebaseServiceImpl extends UserFirebaseService {
   }
 
   @override
-  Future<Either> getAppMenu(UserEntity user) async {
+  Future<Either> getAppMenu(StaffEntity user) async {
     try {
       final db = FirebaseFirestore.instance;
 

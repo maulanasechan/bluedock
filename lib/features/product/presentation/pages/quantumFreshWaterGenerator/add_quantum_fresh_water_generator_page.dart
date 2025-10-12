@@ -3,23 +3,18 @@ import 'package:bluedock/common/helper/stringTrimmer/string_trimmer_helper.dart'
 import 'package:bluedock/common/widgets/button/bloc/action_button_cubit.dart';
 import 'package:bluedock/common/widgets/button/bloc/action_button_state.dart';
 import 'package:bluedock/common/widgets/button/widgets/action_button_widget.dart';
-import 'package:bluedock/common/widgets/dropdown/widgets/dropdown_widget.dart';
 import 'package:bluedock/common/widgets/gradientScaffold/gradient_scaffold_widget.dart';
 import 'package:bluedock/common/widgets/input/radio_list_button.dart';
-import 'package:bluedock/common/widgets/modal/bottom_modal_widget.dart';
 import 'package:bluedock/common/helper/validator/validator_helper.dart';
+import 'package:bluedock/common/widgets/selection/item_selection_modal_widget.dart';
 import 'package:bluedock/common/widgets/textfield/widgets/textfield_widget.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/features/product/data/models/quantumFreshWaterGenerator/quantum_fresh_water_generator_form_req.dart';
-import 'package:bluedock/features/product/data/models/selection/selection_req.dart';
 import 'package:bluedock/features/product/domain/entities/quantum_fresh_water_generator_entity.dart';
-import 'package:bluedock/features/product/domain/entities/selection_entity.dart';
 import 'package:bluedock/features/product/domain/usecases/quantumFreshWaterGenerator/add_quantum_fresh_water_generator_usecase.dart';
 import 'package:bluedock/features/product/domain/usecases/quantumFreshWaterGenerator/update_quantum_fresh_water_generator_usecase.dart';
 import 'package:bluedock/features/product/presentation/bloc/quantumFreshWaterGenerator/quantum_fresh_water_generator_form_cubit.dart';
-import 'package:bluedock/features/product/presentation/bloc/selection/selection_display_cubit.dart';
-import 'package:bluedock/features/product/presentation/widgets/list_selection_button_widget.dart';
-import 'package:bluedock/features/product/presentation/widgets/selection_modal_widget.dart';
+import 'package:bluedock/common/bloc/itemSelection/item_selection_display_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -45,7 +40,7 @@ class AddQuantumFreshWaterGeneratorPage extends StatelessWidget {
             return c;
           },
         ),
-        BlocProvider(create: (context) => SelectionDisplayCubit()),
+        BlocProvider(create: (context) => ItemSelectionDisplayCubit()),
       ],
       child: GradientScaffoldWidget(
         fontSizeTitle: 15,
@@ -85,21 +80,32 @@ class AddQuantumFreshWaterGeneratorPage extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _selectionDropdown(
-                            context: context,
-                            title: 'Water Solution Type',
+                          ItemSelectionModalWidget(
+                            collection: 'Products',
+                            document: 'M3jvF7wXaZpL2yKsTbQr',
+                            subCollection: 'Water Solution Type',
                             selected: state.waterSolutionType,
                             icon: PhosphorIconsBold.creditCard,
-                            onPressed: (value) {
+                            onSelected: (value) {
                               context
                                   .read<QuantumFreshWaterGeneratorFormCubit>()
                                   .setWaterSolutionType(value.title);
                               context.pop();
                             },
+                            extraProviders: [
+                              BlocProvider.value(
+                                value: context
+                                    .read<
+                                      QuantumFreshWaterGeneratorFormCubit
+                                    >(),
+                              ),
+                            ],
                           ),
                           SizedBox(height: 24),
                           TextfieldWidget(
-                            validator: AppValidators.required(),
+                            validator: AppValidators.required(
+                              field: 'Type Description',
+                            ),
                             hintText: 'Type Description',
                             title: 'Type Description',
                             initialValue: state.typeDescription,
@@ -186,59 +192,6 @@ class AddQuantumFreshWaterGeneratorPage extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _selectionDropdown({
-    required BuildContext context,
-    required String title,
-    required String selected,
-    required void Function(SelectionEntity) onPressed,
-    required PhosphorIconData icon,
-  }) {
-    return DropdownWidget(
-      icon: icon,
-      title: title,
-      state: selected == '' ? title : selected,
-      validator: (_) => selected == '' ? '$title is required.' : null,
-      onTap: () {
-        BottomModalWidget.display(
-          context,
-          MultiBlocProvider(
-            providers: [
-              BlocProvider.value(
-                value: context.read<QuantumFreshWaterGeneratorFormCubit>(),
-              ),
-              BlocProvider.value(
-                value: context.read<SelectionDisplayCubit>()
-                  ..displaySelection(
-                    SelectionReq(
-                      categoryId: 'M3jvF7wXaZpL2yKsTbQr',
-                      selectionTitle: title,
-                    ),
-                  ),
-              ),
-            ],
-            child: SelectionModalWidget(
-              title: 'Choose one $title:',
-              builder: (context, listSelection) {
-                return BlocBuilder<
-                  QuantumFreshWaterGeneratorFormCubit,
-                  QuantumFreshWaterGeneratorReq
-                >(
-                  builder: (context, state) {
-                    return ListSelectionButtonWidget(
-                      listSelection: listSelection,
-                      selected: selected,
-                      onSelected: onPressed,
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        );
-      },
     );
   }
 }

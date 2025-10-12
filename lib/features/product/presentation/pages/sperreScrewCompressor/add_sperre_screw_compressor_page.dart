@@ -2,22 +2,17 @@ import 'package:bluedock/common/helper/stringTrimmer/string_trimmer_helper.dart'
 import 'package:bluedock/common/widgets/button/bloc/action_button_cubit.dart';
 import 'package:bluedock/common/widgets/button/bloc/action_button_state.dart';
 import 'package:bluedock/common/widgets/button/widgets/action_button_widget.dart';
-import 'package:bluedock/common/widgets/dropdown/widgets/dropdown_widget.dart';
 import 'package:bluedock/common/widgets/gradientScaffold/gradient_scaffold_widget.dart';
-import 'package:bluedock/common/widgets/modal/bottom_modal_widget.dart';
 import 'package:bluedock/common/helper/validator/validator_helper.dart';
+import 'package:bluedock/common/widgets/selection/item_selection_modal_widget.dart';
 import 'package:bluedock/common/widgets/textfield/widgets/textfield_widget.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
-import 'package:bluedock/features/product/data/models/selection/selection_req.dart';
 import 'package:bluedock/features/product/data/models/sperreScrewCompressor/sperre_screw_compressor_form_req.dart';
-import 'package:bluedock/features/product/domain/entities/selection_entity.dart';
 import 'package:bluedock/features/product/domain/entities/sperre_screw_compressor_entity.dart';
 import 'package:bluedock/features/product/domain/usecases/sperreScrewCompressor/add_sperre_screw_compressor_usecase.dart';
 import 'package:bluedock/features/product/domain/usecases/sperreScrewCompressor/update_sperre_screw_compressor_usecase.dart';
-import 'package:bluedock/features/product/presentation/bloc/selection/selection_display_cubit.dart';
+import 'package:bluedock/common/bloc/itemSelection/item_selection_display_cubit.dart';
 import 'package:bluedock/features/product/presentation/bloc/sperreScrewCompressor/sperre_screw_compressor_form_cubit.dart';
-import 'package:bluedock/features/product/presentation/widgets/list_selection_button_widget.dart';
-import 'package:bluedock/features/product/presentation/widgets/selection_modal_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -31,6 +26,8 @@ class AddSperreScrewCompressorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isUpdate = product != null;
+    final collection = 'Products';
+    final document = 'Zx4nB8qHtUvL5rOaWsKd';
 
     return MultiBlocProvider(
       providers: [
@@ -42,7 +39,7 @@ class AddSperreScrewCompressorPage extends StatelessWidget {
             return c;
           },
         ),
-        BlocProvider(create: (context) => SelectionDisplayCubit()),
+        BlocProvider(create: (context) => ItemSelectionDisplayCubit()),
       ],
       child: GradientScaffoldWidget(
         hideBack: false,
@@ -80,48 +77,70 @@ class AddSperreScrewCompressorPage extends StatelessWidget {
                       key: _formKey,
                       child: Column(
                         children: [
-                          _selectionDropdown(
-                            context: context,
-                            title: 'Product Usage',
+                          ItemSelectionModalWidget(
+                            collection: collection,
+                            document: document,
+                            subCollection: 'Product Usage',
                             selected: state.productUsage,
                             icon: PhosphorIconsBold.creditCard,
-                            onPressed: (value) {
+                            onSelected: (value) {
                               context
                                   .read<SperreScrewCompressorFormCubit>()
                                   .setProductUsage(value.title);
                               context.pop();
                             },
+                            extraProviders: [
+                              BlocProvider.value(
+                                value: context
+                                    .read<SperreScrewCompressorFormCubit>(),
+                              ),
+                            ],
                           ),
                           SizedBox(height: 24),
-                          _selectionDropdown(
-                            context: context,
-                            title: 'Product Type',
+                          ItemSelectionModalWidget(
+                            collection: collection,
+                            document: document,
+                            subCollection: 'Product Type',
                             selected: state.productType,
-                            icon: PhosphorIconsBold.creditCard,
-                            onPressed: (value) {
+                            icon: PhosphorIconsBold.cardholder,
+                            onSelected: (value) {
                               context
                                   .read<SperreScrewCompressorFormCubit>()
                                   .setProductType(value.title);
                               context.pop();
                             },
+                            extraProviders: [
+                              BlocProvider.value(
+                                value: context
+                                    .read<SperreScrewCompressorFormCubit>(),
+                              ),
+                            ],
                           ),
                           SizedBox(height: 24),
-
-                          _selectionDropdown(
-                            context: context,
-                            title: 'Cooling System',
+                          ItemSelectionModalWidget(
+                            collection: collection,
+                            document: document,
+                            subCollection: 'Cooling System',
                             selected: state.coolingSystem,
                             icon: PhosphorIconsBold.thermometerCold,
-                            onPressed: (value) {
+                            onSelected: (value) {
                               context
                                   .read<SperreScrewCompressorFormCubit>()
                                   .setCoolingSystem(value.title);
                               context.pop();
                             },
+                            extraProviders: [
+                              BlocProvider.value(
+                                value: context
+                                    .read<SperreScrewCompressorFormCubit>(),
+                              ),
+                            ],
                           ),
                           SizedBox(height: 24),
                           TextfieldWidget(
-                            validator: AppValidators.required(),
+                            validator: AppValidators.required(
+                              field: 'Product Type Code',
+                            ),
                             hintText: 'Product Type Code',
                             title: 'Product Type Code',
                             initialValue: state.productTypeCode,
@@ -205,59 +224,6 @@ class AddSperreScrewCompressorPage extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _selectionDropdown({
-    required BuildContext context,
-    required String title,
-    required String selected,
-    required void Function(SelectionEntity) onPressed,
-    required PhosphorIconData icon,
-  }) {
-    return DropdownWidget(
-      icon: icon,
-      title: title,
-      state: selected == '' ? title : selected,
-      validator: (_) => selected == '' ? '$title is required.' : null,
-      onTap: () {
-        BottomModalWidget.display(
-          context,
-          MultiBlocProvider(
-            providers: [
-              BlocProvider.value(
-                value: context.read<SperreScrewCompressorFormCubit>(),
-              ),
-              BlocProvider.value(
-                value: context.read<SelectionDisplayCubit>()
-                  ..displaySelection(
-                    SelectionReq(
-                      categoryId: 'Zx4nB8qHtUvL5rOaWsKd',
-                      selectionTitle: title,
-                    ),
-                  ),
-              ),
-            ],
-            child: SelectionModalWidget(
-              title: 'Choose one $title:',
-              builder: (context, listSelection) {
-                return BlocBuilder<
-                  SperreScrewCompressorFormCubit,
-                  SperreScrewCompressorReq
-                >(
-                  builder: (context, state) {
-                    return ListSelectionButtonWidget(
-                      listSelection: listSelection,
-                      selected: selected,
-                      onSelected: onPressed,
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        );
-      },
     );
   }
 }

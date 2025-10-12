@@ -2,7 +2,7 @@ import 'package:bluedock/common/widgets/modal/bottom_modal_widget.dart';
 import 'package:bluedock/common/widgets/button/bloc/action_button_cubit.dart';
 import 'package:bluedock/common/widgets/button/bloc/action_button_state.dart';
 import 'package:bluedock/common/widgets/button/widgets/action_button_widget.dart';
-import 'package:bluedock/common/widgets/dropdown/widgets/dropdown_widget.dart';
+import 'package:bluedock/common/widgets/dropdown/dropdown_widget.dart';
 import 'package:bluedock/common/widgets/gradientScaffold/gradient_scaffold_widget.dart';
 import 'package:bluedock/common/widgets/textfield/blocs/password_textfield_cubit.dart';
 import 'package:bluedock/common/helper/validator/validator_helper.dart';
@@ -10,7 +10,7 @@ import 'package:bluedock/common/widgets/textfield/widgets/password_textfield_wid
 import 'package:bluedock/common/widgets/textfield/widgets/textfield_widget.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/features/staff/data/models/staff_form_req.dart';
-import 'package:bluedock/features/staff/domain/entities/staff_entity.dart';
+import 'package:bluedock/common/domain/entities/staff_entity.dart';
 import 'package:bluedock/features/staff/domain/usecases/add_staff_usecase.dart';
 import 'package:bluedock/features/staff/domain/usecases/update_staff_usecase.dart';
 import 'package:bluedock/features/staff/presentation/bloc/staff_form_cubit.dart';

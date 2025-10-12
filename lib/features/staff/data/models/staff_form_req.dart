@@ -1,4 +1,4 @@
-import 'package:bluedock/features/staff/domain/entities/role_entity.dart';
+import 'package:bluedock/common/domain/entities/role_entity.dart';
 
 class StaffFormReq {
   final String staffId;

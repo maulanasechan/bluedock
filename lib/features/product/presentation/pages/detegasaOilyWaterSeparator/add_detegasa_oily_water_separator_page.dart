@@ -75,7 +75,9 @@ class AddDetegasaOilyWaterSeparatorPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           TextfieldWidget(
-                            validator: AppValidators.required(),
+                            validator: AppValidators.required(
+                              field: 'Product Model',
+                            ),
                             hintText: 'Product Model',
                             title: 'Product Model',
                             initialValue: state.productModel,

@@ -1,8 +1,10 @@
 import 'package:bluedock/common/widgets/button/widgets/icon_button_widget.dart';
 import 'package:bluedock/common/widgets/text/text_widget.dart';
+import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 
 class GradientScaffoldWidget extends StatelessWidget {
@@ -19,6 +21,9 @@ class GradientScaffoldWidget extends StatelessWidget {
   final bool loading;
   final double fontSizeTitle;
   final EdgeInsets? padding;
+  final EdgeInsets? bodyPadding;
+  final bool showBottomNavigation;
+  final int currentIndex;
 
   const GradientScaffoldWidget({
     super.key,
@@ -35,21 +40,89 @@ class GradientScaffoldWidget extends StatelessWidget {
     this.appbarAction,
     this.loading = false,
     this.padding,
+    this.bodyPadding,
+    this.showBottomNavigation = false,
+    this.currentIndex = 0,
   });
 
   @override
   Widget build(BuildContext context) {
+    final tabs = [
+      AppRoutes.home,
+      AppRoutes.dailyTask,
+      AppRoutes.notification,
+      AppRoutes.profile,
+    ];
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: appBar,
+      extendBody: true,
       floatingActionButton: floatingActionButton,
-      bottomNavigationBar: bottomNavigationBar,
+      bottomNavigationBar: showBottomNavigation
+          ? Container(
+              padding: EdgeInsets.fromLTRB(0, 6, 0, 6),
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(16),
+                  topLeft: Radius.circular(16),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.boxShadow,
+                    spreadRadius: 0,
+                    blurRadius: 20,
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  topRight: Radius.circular(16),
+                ),
+                child: BottomNavigationBar(
+                  type: BottomNavigationBarType.fixed,
+                  currentIndex: currentIndex,
+                  onTap: (i) => context.goNamed(tabs[i]),
+                  backgroundColor: AppColors.white,
+                  selectedItemColor: AppColors.blue,
+                  unselectedItemColor: AppColors.darkBlue,
+                  showSelectedLabels: false,
+                  showUnselectedLabels: false,
+                  iconSize: 26,
+                  items: [
+                    BottomNavigationBarItem(
+                      icon: PhosphorIcon(PhosphorIconsBold.houseLine),
+                      activeIcon: PhosphorIcon(PhosphorIconsFill.houseLine),
+                      label: 'Home',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: PhosphorIcon(PhosphorIconsBold.calendarCheck),
+                      activeIcon: PhosphorIcon(PhosphorIconsFill.calendarCheck),
+                      label: 'Daily Task',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: PhosphorIcon(PhosphorIconsBold.bellRinging),
+                      activeIcon: PhosphorIcon(PhosphorIconsFill.bellRinging),
+                      label: 'Notification',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: PhosphorIcon(PhosphorIconsBold.userCircle),
+                      activeIcon: PhosphorIcon(PhosphorIconsFill.userCircle),
+                      label: 'Profile',
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : SizedBox(),
       body: Stack(
         children: [
           Container(decoration: BoxDecoration(gradient: gradientColor)),
           if (body != null)
             Padding(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 40),
+              padding: bodyPadding ?? EdgeInsets.fromLTRB(20, 0, 20, 40),
               child: loading
                   ? _loadingWidget()
                   : Column(

@@ -1,22 +1,17 @@
 import 'package:bluedock/common/widgets/button/bloc/action_button_cubit.dart';
 import 'package:bluedock/common/widgets/button/bloc/action_button_state.dart';
 import 'package:bluedock/common/widgets/button/widgets/action_button_widget.dart';
-import 'package:bluedock/common/widgets/dropdown/widgets/dropdown_widget.dart';
 import 'package:bluedock/common/widgets/gradientScaffold/gradient_scaffold_widget.dart';
-import 'package:bluedock/common/widgets/modal/bottom_modal_widget.dart';
 import 'package:bluedock/common/helper/validator/validator_helper.dart';
+import 'package:bluedock/common/widgets/selection/item_selection_modal_widget.dart';
 import 'package:bluedock/common/widgets/textfield/widgets/textfield_widget.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
-import 'package:bluedock/features/product/data/models/selection/selection_req.dart';
 import 'package:bluedock/features/product/data/models/sperreAirSystemSolutions/sperre_air_system_solutions_form_req.dart';
-import 'package:bluedock/features/product/domain/entities/selection_entity.dart';
 import 'package:bluedock/features/product/domain/entities/sperre_air_system_solutions_entity.dart';
 import 'package:bluedock/features/product/domain/usecases/sperreAirSystemSolutions/add_sperre_air_system_solutions_usecase.dart';
 import 'package:bluedock/features/product/domain/usecases/sperreAirSystemSolutions/update_sperre_air_system_solutions_usecase.dart';
-import 'package:bluedock/features/product/presentation/bloc/selection/selection_display_cubit.dart';
+import 'package:bluedock/common/bloc/itemSelection/item_selection_display_cubit.dart';
 import 'package:bluedock/features/product/presentation/bloc/sperreAirSystemSolutions/sperre_air_system_solutions_form_cubit.dart';
-import 'package:bluedock/features/product/presentation/widgets/list_selection_button_widget.dart';
-import 'package:bluedock/features/product/presentation/widgets/selection_modal_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -30,6 +25,8 @@ class AddSperreAirSystemSolutionsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isUpdate = product != null;
+    final collection = 'Products';
+    final document = 'tG6pN1yXcQwE9bJmRvUh';
 
     return MultiBlocProvider(
       providers: [
@@ -41,7 +38,7 @@ class AddSperreAirSystemSolutionsPage extends StatelessWidget {
             return c;
           },
         ),
-        BlocProvider(create: (context) => SelectionDisplayCubit()),
+        BlocProvider(create: (context) => ItemSelectionDisplayCubit()),
       ],
       child: GradientScaffoldWidget(
         hideBack: false,
@@ -79,34 +76,50 @@ class AddSperreAirSystemSolutionsPage extends StatelessWidget {
                       key: _formKey,
                       child: Column(
                         children: [
-                          _selectionDropdown(
-                            context: context,
-                            title: 'Product Usage',
+                          ItemSelectionModalWidget(
+                            collection: collection,
+                            document: document,
+                            subCollection: 'Product Usage',
                             selected: state.productUsage,
                             icon: PhosphorIconsBold.creditCard,
-                            onPressed: (value) {
+                            onSelected: (value) {
                               context
                                   .read<SperreAirSystemSolutionsFormCubit>()
                                   .setProductUsage(value.title);
                               context.pop();
                             },
+                            extraProviders: [
+                              BlocProvider.value(
+                                value: context
+                                    .read<SperreAirSystemSolutionsFormCubit>(),
+                              ),
+                            ],
                           ),
                           SizedBox(height: 24),
-                          _selectionDropdown(
-                            context: context,
-                            title: 'Product Category',
+                          ItemSelectionModalWidget(
+                            collection: collection,
+                            document: document,
+                            subCollection: 'Product Category',
                             selected: state.productCategory,
                             icon: PhosphorIconsBold.cardholder,
-                            onPressed: (value) {
+                            onSelected: (value) {
                               context
                                   .read<SperreAirSystemSolutionsFormCubit>()
                                   .setProductCategory(value.title);
                               context.pop();
                             },
+                            extraProviders: [
+                              BlocProvider.value(
+                                value: context
+                                    .read<SperreAirSystemSolutionsFormCubit>(),
+                              ),
+                            ],
                           ),
                           SizedBox(height: 24),
                           TextfieldWidget(
-                            validator: AppValidators.required(),
+                            validator: AppValidators.required(
+                              field: 'Product Name',
+                            ),
                             hintText: 'Product Name',
                             title: 'Product Name',
                             initialValue: state.productName,
@@ -117,7 +130,9 @@ class AddSperreAirSystemSolutionsPage extends StatelessWidget {
                           ),
                           SizedBox(height: 32),
                           TextfieldWidget(
-                            validator: AppValidators.required(),
+                            validator: AppValidators.required(
+                              field: 'Product Explanation',
+                            ),
                             hintText: 'Product Explanation',
                             title: 'Product Explanation',
                             maxLines: 5,
@@ -156,59 +171,6 @@ class AddSperreAirSystemSolutionsPage extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _selectionDropdown({
-    required BuildContext context,
-    required String title,
-    required String selected,
-    required void Function(SelectionEntity) onPressed,
-    required PhosphorIconData icon,
-  }) {
-    return DropdownWidget(
-      icon: icon,
-      title: title,
-      state: selected == '' ? title : selected,
-      validator: (_) => selected == '' ? '$title is required.' : null,
-      onTap: () {
-        BottomModalWidget.display(
-          context,
-          MultiBlocProvider(
-            providers: [
-              BlocProvider.value(
-                value: context.read<SperreAirSystemSolutionsFormCubit>(),
-              ),
-              BlocProvider.value(
-                value: context.read<SelectionDisplayCubit>()
-                  ..displaySelection(
-                    SelectionReq(
-                      categoryId: 'tG6pN1yXcQwE9bJmRvUh',
-                      selectionTitle: title,
-                    ),
-                  ),
-              ),
-            ],
-            child: SelectionModalWidget(
-              title: 'Choose one $title:',
-              builder: (context, listSelection) {
-                return BlocBuilder<
-                  SperreAirSystemSolutionsFormCubit,
-                  SperreAirSystemSolutionsReq
-                >(
-                  builder: (context, state) {
-                    return ListSelectionButtonWidget(
-                      listSelection: listSelection,
-                      selected: selected,
-                      onSelected: onPressed,
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        );
-      },
     );
   }
 }

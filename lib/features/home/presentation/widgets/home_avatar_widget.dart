@@ -1,11 +1,11 @@
+import 'package:bluedock/common/domain/entities/staff_entity.dart';
 import 'package:bluedock/common/helper/greetings/greetings_helper.dart';
 import 'package:bluedock/common/widgets/text/text_widget.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
-import 'package:bluedock/features/home/domain/entities/user_entity.dart';
 import 'package:flutter/material.dart';
 
 class HomeAvatarWidget extends StatelessWidget {
-  final UserEntity? user;
+  final StaffEntity? user;
   final Function()? onTap;
   const HomeAvatarWidget({super.key, this.user, this.onTap});
 

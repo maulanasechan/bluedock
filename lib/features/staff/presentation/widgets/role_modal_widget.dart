@@ -2,7 +2,7 @@ import 'package:bluedock/common/widgets/button/widgets/button_widget.dart';
 import 'package:bluedock/common/widgets/text/text_widget.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
 import 'package:bluedock/features/staff/data/models/staff_form_req.dart';
-import 'package:bluedock/features/staff/domain/entities/role_entity.dart';
+import 'package:bluedock/common/domain/entities/role_entity.dart';
 import 'package:bluedock/features/staff/presentation/bloc/staff_form_cubit.dart';
 import 'package:bluedock/features/staff/presentation/bloc/role_display_cubit.dart';
 import 'package:bluedock/features/staff/presentation/bloc/role_display_state.dart';

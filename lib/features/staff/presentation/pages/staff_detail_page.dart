@@ -7,7 +7,7 @@ import 'package:bluedock/common/widgets/text/text_widget.dart';
 import 'package:bluedock/core/config/assets/app_images.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
-import 'package:bluedock/features/staff/domain/entities/staff_entity.dart';
+import 'package:bluedock/common/domain/entities/staff_entity.dart';
 import 'package:bluedock/features/staff/domain/usecases/delete_staff_usecase.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';

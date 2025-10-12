@@ -3,22 +3,17 @@ import 'package:bluedock/common/helper/stringTrimmer/string_trimmer_helper.dart'
 import 'package:bluedock/common/widgets/button/bloc/action_button_cubit.dart';
 import 'package:bluedock/common/widgets/button/bloc/action_button_state.dart';
 import 'package:bluedock/common/widgets/button/widgets/action_button_widget.dart';
-import 'package:bluedock/common/widgets/dropdown/widgets/dropdown_widget.dart';
 import 'package:bluedock/common/widgets/gradientScaffold/gradient_scaffold_widget.dart';
-import 'package:bluedock/common/widgets/modal/bottom_modal_widget.dart';
 import 'package:bluedock/common/helper/validator/validator_helper.dart';
+import 'package:bluedock/common/widgets/selection/item_selection_modal_widget.dart';
 import 'package:bluedock/common/widgets/textfield/widgets/textfield_widget.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/features/product/data/models/detegasaSewageTreatmentPlant/detegasa_sewage_treatment_plant_form_req.dart';
-import 'package:bluedock/features/product/data/models/selection/selection_req.dart';
 import 'package:bluedock/features/product/domain/entities/detegasa_sewage_treatment_plant_entity.dart';
-import 'package:bluedock/features/product/domain/entities/selection_entity.dart';
 import 'package:bluedock/features/product/domain/usecases/detegasaSewageTreatmentPlant/add_detegasa_sewage_treatment_plant_usecase.dart';
 import 'package:bluedock/features/product/domain/usecases/detegasaSewageTreatmentPlant/update_detegasa_sewage_treatment_plant_usecase.dart';
 import 'package:bluedock/features/product/presentation/bloc/detegasaSewageTreatmentPlant/detegasa_sewage_treatment_plant_form_cubit.dart';
-import 'package:bluedock/features/product/presentation/bloc/selection/selection_display_cubit.dart';
-import 'package:bluedock/features/product/presentation/widgets/list_selection_button_widget.dart';
-import 'package:bluedock/features/product/presentation/widgets/selection_modal_widget.dart';
+import 'package:bluedock/common/bloc/itemSelection/item_selection_display_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,7 +39,7 @@ class AddDetegasaSewageTreatmentPlantPage extends StatelessWidget {
             return c;
           },
         ),
-        BlocProvider(create: (context) => SelectionDisplayCubit()),
+        BlocProvider(create: (context) => ItemSelectionDisplayCubit()),
       ],
       child: GradientScaffoldWidget(
         hideBack: false,
@@ -83,21 +78,32 @@ class AddDetegasaSewageTreatmentPlantPage extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _selectionDropdown(
-                            context: context,
-                            title: 'Product Usage',
+                          ItemSelectionModalWidget(
+                            collection: 'Products',
+                            document: 'qY8kH4mTzRpG6nVxWdJo',
+                            subCollection: 'Product Usage',
                             selected: state.productUsage,
                             icon: PhosphorIconsBold.creditCard,
-                            onPressed: (value) {
+                            onSelected: (value) {
                               context
                                   .read<DetegasaSewageTreatmentPlantFormCubit>()
                                   .setProductUsage(value.title);
                               context.pop();
                             },
+                            extraProviders: [
+                              BlocProvider.value(
+                                value: context
+                                    .read<
+                                      DetegasaSewageTreatmentPlantFormCubit
+                                    >(),
+                              ),
+                            ],
                           ),
                           SizedBox(height: 24),
                           TextfieldWidget(
-                            validator: AppValidators.required(),
+                            validator: AppValidators.required(
+                              field: 'Product Model',
+                            ),
                             hintText: 'Product Model',
                             title: 'Product Model',
                             initialValue: state.productModel,
@@ -195,59 +201,6 @@ class AddDetegasaSewageTreatmentPlantPage extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _selectionDropdown({
-    required BuildContext context,
-    required String title,
-    required String selected,
-    required void Function(SelectionEntity) onPressed,
-    required PhosphorIconData icon,
-  }) {
-    return DropdownWidget(
-      icon: icon,
-      title: title,
-      state: selected == '' ? title : selected,
-      validator: (_) => selected == '' ? '$title is required.' : null,
-      onTap: () {
-        BottomModalWidget.display(
-          context,
-          MultiBlocProvider(
-            providers: [
-              BlocProvider.value(
-                value: context.read<DetegasaSewageTreatmentPlantFormCubit>(),
-              ),
-              BlocProvider.value(
-                value: context.read<SelectionDisplayCubit>()
-                  ..displaySelection(
-                    SelectionReq(
-                      categoryId: 'qY8kH4mTzRpG6nVxWdJo',
-                      selectionTitle: title,
-                    ),
-                  ),
-              ),
-            ],
-            child: SelectionModalWidget(
-              title: 'Choose one $title:',
-              builder: (context, listSelection) {
-                return BlocBuilder<
-                  DetegasaSewageTreatmentPlantFormCubit,
-                  DetegasaSewageTreatmentPlantReq
-                >(
-                  builder: (context, state) {
-                    return ListSelectionButtonWidget(
-                      listSelection: listSelection,
-                      selected: selected,
-                      onSelected: onPressed,
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        );
-      },
     );
   }
 }

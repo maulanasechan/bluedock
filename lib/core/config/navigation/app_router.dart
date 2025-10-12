@@ -1,6 +1,10 @@
 import 'package:bluedock/common/helper/navigation/format_route.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
-import 'package:bluedock/features/home/domain/entities/user_entity.dart';
+import 'package:bluedock/features/dailyTask/domain/entities/daily_task_entity.dart';
+import 'package:bluedock/features/dailyTask/presentation/pages/daily_task_detail_page.dart';
+import 'package:bluedock/features/dailyTask/presentation/pages/daily_task_page.dart';
+import 'package:bluedock/features/dailyTask/presentation/pages/form_daily_task_page.dart';
+import 'package:bluedock/features/dailyTask/presentation/pages/success_daily_task_page.dart';
 import 'package:bluedock/features/home/presentation/pages/error/access_denied_page.dart';
 import 'package:bluedock/features/home/presentation/pages/error/page_not_found_page.dart';
 import 'package:bluedock/features/home/presentation/pages/error/under_construction_page.dart';
@@ -34,13 +38,13 @@ import 'package:bluedock/features/product/presentation/pages/sperreAirSystemSolu
 import 'package:bluedock/features/product/presentation/pages/sperreScrewCompressor/add_sperre_screw_compressor_page.dart';
 import 'package:bluedock/features/product/presentation/pages/sperreScrewCompressor/sperre_screw_compressor_page.dart';
 import 'package:bluedock/features/product/presentation/pages/successProduct/success_product_page.dart';
-import 'package:bluedock/features/project/domain/entities/project_entity.dart';
+import 'package:bluedock/common/domain/entities/project_entity.dart';
 import 'package:bluedock/features/project/presentation/pages/project_detail_page.dart';
 import 'package:bluedock/features/project/presentation/pages/project_form_page.dart';
 import 'package:bluedock/features/project/presentation/pages/manage_project_page.dart';
 import 'package:bluedock/features/project/presentation/pages/success_project_page.dart';
 import 'package:bluedock/features/splash/pages/splash_page.dart';
-import 'package:bluedock/features/staff/domain/entities/staff_entity.dart';
+import 'package:bluedock/common/domain/entities/staff_entity.dart';
 import 'package:bluedock/features/staff/presentation/pages/add_or_update_staff_page.dart';
 import 'package:bluedock/features/staff/presentation/pages/manage_staff_page.dart';
 import 'package:bluedock/features/staff/presentation/pages/staff_detail_page.dart';
@@ -55,6 +59,41 @@ class AppRouter {
         path: formatRoute(AppRoutes.splash),
         name: AppRoutes.splash,
         builder: (context, state) => const SplashPage(),
+      ),
+      GoRoute(
+        path: formatRoute(AppRoutes.dailyTask),
+        name: AppRoutes.dailyTask,
+        builder: (context, state) => const DailyTaskPage(),
+        routes: [
+          GoRoute(
+            path: AppRoutes.formDailyTask,
+            name: AppRoutes.formDailyTask,
+            builder: (context, state) {
+              final extra = state.extra as DailyTaskEntity?;
+              return FormDailyTaskPage(task: extra);
+            },
+          ),
+          GoRoute(
+            path: AppRoutes.detailDailyTask,
+            name: AppRoutes.detailDailyTask,
+            builder: (context, state) {
+              final extra = state.extra as DailyTaskEntity;
+              return DailyTaskDetailPage(task: extra);
+            },
+          ),
+          GoRoute(
+            path: AppRoutes.successDaily,
+            name: AppRoutes.successDaily,
+            builder: (context, state) {
+              final map = (state.extra is Map)
+                  ? Map<String, dynamic>.from(state.extra as Map)
+                  : const <String, dynamic>{};
+              final title = map['title'] as String? ?? '';
+              final image = map['image'] as String? ?? '';
+              return SuccessDailyTaskPage(title: title, image: image);
+            },
+          ),
+        ],
       ),
       GoRoute(
         path: formatRoute(AppRoutes.login),
@@ -103,7 +142,7 @@ class AppRouter {
                   : const <String, dynamic>{};
               final title = map['title'] as String? ?? '';
               final image = map['image'] as String? ?? '';
-              return SuccessProjecttPage(title: title, image: image);
+              return SuccessProjectPage(title: title, image: image);
             },
           ),
         ],
@@ -137,8 +176,7 @@ class AppRouter {
             path: AppRoutes.profile,
             name: AppRoutes.profile,
             builder: (context, state) {
-              final extra = state.extra as UserEntity;
-              return ProfilePage(staff: extra);
+              return ProfilePage();
             },
             routes: [
               GoRoute(

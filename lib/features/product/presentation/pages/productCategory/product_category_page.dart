@@ -1,7 +1,7 @@
 import 'package:bluedock/common/widgets/gradientScaffold/gradient_scaffold_widget.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
-import 'package:bluedock/features/product/presentation/bloc/productCategories/product_categories_cubit.dart';
-import 'package:bluedock/features/product/presentation/bloc/productCategories/product_categories_state.dart';
+import 'package:bluedock/common/bloc/productSection/product_section_cubit.dart';
+import 'package:bluedock/common/bloc/productSection/product_section_state.dart';
 import 'package:bluedock/features/product/presentation/widgets/product_category_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,14 +16,13 @@ class ProductCategoryPage extends StatelessWidget {
       hideBack: false,
       appbarTitle: 'Choose Category',
       body: BlocProvider(
-        create: (context) =>
-            ProductCategoriesCubit()..displayProductCategories(),
-        child: BlocBuilder<ProductCategoriesCubit, ProductCategoriesState>(
+        create: (context) => ProductSectionCubit()..displayProductCategories(),
+        child: BlocBuilder<ProductSectionCubit, ProductSectionState>(
           builder: (context, state) {
-            if (state is ProductCategoriesLoading) {
+            if (state is ProductSectionLoading) {
               return _productLoading();
             }
-            if (state is ProductCategoriesFetched) {
+            if (state is ProductCategoryFetched) {
               return ListView.separated(
                 padding: EdgeInsets.zero,
                 separatorBuilder: (context, index) {
@@ -31,10 +30,10 @@ class ProductCategoryPage extends StatelessWidget {
                 },
                 itemBuilder: (context, index) {
                   return ProductCategoryCardWidget(
-                    product: state.productCategories[index],
+                    product: state.productCategory[index],
                   );
                 },
-                itemCount: state.productCategories.length,
+                itemCount: state.productCategory.length,
               );
             }
             return SizedBox();

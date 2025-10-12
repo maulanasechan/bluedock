@@ -1,14 +1,14 @@
 import 'package:bluedock/common/widgets/card/card_container_widget.dart';
 import 'package:bluedock/common/widgets/text/text_widget.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
-import 'package:bluedock/features/product/domain/entities/product_categories_entity.dart';
-import 'package:bluedock/features/product/presentation/bloc/productCategories/product_categories_cubit.dart';
+import 'package:bluedock/common/domain/entities/product_category_entity.dart';
+import 'package:bluedock/common/bloc/productSection/product_section_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class ProductCategoryCardWidget extends StatelessWidget {
-  final ProductCategoriesEntity product;
+  final ProductCategoryEntity product;
   const ProductCategoryCardWidget({super.key, required this.product});
 
   @override
@@ -20,7 +20,7 @@ class ProductCategoryCardWidget extends StatelessWidget {
           extra: product.categoryId,
         );
         if (changed == true && context.mounted) {
-          context.read<ProductCategoriesCubit>().displayProductCategories();
+          context.read<ProductSectionCubit>().displayProductCategories();
         }
       },
       child: CardContainerWidget(

@@ -1,5 +1,4 @@
 import 'package:bluedock/features/product/data/models/product/product_req.dart';
-import 'package:bluedock/features/product/data/models/selection/selection_req.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,34 +6,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 abstract class ProductFirebaseService {
   Future<Either> deleteProduct(ProductReq product);
   Future<Either> favoriteProduct(ProductReq product);
-  Future<Either> getSelection(SelectionReq selection);
-  Future<Either> getProductCategories();
 }
 
 class ProductFirebaseServiceImpl extends ProductFirebaseService {
   final _auth = FirebaseAuth.instance;
   final _db = FirebaseFirestore.instance;
-
-  // Selection
-  @override
-  Future<Either> getSelection(SelectionReq selection) async {
-    try {
-      final listData = await _db
-          .collection('Products')
-          .doc(selection.categoryId)
-          .collection(selection.selectionTitle)
-          .orderBy('title')
-          .get();
-
-      if (listData.docs.isEmpty) {
-        return Left('Selection Not Found');
-      }
-
-      return Right(listData.docs.map((e) => e.data()).toList());
-    } catch (e) {
-      return Left('Please try again');
-    }
-  }
 
   // Product
   @override
@@ -105,21 +81,6 @@ class ProductFirebaseServiceImpl extends ProductFirebaseService {
       return Right(nowFav ? 'Added to favorites.' : 'Removed from favorites.');
     } catch (_) {
       return const Left('Please try again');
-    }
-  }
-
-  // Product Categories
-  @override
-  Future<Either> getProductCategories() async {
-    try {
-      final listData = await _db.collection('Products').orderBy('index').get();
-      if (listData.docs.isEmpty) {
-        return Left('Product Categories Not Found');
-      }
-
-      return Right(listData.docs.map((e) => e.data()).toList());
-    } catch (e) {
-      return Left('Please try again');
     }
   }
 }
