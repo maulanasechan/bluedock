@@ -12,6 +12,7 @@ class AppColors {
   static const redSecondary = Color(0xffCB7F64);
   static const grey = Color(0xff7A869D);
   static const greySecondary = Color(0xffC8C8C8);
+  static const green = Color(0xFF02912B);
 
   static const boxShadow = Color.fromRGBO(0, 0, 0, 0.25);
   static const border = Color.fromRGBO(245, 245, 245, 0.25);

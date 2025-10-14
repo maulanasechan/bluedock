@@ -5,7 +5,6 @@ import 'package:bluedock/service_locator.dart';
 import 'package:dartz/dartz.dart';
 
 class ProductRepositoryImpl extends ProductRepository {
-  // Product
   @override
   Future<Either> deleteProduct(ProductReq product) async {
     return await sl<ProductFirebaseService>().deleteProduct(product);

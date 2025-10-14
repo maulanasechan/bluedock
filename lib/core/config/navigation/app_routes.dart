@@ -11,9 +11,13 @@ class AppRoutes {
   static const projectDetail = 'projectDetail';
   static const successProject = 'successProject';
   static const inventory = 'inventory';
+  static const invoice = 'invoice';
+  static const invoiceDetail = 'invoiceDetail';
+  static const successInvoice = 'successInvoice';
   static const afterSales = 'afterSales';
   static const products = 'products';
   static const purchaseOrder = 'purchaseOrder';
+  static const purchaseOrderDetail = 'purchaseOrderDetail';
   static const finance = 'finance';
   static const receipt = 'receipt';
   static const deliveryOrder = 'deliveryOrder';

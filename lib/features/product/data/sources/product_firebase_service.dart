@@ -12,7 +12,6 @@ class ProductFirebaseServiceImpl extends ProductFirebaseService {
   final _auth = FirebaseAuth.instance;
   final _db = FirebaseFirestore.instance;
 
-  // Product
   @override
   Future<Either> deleteProduct(ProductReq product) async {
     try {
@@ -47,8 +46,6 @@ class ProductFirebaseServiceImpl extends ProductFirebaseService {
       final uid = _auth.currentUser?.uid;
       if (uid == null) return const Left('User is not logged in.');
 
-      final userEmail = _auth.currentUser?.email ?? '';
-
       final docRef = _db
           .collection('Products')
           .doc(product.categoryId)
@@ -73,8 +70,6 @@ class ProductFirebaseServiceImpl extends ProductFirebaseService {
           'favorites': nowFav
               ? FieldValue.arrayUnion([uid])
               : FieldValue.arrayRemove([uid]),
-          'updatedAt': FieldValue.serverTimestamp(),
-          'updatedBy': userEmail,
         });
       });
 

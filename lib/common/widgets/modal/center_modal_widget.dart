@@ -16,6 +16,7 @@ class CenterModalWidget {
     String? yesButton,
     required VoidCallback yesButtonOnTap,
     ActionButtonCubit? actionCubit,
+    Color? yesButtonColor,
   }) {
     return showDialog<bool>(
       context: context,
@@ -64,7 +65,7 @@ class CenterModalWidget {
                           height: 45,
                           title: yesButton ?? 'Delete',
                           fontSize: 16,
-                          background: AppColors.red,
+                          background: yesButtonColor ?? AppColors.red,
                         ),
                       ),
                     ],

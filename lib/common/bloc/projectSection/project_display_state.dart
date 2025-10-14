@@ -15,3 +15,8 @@ class ProjectDisplayFailure extends ProjectDisplayState {
   final String message;
   ProjectDisplayFailure({required this.message});
 }
+
+class ProjectDisplayOneFetched extends ProjectDisplayState {
+  final ProjectEntity project;
+  ProjectDisplayOneFetched({required this.project});
+}

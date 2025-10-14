@@ -12,6 +12,9 @@ import 'package:bluedock/features/home/presentation/pages/error/you_are_offline_
 import 'package:bluedock/features/home/presentation/pages/home/home_page.dart';
 import 'package:bluedock/features/home/presentation/pages/profile/change_password_page.dart';
 import 'package:bluedock/features/home/presentation/pages/profile/profile_page.dart';
+import 'package:bluedock/features/invoice/presentation/pages/invoice_detail_page.dart';
+import 'package:bluedock/features/invoice/presentation/pages/manage_invoice_page.dart';
+import 'package:bluedock/features/invoice/presentation/pages/success_invoice_page.dart';
 import 'package:bluedock/features/login/presentation/pages/forgot_password_page.dart';
 import 'package:bluedock/features/login/presentation/pages/login_page.dart';
 import 'package:bluedock/features/login/presentation/pages/send_email_page.dart';
@@ -96,6 +99,29 @@ class AppRouter {
         ],
       ),
       GoRoute(
+        path: formatRoute(AppRoutes.invoice),
+        name: AppRoutes.invoice,
+        builder: (context, state) => const ManageInvoicePage(),
+        routes: [
+          GoRoute(
+            path: AppRoutes.invoiceDetail,
+            name: AppRoutes.invoiceDetail,
+            builder: (context, state) {
+              final extra = state.extra as String;
+              return InvoiceDetailPage(invoiceId: extra);
+            },
+          ),
+          GoRoute(
+            path: AppRoutes.successInvoice,
+            name: AppRoutes.successInvoice,
+            builder: (context, state) {
+              final extra = state.extra as String;
+              return SuccessInvoicePage(title: extra);
+            },
+          ),
+        ],
+      ),
+      GoRoute(
         path: formatRoute(AppRoutes.login),
         name: AppRoutes.login,
         builder: (context, state) => LoginPage(),
@@ -129,8 +155,8 @@ class AppRouter {
             path: AppRoutes.projectDetail,
             name: AppRoutes.projectDetail,
             builder: (context, state) {
-              final extra = state.extra as ProjectEntity;
-              return ProjectDetailPage(project: extra);
+              final extra = state.extra as String;
+              return ProjectDetailPage(projectId: extra);
             },
           ),
           GoRoute(

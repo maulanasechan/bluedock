@@ -2,7 +2,7 @@ import 'package:bluedock/common/widgets/button/bloc/action_button_cubit.dart';
 import 'package:bluedock/common/widgets/button/widgets/icon_button_widget.dart';
 import 'package:bluedock/common/widgets/gradientScaffold/gradient_scaffold_widget.dart';
 import 'package:bluedock/common/widgets/text/text_widget.dart';
-import 'package:bluedock/common/widgets/textfield/widgets/textfield_widget.dart';
+import 'package:bluedock/common/widgets/textfield/widgets/search_textfield_widget.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
 import 'package:bluedock/features/product/presentation/bloc/detegasaSewageTreatmentPlant/detegasa_sewage_treatment_plant_cubit.dart';
@@ -56,11 +56,7 @@ class DetegasaSewageTreatmentPlantPage extends StatelessWidget {
           children: [
             Builder(
               builder: (context) {
-                return TextfieldWidget(
-                  prefixIcon: PhosphorIconsBold.magnifyingGlass,
-                  borderRadius: 60,
-                  iconColor: AppColors.darkBlue,
-                  hintText: 'Search',
+                return SearchTextfieldWidget(
                   onChanged: (value) {
                     if (value.isEmpty) {
                       context

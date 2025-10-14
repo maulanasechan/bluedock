@@ -46,8 +46,7 @@ class ProjectSelectionWidget extends StatelessWidget {
             providers: [
               ...extraProviders,
               BlocProvider.value(
-                value: context.read<ProjectDisplayCubit>()
-                  ..displayProject(params: ''),
+                value: context.read<ProjectDisplayCubit>()..displayInitial(),
               ),
             ],
             child: Padding(
@@ -67,9 +66,7 @@ class ProjectSelectionWidget extends StatelessWidget {
                     iconColor: AppColors.darkBlue,
                     hintText: 'Search',
                     onChanged: (value) {
-                      context.read<ProjectDisplayCubit>().displayProject(
-                        params: value,
-                      );
+                      context.read<ProjectDisplayCubit>().setKeyword(value);
                     },
                   ),
                   const SizedBox(height: 24),

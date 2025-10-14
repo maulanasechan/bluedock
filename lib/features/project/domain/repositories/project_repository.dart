@@ -5,7 +5,6 @@ import 'package:dartz/dartz.dart';
 abstract class ProjectRepository {
   Future<Either> addProject(ProjectFormReq req);
   Future<Either> updateProject(ProjectFormReq req);
-  Future<Either> searchProject(String req);
   Future<Either> deleteProject(ProjectEntity req);
   Future<Either> favoriteProject(String req);
 }

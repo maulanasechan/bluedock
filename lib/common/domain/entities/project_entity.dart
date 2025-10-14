@@ -17,7 +17,6 @@ class ProjectEntity {
   final int price;
   final String currency;
   final String delivery;
-  final String warrantyOfGoods;
   final int quantity;
   final String projectDescription;
   final int maintenancePeriod;
@@ -25,8 +24,14 @@ class ProjectEntity {
   final String customerContact;
   final List<String> favorites;
   final List<StaffEntity> listTeam;
+  final String status;
 
-  final String updatedBy;
+  final String warrantyOfGoods;
+  final Timestamp? blDate;
+  final Timestamp? commDate;
+  final Timestamp? warrantyBlDate;
+  final Timestamp? warrantyCommDate;
+
   final Timestamp? updatedAt;
   final Timestamp createdAt;
   final String createdBy;
@@ -49,14 +54,18 @@ class ProjectEntity {
     required this.maintenancePeriod,
     required this.maintenanceCurrency,
     required this.customerContact,
+    required this.status,
     required this.favorites,
     required this.listTeam,
     required this.payment,
     required this.customerCompany,
-    required this.updatedBy,
     required this.updatedAt,
     required this.createdAt,
     required this.createdBy,
+    required this.blDate,
+    required this.commDate,
+    required this.warrantyBlDate,
+    required this.warrantyCommDate,
   });
 
   ProjectEntity copyWith({
@@ -77,12 +86,17 @@ class ProjectEntity {
     String? warrantyOfGoods,
     int? quantity,
     String? projectDescription,
+    String? status,
     int? maintenancePeriod,
     String? maintenanceCurrency,
     String? customerContact,
     List<StaffEntity>? listTeam,
 
-    String? updatedBy,
+    Timestamp? blDate,
+    Timestamp? commDate,
+    Timestamp? warrantyBlDate,
+    Timestamp? warrantyCommDate,
+
     Timestamp? updatedAt,
     Timestamp? createdAt,
     String? createdBy,
@@ -93,6 +107,7 @@ class ProjectEntity {
       favorites: favorites ?? this.favorites,
       customerCompany: customerCompany ?? this.customerCompany,
       payment: payment ?? this.payment,
+      status: status ?? this.status,
       purchaseContractNumber:
           purchaseContractNumber ?? this.purchaseContractNumber,
       projectName: projectName ?? this.projectName,
@@ -110,10 +125,13 @@ class ProjectEntity {
       maintenanceCurrency: maintenanceCurrency ?? this.maintenanceCurrency,
       customerContact: customerContact ?? this.customerContact,
       listTeam: listTeam ?? this.listTeam,
-      updatedBy: updatedBy ?? this.updatedBy,
       updatedAt: updatedAt ?? this.updatedAt,
       createdAt: createdAt ?? this.createdAt,
       createdBy: createdBy ?? this.createdBy,
+      blDate: blDate ?? this.blDate,
+      commDate: commDate ?? this.commDate,
+      warrantyBlDate: warrantyBlDate ?? this.warrantyBlDate,
+      warrantyCommDate: warrantyCommDate ?? this.warrantyCommDate,
     );
   }
 }

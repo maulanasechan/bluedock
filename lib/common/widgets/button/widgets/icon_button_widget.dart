@@ -5,6 +5,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class IconButtonWidget extends StatelessWidget {
   final Color iconColor;
+  final Color backgroundColor;
   final PhosphorFlatIconData icon;
   final double iconSize;
   final double width;
@@ -12,6 +13,7 @@ class IconButtonWidget extends StatelessWidget {
 
   const IconButtonWidget({
     super.key,
+    this.backgroundColor = AppColors.white,
     this.iconColor = AppColors.darkBlue,
     this.icon = PhosphorIconsBold.caretLeft,
     this.iconSize = 18,
@@ -31,7 +33,7 @@ class IconButtonWidget extends StatelessWidget {
         height: width,
         child: IconButton(
           style: IconButton.styleFrom(
-            backgroundColor: AppColors.white,
+            backgroundColor: backgroundColor,
             padding: EdgeInsets.zero,
             shape: const CircleBorder(),
           ),

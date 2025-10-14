@@ -1,10 +1,14 @@
 import 'package:bluedock/common/data/repositories/item_selection_repository_impl.dart';
 import 'package:bluedock/common/data/repositories/product_section_repository_impl.dart';
+import 'package:bluedock/common/data/repositories/project_section_repository_impl.dart';
 import 'package:bluedock/common/data/sources/item_selection_firebase_service.dart';
 import 'package:bluedock/common/data/sources/product_section_firebase_service.dart';
+import 'package:bluedock/common/data/sources/project_section_firebase_service.dart';
 import 'package:bluedock/common/domain/repositories/item_selection_repository.dart';
 import 'package:bluedock/common/domain/repositories/product_section_repository.dart';
+import 'package:bluedock/common/domain/repositories/project_section_repository.dart';
 import 'package:bluedock/common/domain/usecases/get_product_selection_usecase.dart';
+import 'package:bluedock/common/domain/usecases/get_project_by_id_usecase.dart';
 import 'package:bluedock/common/domain/usecases/get_type_category_selection_usecase.dart';
 import 'package:bluedock/features/dailyTask/data/repositories/daily_task_repository_impl.dart';
 import 'package:bluedock/features/dailyTask/data/sources/daily_task_firebase_service.dart';
@@ -19,6 +23,11 @@ import 'package:bluedock/features/home/domain/repositories/user_repository.dart'
 import 'package:bluedock/features/home/domain/usecases/get_app_menu_usecase.dart';
 import 'package:bluedock/common/domain/usecases/get_user_usecase.dart';
 import 'package:bluedock/features/home/domain/usecases/logout_usecase.dart';
+import 'package:bluedock/features/invoice/data/repositories/invoice_repository_impl.dart';
+import 'package:bluedock/features/invoice/data/sources/invoice_firebase_service.dart';
+import 'package:bluedock/features/invoice/domain/repositories/invoice_repository.dart';
+import 'package:bluedock/features/invoice/domain/usecases/get_invoice_by_id_usecase.dart';
+import 'package:bluedock/features/invoice/domain/usecases/search_invoice_usecase.dart';
 import 'package:bluedock/features/login/data/repositories/login_repository_impl.dart';
 import 'package:bluedock/features/login/data/sources/login_firebase_service.dart';
 import 'package:bluedock/features/login/domain/repositories/login_repository.dart';
@@ -80,7 +89,7 @@ import 'package:bluedock/features/project/domain/repositories/project_repository
 import 'package:bluedock/features/project/domain/usecases/add_project_usecase.dart';
 import 'package:bluedock/features/project/domain/usecases/delete_project_usecase.dart';
 import 'package:bluedock/features/project/domain/usecases/favorite_project_usecase.dart';
-import 'package:bluedock/features/project/domain/usecases/search_project_usecase.dart';
+import 'package:bluedock/common/domain/usecases/search_project_usecase.dart';
 import 'package:bluedock/features/staff/data/repositories/role_repository_impl.dart';
 import 'package:bluedock/common/data/repositories/staff_repository_impl.dart';
 import 'package:bluedock/features/staff/data/sources/role_firebase_service.dart';
@@ -134,6 +143,10 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<DailyTaskFirebaseService>(
     DailyTaskFirebaseServiceImpl(),
   );
+  sl.registerSingleton<ProjectSectionFirebaseService>(
+    ProjectSectionFirebaseServiceImpl(),
+  );
+  sl.registerSingleton<InvoiceFirebaseService>(InvoiceFirebaseServiceImpl());
 
   //Repositories
   sl.registerSingleton<RoleRepository>(RoleRepositoryImpl());
@@ -163,11 +176,19 @@ Future<void> initializeDependencies() async {
     DetegasaOilyWaterSeparatorRepositoryImpl(),
   );
   sl.registerSingleton<ProjectRepository>(ProjectRepositoryImpl());
+  sl.registerSingleton<ProjectSectionRepository>(
+    ProjectSectionRepositoryImpl(),
+  );
   sl.registerSingleton<ProductSectionRepository>(
     ProductSectionRepositoryImpl(),
   );
   sl.registerSingleton<ItemSelectionRepository>(ItemSelectionRepositoryImpl());
   sl.registerSingleton<DailyTaskRepository>(DailyTaskRepositoryImpl());
+  sl.registerSingleton<InvoiceRepository>(InvoiceRepositoryImpl());
+
+  //Invoice Usecases
+  sl.registerSingleton<SearchInvoiceUseCase>(SearchInvoiceUseCase());
+  sl.registerSingleton<GetInvoiceByIdUseCase>(GetInvoiceByIdUseCase());
 
   //Role Usecases
   sl.registerSingleton<GetRolesUseCase>(GetRolesUseCase());
@@ -294,6 +315,7 @@ Future<void> initializeDependencies() async {
   // Project
   sl.registerSingleton<AddProjectUseCase>(AddProjectUseCase());
   sl.registerSingleton<SearchProjectUseCase>(SearchProjectUseCase());
+  sl.registerSingleton<GetProjectByIdUseCase>(GetProjectByIdUseCase());
   sl.registerSingleton<DeleteProjectUseCase>(DeleteProjectUseCase());
   sl.registerSingleton<FavoriteProjectUseCase>(FavoriteProjectUseCase());
 }

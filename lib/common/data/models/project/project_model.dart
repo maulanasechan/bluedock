@@ -30,10 +30,15 @@ class ProjectModel {
   final List<String> favorites;
   final List<StaffEntity> listTeam;
 
-  final String updatedBy;
+  final String status;
   final Timestamp? updatedAt;
   final Timestamp createdAt;
   final String createdBy;
+
+  final Timestamp? blDate;
+  final Timestamp? commDate;
+  final Timestamp? warrantyBlDate;
+  final Timestamp? warrantyCommDate;
 
   const ProjectModel({
     required this.projectId,
@@ -56,11 +61,15 @@ class ProjectModel {
     required this.customerContact,
     required this.listTeam,
     required this.payment,
+    required this.status,
     required this.customerCompany,
-    required this.updatedBy,
     required this.updatedAt,
     required this.createdAt,
     required this.createdBy,
+    required this.blDate,
+    required this.commDate,
+    required this.warrantyBlDate,
+    required this.warrantyCommDate,
   });
 
   ProjectModel copyWith({
@@ -71,6 +80,7 @@ class ProjectModel {
     String? projectCode,
     String? customerName,
     String? payment,
+    String? status,
     ProductCategoryModel? productCategory,
     ProductSelectionModel? productSelection,
     int? price,
@@ -86,7 +96,11 @@ class ProjectModel {
     List<String>? favorites,
     List<StaffEntity>? listTeam,
 
-    String? updatedBy,
+    Timestamp? blDate,
+    Timestamp? commDate,
+    Timestamp? warrantyBlDate,
+    Timestamp? warrantyCommDate,
+
     Timestamp? updatedAt,
     Timestamp? createdAt,
     String? createdBy,
@@ -95,6 +109,7 @@ class ProjectModel {
       projectId: projectId ?? this.projectId,
       invoiceId: invoiceId ?? this.invoiceId,
       payment: payment ?? this.payment,
+      status: status ?? this.status,
       purchaseContractNumber:
           purchaseContractNumber ?? this.purchaseContractNumber,
       projectName: projectName ?? this.projectName,
@@ -114,10 +129,13 @@ class ProjectModel {
       customerContact: customerContact ?? this.customerContact,
       listTeam: listTeam ?? this.listTeam,
       favorites: favorites ?? this.favorites,
-      updatedBy: updatedBy ?? this.updatedBy,
       updatedAt: updatedAt ?? this.updatedAt,
       createdAt: createdAt ?? this.createdAt,
       createdBy: createdBy ?? this.createdBy,
+      blDate: blDate ?? this.blDate,
+      commDate: commDate ?? this.commDate,
+      warrantyBlDate: warrantyBlDate ?? this.warrantyBlDate,
+      warrantyCommDate: warrantyCommDate ?? this.warrantyCommDate,
     );
   }
 
@@ -130,6 +148,7 @@ class ProjectModel {
       'projectName': projectName,
       'projectCode': projectCode,
       'customerName': customerName,
+      'status': status,
       'customerCompany': customerCompany,
       'productCategory': productCategory.toMap(),
       'productSelection': productSelection.toMap(),
@@ -144,10 +163,13 @@ class ProjectModel {
       'customerContact': customerContact,
       'favorites': favorites,
       'listTeam': listTeam.map((e) => e.toJson()).toList(),
-      'updatedBy': updatedBy,
       'updatedAt': updatedAt,
       'createdAt': createdAt,
       'createdBy': createdBy,
+      'blDate': blDate,
+      'commDate': commDate,
+      'warrantyBlDate': warrantyBlDate,
+      'warrantyCommDate': warrantyCommDate,
     };
   }
 
@@ -161,6 +183,7 @@ class ProjectModel {
 
     return ProjectModel(
       projectId: (map['projectId'] ?? '') as String,
+      status: (map['status'] ?? '') as String,
       invoiceId: (map['invoiceId'] ?? '') as String,
       payment: (map['payment'] ?? '') as String,
       customerCompany: (map['customerCompany'] ?? '') as String,
@@ -198,10 +221,13 @@ class ProjectModel {
                 )
                 .toList()
           : const <StaffEntity>[],
-      updatedBy: map['updatedBy'] ?? '',
       updatedAt: map['updatedAt'],
       createdAt: map['createdAt'] ?? Timestamp(0, 0),
       createdBy: map['createdBy'] ?? '',
+      blDate: map['blDate'],
+      commDate: map['commDate'],
+      warrantyBlDate: map['warrantyBlDate'],
+      warrantyCommDate: map['warrantyCommDate'],
     );
   }
 
@@ -215,6 +241,7 @@ extension ProjectXModel on ProjectModel {
   ProjectEntity toEntity() {
     return ProjectEntity(
       projectId: projectId,
+      status: status,
       invoiceId: invoiceId,
       payment: payment,
       purchaseContractNumber: purchaseContractNumber,
@@ -235,10 +262,13 @@ extension ProjectXModel on ProjectModel {
       customerContact: customerContact,
       favorites: favorites,
       listTeam: listTeam,
-      updatedBy: updatedBy,
       updatedAt: updatedAt,
       createdAt: createdAt,
       createdBy: createdBy,
+      blDate: blDate,
+      commDate: commDate,
+      warrantyBlDate: warrantyBlDate,
+      warrantyCommDate: warrantyCommDate,
     );
   }
 }

@@ -247,6 +247,7 @@ class StaffDetailPage extends StatelessWidget {
                   title: 'Delete Staff',
                   fontSize: 16,
                 ),
+                SizedBox(height: 6),
               ],
             ),
           ),

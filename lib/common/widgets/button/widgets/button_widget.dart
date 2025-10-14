@@ -60,13 +60,16 @@ class ButtonWidget extends StatelessWidget {
                     ),
                   ],
                   Expanded(
-                    child: TextWidget(
-                      text: title,
-                      color: fontColor,
-                      fontWeight: fontWeight,
-                      fontSize: fontSize,
-                      overflow: TextOverflow.fade,
-                      align: TextAlign.center,
+                    child: Padding(
+                      padding: EdgeInsetsGeometry.symmetric(horizontal: 14),
+                      child: TextWidget(
+                        text: title,
+                        color: fontColor,
+                        fontWeight: fontWeight,
+                        fontSize: fontSize,
+                        overflow: TextOverflow.fade,
+                        align: TextAlign.center,
+                      ),
                     ),
                   ),
                   if (prefix != null || suffix != null) ...[

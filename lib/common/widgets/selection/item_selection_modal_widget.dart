@@ -22,6 +22,7 @@ class ItemSelectionModalWidget extends StatelessWidget {
   final bool? withoutIcon;
   final bool? withoutTitle;
   final TextAlign? align;
+  final double heightButton;
 
   const ItemSelectionModalWidget({
     super.key,
@@ -35,6 +36,7 @@ class ItemSelectionModalWidget extends StatelessWidget {
     this.withoutTitle = false,
     this.withoutIcon = false,
     this.align,
+    this.heightButton = 50,
   });
 
   @override
@@ -93,6 +95,7 @@ class ItemSelectionModalWidget extends StatelessWidget {
                             itemBuilder: (context, index) {
                               final value = listSelection[index];
                               return ButtonWidget(
+                                height: heightButton,
                                 background: selected == value.title
                                     ? AppColors.blue
                                     : AppColors.white,

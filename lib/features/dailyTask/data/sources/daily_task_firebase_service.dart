@@ -1,3 +1,4 @@
+import 'package:bluedock/common/domain/entities/type_category_selection_entity.dart';
 import 'package:bluedock/features/dailyTask/data/models/daily_task_form_req.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
@@ -13,10 +14,18 @@ abstract class DailyTaskFirebaseService {
 
 class DailyTaskFirebaseServiceImpl extends DailyTaskFirebaseService {
   final _auth = FirebaseAuth.instance;
+  final _baseDb = FirebaseFirestore.instance;
   final _db = FirebaseFirestore.instance
       .collection('Daily Task')
       .doc('List Daily Task')
       .collection('Daily Task');
+
+  final type = TypeCategorySelectionEntity(
+    selectionId: 'lA1UeFRAk3dwN4HqmAzP',
+    title: 'Daily Task',
+    image: 'assets/icons/dailyTask.png',
+    color: 'F37908',
+  );
 
   Timestamp? _ts(DateTime? d, TimeOfDay? t) {
     if (d == null || t == null) return null;
@@ -86,6 +95,19 @@ class DailyTaskFirebaseServiceImpl extends DailyTaskFirebaseService {
           .toSet()
           .toList();
 
+      final notifRef = _baseDb.collection('Notifications');
+      final notifId = notifRef.doc().id;
+      final notifMap = <String, dynamic>{
+        'notificationId': notifId,
+        'title': "You've been invited to ${req.projectName}",
+        'subTitle': "Click this notification to go to this task",
+        "isBroadcast": false,
+        "type": type.toJson(),
+        "params": dailyTaskId,
+        "read": false,
+        'receipentIds': participantIds,
+      };
+
       final dailyTaskMap = <String, dynamic>{
         'dailyTaskId': dailyTaskId,
         'title': req.title,
@@ -109,7 +131,10 @@ class DailyTaskFirebaseServiceImpl extends DailyTaskFirebaseService {
         'createdBy': userEmail,
       };
 
-      await _db.doc(dailyTaskId).set(dailyTaskMap, SetOptions(merge: true));
+      final batch = _baseDb.batch();
+      batch.set(_db.doc(dailyTaskId), dailyTaskMap, SetOptions(merge: true));
+      batch.set(notifRef.doc(notifId), notifMap, SetOptions(merge: true));
+      await batch.commit();
 
       return const Right('Daily Task has been added successfully.');
     } catch (_) {
@@ -128,10 +153,23 @@ class DailyTaskFirebaseServiceImpl extends DailyTaskFirebaseService {
           .toSet()
           .toList();
 
+      final notifRef = _baseDb.collection('Notifications');
+      final notifId = notifRef.doc().id;
+      final notifMap = <String, dynamic>{
+        'notificationId': notifId,
+        'title': "${req.projectName} had been updated",
+        'subTitle': "Click this notification to go to this task",
+        "isBroadcast": false,
+        "type": type.toJson(),
+        "read": false,
+        "params": req.dailyTaskId,
+        'receipentIds': participantIds,
+      };
+
       final startTs = _ts(req.date, req.startTime);
       final endTs = _ts(req.date, req.endTime);
 
-      final projectMap = <String, dynamic>{
+      final dailyTaskMap = <String, dynamic>{
         'dailyTaskId': req.dailyTaskId,
         'title': req.title,
         'description': req.description,
@@ -152,7 +190,10 @@ class DailyTaskFirebaseServiceImpl extends DailyTaskFirebaseService {
         'updatedAt': FieldValue.serverTimestamp(),
       };
 
-      await colRef.set(projectMap, SetOptions(merge: true));
+      final batch = _baseDb.batch();
+      batch.set(colRef, dailyTaskMap, SetOptions(merge: true));
+      batch.set(notifRef.doc(notifId), notifMap, SetOptions(merge: true));
+      await batch.commit();
 
       return const Right('Daily task has been added successfully.');
     } catch (_) {

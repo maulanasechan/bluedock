@@ -309,6 +309,7 @@ class ProjectFormPage extends StatelessWidget {
                       SizedBox(height: 24),
                       ItemSelectionModalWidget(
                         collection: collection,
+                        heightButton: 60,
                         document: document,
                         subCollection: 'Warranty of Goods',
                         selected: state.warrantyOfGoods,
