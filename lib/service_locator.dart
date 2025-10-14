@@ -34,6 +34,13 @@ import 'package:bluedock/features/login/domain/repositories/login_repository.dar
 import 'package:bluedock/features/login/domain/usecases/is_logged_in_usecase.dart';
 import 'package:bluedock/features/login/domain/usecases/login_usecase.dart';
 import 'package:bluedock/features/login/domain/usecases/send_password_reset_usecase.dart';
+import 'package:bluedock/features/notifications/data/repositories/notification_repository_impl.dart';
+import 'package:bluedock/features/notifications/data/sources/notification_firebase_service.dart';
+import 'package:bluedock/features/notifications/domain/repositories/notification_repository.dart';
+import 'package:bluedock/features/notifications/domain/usecases/count_unread_usecase.dart';
+import 'package:bluedock/features/notifications/domain/usecases/delete_notif_usecase.dart';
+import 'package:bluedock/features/notifications/domain/usecases/read_notif_usecase.dart';
+import 'package:bluedock/features/notifications/domain/usecases/search_notif_usecase.dart';
 import 'package:bluedock/features/product/data/repositories/detegasa_incenerator_repository_impl.dart';
 import 'package:bluedock/features/product/data/repositories/detegasa_oily_water_separator_impl.dart';
 import 'package:bluedock/features/product/data/repositories/detegasa_sewage_treatment_plant_repository_impl.dart';
@@ -147,6 +154,9 @@ Future<void> initializeDependencies() async {
     ProjectSectionFirebaseServiceImpl(),
   );
   sl.registerSingleton<InvoiceFirebaseService>(InvoiceFirebaseServiceImpl());
+  sl.registerSingleton<NotificationFirebaseService>(
+    NotificationFirebaseServiceImpl(),
+  );
 
   //Repositories
   sl.registerSingleton<RoleRepository>(RoleRepositoryImpl());
@@ -185,6 +195,13 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<ItemSelectionRepository>(ItemSelectionRepositoryImpl());
   sl.registerSingleton<DailyTaskRepository>(DailyTaskRepositoryImpl());
   sl.registerSingleton<InvoiceRepository>(InvoiceRepositoryImpl());
+  sl.registerSingleton<NotificationRepository>(NotificationRepositoryImpl());
+
+  //Notification Usecases
+  sl.registerSingleton<SearchNotifUseCase>(SearchNotifUseCase());
+  sl.registerSingleton<DeleteNotifUseCase>(DeleteNotifUseCase());
+  sl.registerSingleton<CountUnreadUseCase>(CountUnreadUseCase());
+  sl.registerSingleton<ReadNotifUseCase>(ReadNotifUseCase());
 
   //Invoice Usecases
   sl.registerSingleton<SearchInvoiceUseCase>(SearchInvoiceUseCase());

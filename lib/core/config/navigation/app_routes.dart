@@ -3,6 +3,7 @@ class AppRoutes {
   static const login = 'login';
   static const home = 'home';
   static const notification = 'notification';
+  static const notifSucces = 'notifSucces';
   static const forgotPassword = 'forgotPassword';
   static const sendEmail = 'sendEmail';
   static const createUpdateStaff = 'createUpdateStaff';

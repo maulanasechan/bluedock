@@ -165,9 +165,10 @@ class InvoiceFirebaseServiceImpl extends InvoiceFirebaseService {
         "type": req.type.toJson(),
         "route": AppRoutes.invoiceDetail,
         "params": req.invoiceId,
-        "read": false,
+        "readerIds": <String>[],
         "isBroadcast": true,
         'receipentIds': <String>[],
+        'searchKeywords': req.searchKeywords,
       };
 
       final notifPurchaseMap = <String, dynamic>{
@@ -177,10 +178,11 @@ class InvoiceFirebaseServiceImpl extends InvoiceFirebaseService {
         "type": req.type.toJson(),
         "route": AppRoutes.purchaseOrderDetail,
         "params": purchaseId,
-        "read": false,
+        "readerIds": <String>[],
         "isBroadcast": false,
         'receipentIds': req.listTeamIds,
         'createdAt': FieldValue.serverTimestamp(),
+        'searchKeywords': req.searchKeywords,
       };
 
       final purchaseMap = <String, dynamic>{

@@ -18,6 +18,8 @@ import 'package:bluedock/features/invoice/presentation/pages/success_invoice_pag
 import 'package:bluedock/features/login/presentation/pages/forgot_password_page.dart';
 import 'package:bluedock/features/login/presentation/pages/login_page.dart';
 import 'package:bluedock/features/login/presentation/pages/send_email_page.dart';
+import 'package:bluedock/features/notifications/presentation/pages/manage_notification.dart';
+import 'package:bluedock/features/notifications/presentation/pages/success_notification_page.dart';
 import 'package:bluedock/features/product/domain/entities/detegasa_incenerator_entity.dart';
 import 'package:bluedock/features/product/domain/entities/detegasa_oily_water_separator_entity.dart';
 import 'package:bluedock/features/product/domain/entities/detegasa_sewage_treatment_plant_entity.dart';
@@ -62,6 +64,20 @@ class AppRouter {
         path: formatRoute(AppRoutes.splash),
         name: AppRoutes.splash,
         builder: (context, state) => const SplashPage(),
+      ),
+      GoRoute(
+        path: formatRoute(AppRoutes.notification),
+        name: AppRoutes.notification,
+        builder: (context, state) => const ManageNotificationPage(),
+        routes: [
+          GoRoute(
+            path: AppRoutes.notifSucces,
+            name: AppRoutes.notifSucces,
+            builder: (context, state) {
+              return SuccessNotificationPage();
+            },
+          ),
+        ],
       ),
       GoRoute(
         path: formatRoute(AppRoutes.dailyTask),

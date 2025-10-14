@@ -1,9 +1,12 @@
 import 'package:bluedock/common/domain/entities/type_category_selection_entity.dart';
+import 'package:bluedock/common/helper/buildPrefix/build_prefixes_helper.dart';
+import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/features/dailyTask/data/models/daily_task_form_req.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 abstract class DailyTaskFirebaseService {
   Future<Either> getAllDailyTask(DateTime req);
@@ -38,6 +41,16 @@ class DailyTaskFirebaseServiceImpl extends DailyTaskFirebaseService {
   Timestamp _dayNext(DateTime d) => Timestamp.fromDate(
     DateTime(d.year, d.month, d.day).add(const Duration(days: 1)),
   );
+
+  List<String> _buildAllPrefixes(DailyTaskFormReq req) {
+    final all = [
+      req.title,
+      req.projectName,
+      req.customerCompany,
+      DateFormat('dd MMM yyyy, HH:mm').format(req.date!),
+    ].where((e) => e.trim().isNotEmpty).join(' ');
+    return buildWordPrefixes(all);
+  }
 
   @override
   Future<Either> getAllDailyTask(DateTime req) async {
@@ -102,10 +115,13 @@ class DailyTaskFirebaseServiceImpl extends DailyTaskFirebaseService {
         'title': "You've been invited to ${req.projectName}",
         'subTitle': "Click this notification to go to this task",
         "isBroadcast": false,
+        "route": AppRoutes.detailDailyTask,
         "type": type.toJson(),
         "params": dailyTaskId,
-        "read": false,
+        "readerIds": <String>[],
         'receipentIds': participantIds,
+        'createdAt': FieldValue.serverTimestamp(),
+        "searchKeywords": _buildAllPrefixes(req),
       };
 
       final dailyTaskMap = <String, dynamic>{
@@ -160,10 +176,13 @@ class DailyTaskFirebaseServiceImpl extends DailyTaskFirebaseService {
         'title': "${req.projectName} had been updated",
         'subTitle': "Click this notification to go to this task",
         "isBroadcast": false,
+        "route": AppRoutes.detailDailyTask,
         "type": type.toJson(),
-        "read": false,
+        "readerIds": <String>[],
         "params": req.dailyTaskId,
         'receipentIds': participantIds,
+        'createdAt': FieldValue.serverTimestamp(),
+        "searchKeywords": _buildAllPrefixes(req),
       };
 
       final startTs = _ts(req.date, req.startTime);

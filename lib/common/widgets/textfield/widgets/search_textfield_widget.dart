@@ -14,6 +14,7 @@ class SearchTextfieldWidget extends StatelessWidget {
   final List<String> listFilter;
   final String selected;
   final void Function(String)? onSelected;
+  final Color? selectedColor;
 
   const SearchTextfieldWidget({
     super.key,
@@ -22,6 +23,7 @@ class SearchTextfieldWidget extends StatelessWidget {
     this.listFilter = const <String>[],
     this.selected = '',
     this.onSelected,
+    this.selectedColor,
   });
 
   @override
@@ -47,7 +49,7 @@ class SearchTextfieldWidget extends StatelessWidget {
             icon: PhosphorIconsBold.faders,
             iconColor: selected != 'All' ? AppColors.white : AppColors.darkBlue,
             backgroundColor: selected != 'All'
-                ? AppColors.orange
+                ? selectedColor ?? AppColors.orange
                 : AppColors.white,
             iconSize: 25,
             onPressed: () {

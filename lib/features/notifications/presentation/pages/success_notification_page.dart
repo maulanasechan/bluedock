@@ -4,20 +4,19 @@ import 'package:bluedock/core/config/assets/app_images.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class SuccessInvoicePage extends StatelessWidget {
-  final String title;
-  const SuccessInvoicePage({super.key, required this.title});
+class SuccessNotificationPage extends StatelessWidget {
+  const SuccessNotificationPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GradientScaffoldWidget(
       body: SuccessPageWidget(
         image: AppImages.appProjectSuccess,
-        title: title,
+        title: 'Notification has been removed',
         onPressed: () {
           context.pop(true);
         },
-        titleButton: 'Return to Invoice Page',
+        titleButton: 'Return to Notification Page',
       ),
     );
   }

@@ -89,23 +89,25 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
         "type": projectType.toJson(),
         "route": AppRoutes.projectDetail,
         "params": projectId,
-        "read": false,
+        "readerIds": <String>[],
         "isBroadcast": false,
         'receipentIds': teamIds,
         'createdAt': FieldValue.serverTimestamp(),
+        'searchKeywords': _buildAllPrefixes(req),
       };
 
       final notifInvoiceMap = <String, dynamic>{
         'notificationId': notifInvoiceId,
-        'title': "Invoice created for this Project ${req.projectName}",
+        'title': "Invoice created for project ${req.projectName}",
         'subTitle': "Click this notification to go to this invoice",
         "type": invoiceType.toJson(),
         "route": AppRoutes.invoiceDetail,
         "params": invoiceId,
-        "read": false,
+        "readerIds": <String>[],
         "isBroadcast": true,
         'receipentIds': <String>[],
         'createdAt': FieldValue.serverTimestamp(),
+        'searchKeywords': _buildAllPrefixes(req),
       };
 
       final invoiceMap = <String, dynamic>{
@@ -265,13 +267,14 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
         'notificationId': notifId,
         'title': "Project ${req.projectName} had been updated",
         'subTitle': "Click this notification to go to this project",
-        "read": false,
+        "readerIds": <String>[],
         "isBroadcast": false,
         "route": AppRoutes.projectDetail,
         "type": projectType.toJson(),
         "params": req.projectId,
         'receipentIds': teamIds,
         'createdAt': FieldValue.serverTimestamp(),
+        'searchKeywords': _buildAllPrefixes(req),
       };
 
       final notifInvoiceMap = <String, dynamic>{
@@ -281,10 +284,11 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
         "route": AppRoutes.invoiceDetail,
         "type": invoiceType.toJson(),
         "params": req.invoiceId,
-        "read": false,
+        "readerIds": <String>[],
         "isBroadcast": true,
         'receipentIds': <String>[],
         'createdAt': FieldValue.serverTimestamp(),
+        'searchKeywords': _buildAllPrefixes(req),
       };
 
       final batch = _db.batch();
