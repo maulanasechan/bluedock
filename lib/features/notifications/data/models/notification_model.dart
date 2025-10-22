@@ -24,6 +24,7 @@ class NotifModel {
   final List<String> receipentIds;
   final List<String> readerIds;
   final List<String> searchKeywords;
+  final List<String> deletedIds;
 
   /// waktu dibuat
   final Timestamp createdAt;
@@ -40,6 +41,7 @@ class NotifModel {
     required this.receipentIds,
     required this.createdAt,
     required this.searchKeywords,
+    required this.deletedIds,
   });
 
   NotifModel copyWith({
@@ -52,6 +54,7 @@ class NotifModel {
     bool? isBroadcast,
     List<String>? receipentIds,
     List<String>? readerIds,
+    List<String>? deletedIds,
     List<String>? searchKeywords,
     Timestamp? createdAt,
   }) {
@@ -63,6 +66,7 @@ class NotifModel {
       route: route ?? this.route,
       params: params ?? this.params,
       readerIds: readerIds ?? this.readerIds,
+      deletedIds: deletedIds ?? this.deletedIds,
       isBroadcast: isBroadcast ?? this.isBroadcast,
       receipentIds: receipentIds ?? this.receipentIds,
       createdAt: createdAt ?? this.createdAt,
@@ -81,6 +85,7 @@ class NotifModel {
       'readerIds': readerIds,
       'isBroadcast': isBroadcast,
       'receipentIds': receipentIds,
+      'deletedIds': deletedIds,
       'createdAt': createdAt,
       'searchKeywords': searchKeywords,
     };
@@ -116,6 +121,7 @@ class NotifModel {
       readerIds: asStringList(map['readerIds']),
       isBroadcast: asBool(map['isBroadcast']),
       receipentIds: asStringList(map['receipentIds']),
+      deletedIds: asStringList(map['deletedIds']),
       searchKeywords: asStringList(map['receipentIds']),
       createdAt: (map['createdAt'] is Timestamp)
           ? map['createdAt'] as Timestamp
@@ -141,6 +147,7 @@ extension NotifXModel on NotifModel {
       readerIds: readerIds,
       isBroadcast: isBroadcast,
       receipentIds: receipentIds,
+      deletedIds: deletedIds,
       createdAt: createdAt,
       searchKeywords: searchKeywords,
     );

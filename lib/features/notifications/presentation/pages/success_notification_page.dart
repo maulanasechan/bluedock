@@ -11,12 +11,12 @@ class SuccessNotificationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return GradientScaffoldWidget(
       body: SuccessPageWidget(
-        image: AppImages.appProjectSuccess,
+        image: AppImages.appNotifDeleted,
         title: 'Notification has been removed',
         onPressed: () {
           context.pop(true);
         },
-        titleButton: 'Return to Notification Page',
+        titleButton: 'Return to Notification',
       ),
     );
   }

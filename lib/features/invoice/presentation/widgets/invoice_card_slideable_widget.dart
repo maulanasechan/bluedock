@@ -5,8 +5,9 @@ import 'package:bluedock/common/widgets/modal/center_modal_widget.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
 import 'package:bluedock/features/invoice/domain/entities/invoice_entity.dart';
+import 'package:bluedock/features/invoice/domain/usecases/paid_invoice_usecase.dart';
+import 'package:bluedock/features/invoice/presentation/bloc/invoice_display_cubit.dart';
 import 'package:bluedock/features/invoice/presentation/widgets/invoice_card_widget.dart';
-import 'package:bluedock/features/project/domain/usecases/delete_project_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -18,13 +19,13 @@ class InvoiceCardSlideableWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final showBottom =
+        (invoice.projectStatus == 'Inactive' && !invoice.dpStatus) ||
+        (invoice.projectStatus == 'Done' && invoice.dpStatus);
     return BlocProvider(
       create: (context) => ActionButtonCubit(),
       child: SlidableActionWidget(
-        isSlideable:
-            invoice.projectStatus == 'Inactive' && invoice.dpStatus == false
-            ? true
-            : invoice.projectStatus == 'Done' && invoice.dpStatus == false,
+        isSlideable: showBottom,
         isDeleted: false,
         extentRatio: 0.2,
         updateColor: invoice.dpStatus ? AppColors.green : AppColors.blue,
@@ -44,7 +45,7 @@ class InvoiceCardSlideableWidget extends StatelessWidget {
             actionCubit: actionCubit,
             yesButtonOnTap: () async {
               actionCubit.execute(
-                usecase: DeleteProjectUseCase(),
+                usecase: PaidInvoiceUseCase(),
                 params: invoice,
               );
               final ok = await waitActionDone(actionCubit);
@@ -59,7 +60,7 @@ class InvoiceCardSlideableWidget extends StatelessWidget {
             );
 
             if (change == true && context.mounted) {
-              context.pop(true);
+              context.read<InvoiceDisplayCubit>().displayInitial();
             }
           }
         },

@@ -19,6 +19,8 @@ class AppRoutes {
   static const products = 'products';
   static const purchaseOrder = 'purchaseOrder';
   static const purchaseOrderDetail = 'purchaseOrderDetail';
+  static const purchaseOrderSuccess = 'purchaseOrderSuccess';
+  static const formPurchaseOrder = 'formPurchaseOrder';
   static const finance = 'finance';
   static const receipt = 'receipt';
   static const deliveryOrder = 'deliveryOrder';

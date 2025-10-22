@@ -8,6 +8,7 @@ class AppImages {
   static const appAccessDenied = '${basePath}access_denied$format';
   static const appUnderConstruction = '${basePath}under_construction$format';
   static const appOffline = '${basePath}offline$format';
+  static const appInvoice = '${basePath}invoice$format';
   static const appUserCreated = '${basePath}user_created$format';
   static const appUserDeleted = '${basePath}user_deleted$format';
   static const appTaskCreated = '${basePath}task_created$format';
@@ -16,6 +17,7 @@ class AppImages {
   static const appProductDeleted = '${basePath}product_deleted$format';
   static const appProjectSuccess = '${basePath}project_success$format';
   static const appProjectDeleted = '${basePath}project_deleted$format';
+  static const appNotifDeleted = '${basePath}notifications$format';
   static const appSperreAirCompressor = '${basePath}SperreAirCompressor$format';
   static const appSperreScrewCompressor =
       '${basePath}SperreScrewCompressor$format';

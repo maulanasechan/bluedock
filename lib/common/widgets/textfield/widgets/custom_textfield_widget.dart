@@ -18,6 +18,7 @@ class CustomTextfieldWidget extends StatelessWidget {
   final bool hasError;
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
+  final bool disabled;
 
   const CustomTextfieldWidget({
     super.key,
@@ -35,6 +36,7 @@ class CustomTextfieldWidget extends StatelessWidget {
     this.hasError = false,
     this.keyboardType = TextInputType.text,
     this.inputFormatters,
+    this.disabled = false,
   });
 
   @override
@@ -54,7 +56,11 @@ class CustomTextfieldWidget extends StatelessWidget {
       borderRadius: BorderRadius.circular(borderRadius),
       color: Colors.transparent,
       child: TextFormField(
-        style: TextStyle(fontWeight: FontWeight.w500),
+        enabled: !disabled,
+        style: TextStyle(
+          fontWeight: FontWeight.w500,
+          color: disabled ? AppColors.grey : AppColors.darkBlue,
+        ),
         keyboardType: keyboardType,
         initialValue: initialValue,
         maxLines: maxLines,
@@ -79,6 +85,13 @@ class CustomTextfieldWidget extends StatelessWidget {
               width: 1.5,
             ),
           ),
+          disabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(borderRadius),
+            borderSide: BorderSide(
+              color: hasError ? AppColors.blue : AppColors.border,
+              width: 1.5,
+            ),
+          ),
           prefixIcon: prefixIcon != null
               ? PhosphorIcon(
                   prefixIcon!,
@@ -92,7 +105,7 @@ class CustomTextfieldWidget extends StatelessWidget {
                   child: PhosphorIcon(
                     suffixIcon!,
                     size: 24,
-                    color: AppColors.blue,
+                    color: disabled ? AppColors.grey : AppColors.blue,
                   ),
                 )
               : null,

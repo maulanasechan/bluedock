@@ -18,7 +18,12 @@ class ProjectTextWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        TextWidget(text: title, fontWeight: FontWeight.w700, fontSize: 16),
+        TextWidget(
+          text: title,
+          fontWeight: FontWeight.w700,
+          fontSize: 16,
+          overflow: TextOverflow.ellipsis,
+        ),
         SizedBox(height: 4),
         TextWidget(text: subTitle, fontSize: 16, overflow: TextOverflow.fade),
         SizedBox(height: bottom),

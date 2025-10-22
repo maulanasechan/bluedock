@@ -12,6 +12,7 @@ import 'package:bluedock/core/config/assets/app_images.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
 import 'package:bluedock/common/domain/entities/project_entity.dart';
+import 'package:bluedock/features/project/domain/usecases/commision_project_usecase.dart';
 import 'package:bluedock/features/project/domain/usecases/delete_project_usecase.dart';
 import 'package:bluedock/features/project/presentation/widgets/project_text_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -75,11 +76,16 @@ class ProjectDetailPage extends StatelessWidget {
                                     : AppColors.orange,
                               ),
                               child: Center(
-                                child: TextWidget(
-                                  text: project.status,
-                                  fontSize: 16,
-                                  color: AppColors.white,
-                                  fontWeight: FontWeight.w700,
+                                child: SizedBox(
+                                  width: 80,
+                                  child: TextWidget(
+                                    text: project.status,
+                                    fontSize: 16,
+                                    color: AppColors.white,
+                                    fontWeight: FontWeight.w700,
+                                    overflow: TextOverflow.ellipsis,
+                                    align: TextAlign.center,
+                                  ),
                                 ),
                               ),
                             ),
@@ -93,7 +99,8 @@ class ProjectDetailPage extends StatelessWidget {
                         child: Column(
                           children: [
                             _contentWidget(project),
-                            if (userEmail == project.createdBy)
+                            if (userEmail == project.createdBy &&
+                                project.status != 'Done')
                               _bottomNavWidget(context, project),
                           ],
                         ),
@@ -124,7 +131,6 @@ class ProjectDetailPage extends StatelessWidget {
           ),
         ),
         SizedBox(height: 24),
-
         TextWidget(
           text: project.purchaseContractNumber,
           fontWeight: FontWeight.w700,
@@ -242,7 +248,7 @@ class ProjectDetailPage extends StatelessWidget {
                 Row(
                   children: [
                     SizedBox(
-                      width: 200,
+                      width: 155,
                       child: ProjectTextWidget(
                         title: 'Bill of Ladding Date',
                         subTitle: DateFormat(
@@ -250,6 +256,7 @@ class ProjectDetailPage extends StatelessWidget {
                         ).format(project.blDate!.toDate()),
                       ),
                     ),
+                    SizedBox(width: 30),
                     ProjectTextWidget(
                       title: 'Warranty BL Date',
                       subTitle: DateFormat(
@@ -272,7 +279,7 @@ class ProjectDetailPage extends StatelessWidget {
                     ),
                     SizedBox(width: 30),
                     ProjectTextWidget(
-                      title: 'Warranty Comm Date',
+                      title: 'Warranty Com Date',
                       subTitle: DateFormat(
                         'dd MMM yyyy',
                       ).format(project.warrantyCommDate!.toDate()),
@@ -319,57 +326,90 @@ class ProjectDetailPage extends StatelessWidget {
       builder: (context) {
         return Column(
           children: [
-            SizedBox(height: 50),
-            ButtonWidget(
-              onPressed: () async {
-                final changed = await context.pushNamed(
-                  AppRoutes.formProject,
-                  extra: project,
-                );
-                if (changed == true && context.mounted) {
-                  context.pop(true);
-                }
-              },
-              background: AppColors.orange,
-              title: 'Update project',
-              fontSize: 16,
-            ),
-            SizedBox(height: 16),
-            ButtonWidget(
-              onPressed: () async {
-                final actionCubit = context.read<ActionButtonCubit>();
-                final changed = await CenterModalWidget.display(
-                  context: context,
-                  title: 'Remove project',
-                  subtitle: "Are you sure to remove ${project.projectName}?",
-                  yesButton: 'Remove',
-                  actionCubit: actionCubit,
-                  yesButtonOnTap: () {
-                    context.read<ActionButtonCubit>().execute(
-                      usecase: DeleteProjectUseCase(),
-                      params: project.projectId,
-                    );
-                    context.pop(true);
-                  },
-                );
-                if (changed == true && context.mounted) {
-                  final change = await context.pushNamed(
-                    AppRoutes.successProject,
-                    extra: {
-                      'title': '${project.projectName} has been removed',
-                      'image': AppImages.appProjectDeleted,
-                    },
+            if (project.status == 'Inactive' || project.blDate != null)
+              SizedBox(height: 50),
+            if (project.status == 'Inactive')
+              ButtonWidget(
+                onPressed: () async {
+                  final changed = await context.pushNamed(
+                    AppRoutes.formProject,
+                    extra: project,
                   );
-
-                  if (change == true && context.mounted) {
+                  if (changed == true && context.mounted) {
                     context.pop(true);
                   }
-                }
-              },
-              background: AppColors.red,
-              title: 'Delete project',
-              fontSize: 16,
-            ),
+                },
+                background: AppColors.orange,
+                title: 'Update project',
+                fontSize: 16,
+              ),
+            if (project.status == 'Inactive') SizedBox(height: 16),
+            if (project.status == 'Inactive' || project.blDate != null)
+              ButtonWidget(
+                onPressed: () async {
+                  final actionCubit = context.read<ActionButtonCubit>();
+                  final changed = await CenterModalWidget.display(
+                    context: context,
+                    title: project.status == 'Inactive'
+                        ? 'Remove Project'
+                        : 'Start Commision',
+                    subtitle: project.status == 'Inactive'
+                        ? "Are you sure to remove ${project.projectName}?"
+                        : "Are you sure to start commisioning for this project ${project.projectName}?",
+                    yesButton: project.status == 'Inactive'
+                        ? 'Remove'
+                        : project.status == 'Active'
+                        ? 'Start'
+                        : 'Done',
+                    actionCubit: actionCubit,
+                    yesButtonColor: project.status == 'Inactive'
+                        ? AppColors.red
+                        : project.status == 'Active'
+                        ? AppColors.orange
+                        : AppColors.green,
+                    yesButtonOnTap: () {
+                      project.status == 'Inactive'
+                          ? context.read<ActionButtonCubit>().execute(
+                              usecase: DeleteProjectUseCase(),
+                              params: project.projectId,
+                            )
+                          : context.read<ActionButtonCubit>().execute(
+                              usecase: CommisionProjectUseCase(),
+                              params: project,
+                            );
+                      context.pop(true);
+                    },
+                  );
+                  if (changed == true && context.mounted) {
+                    final change = await context.pushNamed(
+                      AppRoutes.successProject,
+                      extra: {
+                        'title': project.status == 'Inactive'
+                            ? '${project.projectName} has been removed'
+                            : 'Start commisioning for ${project.projectName}',
+                        'image': project.status == 'Inactive'
+                            ? AppImages.appProjectDeleted
+                            : AppImages.appProjectSuccess,
+                      },
+                    );
+
+                    if (change == true && context.mounted) {
+                      context.pop(true);
+                    }
+                  }
+                },
+                background: project.status == 'Inactive'
+                    ? AppColors.red
+                    : project.status == 'Active'
+                    ? AppColors.blue
+                    : AppColors.green,
+                title: project.status == 'Inactive'
+                    ? 'Delete project'
+                    : project.status == 'Active'
+                    ? "Start Commisions"
+                    : "Project Done",
+                fontSize: 16,
+              ),
             SizedBox(height: 6),
           ],
         );

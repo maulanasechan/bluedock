@@ -4,7 +4,7 @@ import 'package:bluedock/features/invoice/domain/repositories/invoice_repository
 import 'package:bluedock/service_locator.dart';
 import 'package:dartz/dartz.dart';
 
-class PaymentInvoiceUseCase implements UseCase<Either, InvoiceEntity> {
+class PaidInvoiceUseCase implements UseCase<Either, InvoiceEntity> {
   @override
   Future<Either> call({InvoiceEntity? params}) async {
     return await sl<InvoiceRepository>().paidInvoice(params!);

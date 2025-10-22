@@ -14,6 +14,7 @@ class DropdownWidget extends StatelessWidget {
   final PhosphorIconData? icon;
   final bool? withoutIcon;
   final TextAlign? align;
+  final bool disabled;
 
   const DropdownWidget({
     super.key,
@@ -26,6 +27,7 @@ class DropdownWidget extends StatelessWidget {
     this.icon,
     this.withoutIcon = false,
     this.align = TextAlign.start,
+    this.disabled = false,
   });
 
   @override
@@ -45,7 +47,7 @@ class DropdownWidget extends StatelessWidget {
               ),
             if (title != null) SizedBox(height: 12),
             GestureDetector(
-              onTap: onTap,
+              onTap: disabled ? () {} : onTap,
               child: Material(
                 elevation: 4,
                 borderRadius: BorderRadius.circular(12),
@@ -69,6 +71,7 @@ class DropdownWidget extends StatelessWidget {
                           overflow: TextOverflow.fade,
                           fontSize: fontSize,
                           align: align,
+                          color: disabled ? AppColors.grey : AppColors.darkBlue,
                         ),
                       ),
                       if (withoutIcon == false)
@@ -77,7 +80,9 @@ class DropdownWidget extends StatelessWidget {
                             : PhosphorIcon(
                                 icon ?? PhosphorIconsBold.caretDown,
                                 size: fontSize + 10,
-                                color: AppColors.blue,
+                                color: disabled
+                                    ? AppColors.grey
+                                    : AppColors.blue,
                               ),
                     ],
                   ),

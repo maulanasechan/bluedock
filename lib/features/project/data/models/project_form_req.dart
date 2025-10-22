@@ -22,6 +22,7 @@ class ProjectFormReq {
   final int? maintenancePeriod;
   final String maintenanceCurrency;
   final String customerContact;
+  final String status;
   final List<StaffEntity> listTeam;
   final List<String> favorites;
 
@@ -47,6 +48,7 @@ class ProjectFormReq {
     this.customerContact = '',
     this.listTeam = const <StaffEntity>[],
     this.favorites = const <String>[],
+    this.status = '',
   });
 
   ProjectFormReq copyWith({
@@ -69,6 +71,7 @@ class ProjectFormReq {
     int? maintenancePeriod,
     String? maintenanceCurrency,
     String? customerContact,
+    String? status,
     List<StaffEntity>? listTeam,
     List<String>? favorites,
   }) {
@@ -95,6 +98,7 @@ class ProjectFormReq {
       customerContact: customerContact ?? this.customerContact,
       listTeam: listTeam ?? this.listTeam,
       favorites: favorites ?? this.favorites,
+      status: status ?? this.status,
     );
   }
 }

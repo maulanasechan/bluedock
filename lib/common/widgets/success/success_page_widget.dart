@@ -8,6 +8,7 @@ class SuccessPageWidget extends StatelessWidget {
   final String titleButton;
   final double imageWidth;
   final Function() onPressed;
+  final double buttonWidth;
   const SuccessPageWidget({
     super.key,
     required this.image,
@@ -15,6 +16,7 @@ class SuccessPageWidget extends StatelessWidget {
     required this.titleButton,
     this.imageWidth = 170,
     required this.onPressed,
+    this.buttonWidth = 200,
   });
 
   @override
@@ -40,7 +42,7 @@ class SuccessPageWidget extends StatelessWidget {
             onPressed: onPressed,
             title: titleButton,
             fontSize: 16,
-            width: 200,
+            width: buttonWidth,
           ),
         ],
       ),

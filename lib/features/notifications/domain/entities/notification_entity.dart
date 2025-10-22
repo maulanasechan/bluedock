@@ -21,6 +21,7 @@ class NotifEntity {
   /// daftar penerima spesifik (uid)
   final List<String> receipentIds;
   final List<String> readerIds;
+  final List<String> deletedIds;
   final List<String> searchKeywords;
 
   /// waktu dibuat
@@ -38,6 +39,7 @@ class NotifEntity {
     required this.searchKeywords,
     required this.createdAt,
     required this.readerIds,
+    required this.deletedIds,
   });
 
   NotifEntity copyWith({
@@ -50,6 +52,7 @@ class NotifEntity {
     bool? isBroadcast,
     List<String>? receipentIds,
     List<String>? readerIds,
+    List<String>? deletedIds,
     List<String>? searchKeywords,
     Timestamp? createdAt,
   }) {
@@ -61,6 +64,7 @@ class NotifEntity {
       route: route ?? this.route,
       params: params ?? this.params,
       readerIds: readerIds ?? this.readerIds,
+      deletedIds: deletedIds ?? this.deletedIds,
       isBroadcast: isBroadcast ?? this.isBroadcast,
       receipentIds: receipentIds ?? this.receipentIds,
       searchKeywords: searchKeywords ?? this.searchKeywords,

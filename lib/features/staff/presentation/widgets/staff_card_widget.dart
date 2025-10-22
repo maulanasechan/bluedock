@@ -1,3 +1,4 @@
+import 'package:bluedock/common/helper/waitAction/wait_action_helper.dart';
 import 'package:bluedock/common/widgets/button/bloc/action_button_cubit.dart';
 import 'package:bluedock/common/widgets/card/card_container_widget.dart';
 import 'package:bluedock/common/widgets/card/slidable_action_widget.dart';
@@ -42,10 +43,12 @@ class StaffCardWidget extends StatelessWidget {
             yesButton: 'Remove',
             actionCubit: actionCubit,
             yesButtonOnTap: () async {
-              context.read<ActionButtonCubit>().execute(
+              actionCubit.execute(
                 usecase: DeleteStaffUseCase(),
                 params: staff.staffId,
               );
+              final ok = await waitActionDone(actionCubit);
+              if (ok && context.mounted) context.pop(true);
             },
           );
           if (changed == true && context.mounted) {

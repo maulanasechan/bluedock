@@ -11,9 +11,9 @@ import 'package:bluedock/core/config/assets/app_images.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
 import 'package:bluedock/features/invoice/domain/entities/invoice_entity.dart';
+import 'package:bluedock/features/invoice/domain/usecases/paid_invoice_usecase.dart';
 import 'package:bluedock/features/invoice/presentation/bloc/invoice_display_cubit.dart';
 import 'package:bluedock/features/invoice/presentation/bloc/invoice_display_state.dart';
-import 'package:bluedock/features/project/domain/usecases/delete_project_usecase.dart';
 import 'package:bluedock/features/project/presentation/widgets/project_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,6 +44,10 @@ class InvoiceDetailPage extends StatelessWidget {
               }
               if (state is InvoiceDisplayOneFetched) {
                 final invoice = state.invoice;
+                final showBottom =
+                    (invoice.projectStatus == 'Inactive' &&
+                        !invoice.dpStatus) ||
+                    (invoice.projectStatus == 'Done' && invoice.dpStatus);
                 return Column(
                   children: [
                     Stack(
@@ -64,7 +68,7 @@ class InvoiceDetailPage extends StatelessWidget {
                         child: Column(
                           children: [
                             _contentWidget(invoice),
-                            _bottomNavWidget(context, invoice),
+                            if (showBottom) _bottomNavWidget(context, invoice),
                           ],
                         ),
                       ),
@@ -330,7 +334,7 @@ class InvoiceDetailPage extends StatelessWidget {
                   actionCubit: actionCubit,
                   yesButtonOnTap: () async {
                     actionCubit.execute(
-                      usecase: DeleteProjectUseCase(),
+                      usecase: PaidInvoiceUseCase(),
                       params: invoice,
                     );
                     final ok = await waitActionDone(actionCubit);
@@ -349,7 +353,7 @@ class InvoiceDetailPage extends StatelessWidget {
                   }
                 }
               },
-              background: invoice.dpStatus ? AppColors.green : AppColors.blue,
+              background: AppColors.blue,
               title: invoice.dpStatus
                   ? 'Letter of Contract Paid'
                   : 'Down Payment Paid',

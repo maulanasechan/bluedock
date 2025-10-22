@@ -122,6 +122,7 @@ class DailyTaskFirebaseServiceImpl extends DailyTaskFirebaseService {
         'receipentIds': participantIds,
         'createdAt': FieldValue.serverTimestamp(),
         "searchKeywords": _buildAllPrefixes(req),
+        'deletedIds': <String>[],
       };
 
       final dailyTaskMap = <String, dynamic>{
@@ -183,6 +184,7 @@ class DailyTaskFirebaseServiceImpl extends DailyTaskFirebaseService {
         'receipentIds': participantIds,
         'createdAt': FieldValue.serverTimestamp(),
         "searchKeywords": _buildAllPrefixes(req),
+        'deletedIds': <String>[],
       };
 
       final startTs = _ts(req.date, req.startTime);

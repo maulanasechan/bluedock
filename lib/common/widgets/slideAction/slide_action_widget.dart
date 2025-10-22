@@ -54,6 +54,7 @@ class SlideActionWidget extends StatelessWidget {
             const SizedBox(height: 5),
             Text(
               label,
+              textAlign: TextAlign.center,
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 12,

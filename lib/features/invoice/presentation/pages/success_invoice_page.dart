@@ -12,12 +12,12 @@ class SuccessInvoicePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return GradientScaffoldWidget(
       body: SuccessPageWidget(
-        image: AppImages.appProjectSuccess,
+        image: AppImages.appInvoice,
         title: title,
         onPressed: () {
           context.pop(true);
         },
-        titleButton: 'Return to Invoice Page',
+        titleButton: 'Return to Invoice',
       ),
     );
   }

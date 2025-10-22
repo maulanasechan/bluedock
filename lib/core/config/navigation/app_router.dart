@@ -48,22 +48,64 @@ import 'package:bluedock/features/project/presentation/pages/project_detail_page
 import 'package:bluedock/features/project/presentation/pages/project_form_page.dart';
 import 'package:bluedock/features/project/presentation/pages/manage_project_page.dart';
 import 'package:bluedock/features/project/presentation/pages/success_project_page.dart';
+import 'package:bluedock/features/purchaseOrders/domain/entities/purchase_order_entity.dart';
+import 'package:bluedock/features/purchaseOrders/presentation/pages/manage_purchase_order_page.dart';
+import 'package:bluedock/features/purchaseOrders/presentation/pages/purchase_order_detail_page.dart';
+import 'package:bluedock/features/purchaseOrders/presentation/pages/purchase_order_form_page.dart';
+import 'package:bluedock/features/purchaseOrders/presentation/pages/success_purchase_order_page.dart';
 import 'package:bluedock/features/splash/pages/splash_page.dart';
 import 'package:bluedock/common/domain/entities/staff_entity.dart';
 import 'package:bluedock/features/staff/presentation/pages/add_or_update_staff_page.dart';
 import 'package:bluedock/features/staff/presentation/pages/manage_staff_page.dart';
 import 'package:bluedock/features/staff/presentation/pages/staff_detail_page.dart';
 import 'package:bluedock/features/staff/presentation/pages/success_staff_page.dart';
+import 'package:bluedock/main.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation: formatRoute(AppRoutes.splash),
+    navigatorKey: navigatorKey,
     routes: [
       GoRoute(
         path: formatRoute(AppRoutes.splash),
         name: AppRoutes.splash,
         builder: (context, state) => const SplashPage(),
+      ),
+      GoRoute(
+        path: formatRoute(AppRoutes.purchaseOrder),
+        name: AppRoutes.purchaseOrder,
+        builder: (context, state) => const ManagePurchaseOrderPage(),
+        routes: [
+          GoRoute(
+            path: AppRoutes.purchaseOrderDetail,
+            name: AppRoutes.purchaseOrderDetail,
+            builder: (context, state) {
+              final extra = state.extra as String;
+              return PurchaseOrderDetailPage(purchaseOrderId: extra);
+            },
+          ),
+          GoRoute(
+            path: AppRoutes.formPurchaseOrder,
+            name: AppRoutes.formPurchaseOrder,
+            builder: (context, state) {
+              final extra = state.extra as PurchaseOrderEntity?;
+              return PurchaseOrderFormPage(purchaseOrder: extra);
+            },
+          ),
+          GoRoute(
+            path: AppRoutes.purchaseOrderSuccess,
+            name: AppRoutes.purchaseOrderSuccess,
+            builder: (context, state) {
+              final map = (state.extra is Map)
+                  ? Map<String, dynamic>.from(state.extra as Map)
+                  : const <String, dynamic>{};
+              final title = map['title'] as String? ?? '';
+              final image = map['image'] as String? ?? '';
+              return SuccessPurchaseOrderPage(title: title, image: image);
+            },
+          ),
+        ],
       ),
       GoRoute(
         path: formatRoute(AppRoutes.notification),

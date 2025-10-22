@@ -12,6 +12,7 @@ abstract class ProjectFirebaseService {
   Future<Either> updateProject(ProjectFormReq req);
   Future<Either> deleteProject(ProjectEntity req);
   Future<Either> favoriteProject(String req);
+  Future<Either> commisionProject(ProjectEntity req);
 }
 
 class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
@@ -43,6 +44,19 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
       req.productCategory?.title,
       req.productSelection?.productModel,
     ].where((e) => e!.trim().isNotEmpty).join(' ');
+    return buildWordPrefixes(all);
+  }
+
+  List<String> _buildAllPrefixesEntity(ProjectEntity req) {
+    final all = [
+      req.purchaseContractNumber,
+      req.projectName,
+      req.projectCode,
+      req.customerName,
+      req.customerCompany,
+      req.productCategory.title,
+      req.productSelection.productModel,
+    ].where((e) => e.trim().isNotEmpty).join(' ');
     return buildWordPrefixes(all);
   }
 
@@ -94,6 +108,7 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
         'receipentIds': teamIds,
         'createdAt': FieldValue.serverTimestamp(),
         'searchKeywords': _buildAllPrefixes(req),
+        'deletedIds': <String>[],
       };
 
       final notifInvoiceMap = <String, dynamic>{
@@ -108,6 +123,7 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
         'receipentIds': <String>[],
         'createdAt': FieldValue.serverTimestamp(),
         'searchKeywords': _buildAllPrefixes(req),
+        'deletedIds': <String>[],
       };
 
       final invoiceMap = <String, dynamic>{
@@ -275,6 +291,7 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
         'receipentIds': teamIds,
         'createdAt': FieldValue.serverTimestamp(),
         'searchKeywords': _buildAllPrefixes(req),
+        'deletedIds': <String>[],
       };
 
       final notifInvoiceMap = <String, dynamic>{
@@ -289,6 +306,7 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
         'receipentIds': <String>[],
         'createdAt': FieldValue.serverTimestamp(),
         'searchKeywords': _buildAllPrefixes(req),
+        'deletedIds': <String>[],
       };
 
       final batch = _db.batch();
@@ -360,6 +378,158 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
       });
 
       return Right(nowFav ? 'Added to favorites.' : 'Removed from favorites.');
+    } catch (_) {
+      return const Left('Please try again');
+    }
+  }
+
+  @override
+  Future<Either> commisionProject(ProjectEntity req) async {
+    try {
+      final colRef = _db
+          .collection('Projects')
+          .doc('List Project')
+          .collection('Projects')
+          .doc(req.projectId);
+
+      final teamIds = req.listTeam
+          .map((m) => m.staffId)
+          .where((id) => id.isNotEmpty)
+          .toSet()
+          .toList();
+
+      // ---------------- Helpers ----------------
+      DateTime addMonths(DateTime base, int months) {
+        final y = base.year + ((base.month - 1 + months) ~/ 12);
+        final m = ((base.month - 1 + months) % 12) + 1;
+        final d = base.day;
+        final lastDay = DateTime(y, m + 1, 0).day;
+        return DateTime(y, m, d > lastDay ? lastDay : d);
+      }
+
+      int? extractCommMonths(String? warranty) {
+        if (warranty == null) return null;
+        final lower = warranty.toLowerCase().trim();
+        final parts = lower.split(RegExp(r'\s+or\s+'));
+        final commPart = parts.firstWhere(
+          (p) => p.contains('commission'),
+          orElse: () => lower,
+        );
+        final reg = RegExp(r'(\d+)\s*month');
+        final match = reg.firstMatch(commPart);
+        if (match != null) return int.tryParse(match.group(1)!);
+        final global = reg.firstMatch(lower);
+        return global != null ? int.tryParse(global.group(1)!) : null;
+      }
+
+      DateTime? asDateTime(dynamic v) {
+        if (v == null) return null;
+        if (v is DateTime) return v;
+        if (v is Timestamp) return v.toDate();
+        return null; // kalau tipe lain, abaikan
+      }
+
+      // ---------------- Ambil warrantyOfGoods & hitung warrantyCommDate ----------------
+      String? warrantyOfGoodsString;
+      DateTime? warrantyCommDate;
+
+      final projSnap = await colRef.get();
+      if (projSnap.exists) {
+        final data = projSnap.data();
+        warrantyOfGoodsString = (data?['warrantyOfGoods'] as String?)?.trim();
+      }
+
+      final commMonths = extractCommMonths(warrantyOfGoodsString);
+      if (commMonths != null) {
+        DateTime? baseComm = asDateTime(req.commDate);
+        if (baseComm == null && req.status == 'Active') {
+          // commissioning baru dimulai: pakai waktu lokal sebagai base kalkulasi
+          baseComm = DateTime.now();
+        }
+        if (baseComm != null) {
+          warrantyCommDate = addMonths(baseComm, commMonths);
+        }
+      }
+
+      // ---------------- Project & Notifications ----------------
+      final projectMap = <String, dynamic>{
+        'status': req.status == 'Active' ? 'Commissioning' : 'Done',
+        // simpan commDate: kalau Active biar server yang set; kalau tidak, simpan nilai yang ada
+        'commDate': req.status == 'Active'
+            ? FieldValue.serverTimestamp()
+            : asDateTime(req.commDate),
+        if (warrantyCommDate != null) 'warrantyCommDate': warrantyCommDate,
+        'updatedAt': FieldValue.serverTimestamp(),
+      };
+
+      final notifRef = _db.collection('Notifications');
+      final notifId = notifRef.doc().id;
+
+      DocumentReference<Map<String, dynamic>>? invRef;
+      String? notifInvoiceId;
+      Map<String, dynamic>? invoiceMap;
+      Map<String, dynamic>? notifInvoiceMap;
+
+      if (req.status == 'Commissioning') {
+        invRef = _db.collection('Invoices').doc(req.invoiceId);
+        notifInvoiceId = notifRef.doc().id;
+
+        invoiceMap = <String, dynamic>{
+          'projectStatus': 'Done',
+          'issuedDate': FieldValue.serverTimestamp(),
+          'updatedAt': FieldValue.serverTimestamp(),
+        };
+
+        notifInvoiceMap = <String, dynamic>{
+          'notificationId': notifInvoiceId,
+          'title': "Project ${req.projectName} invoice has been updated",
+          'subTitle': "Click this notification to go to this invoice",
+          "route": AppRoutes.invoiceDetail,
+          "type": invoiceType.toJson(),
+          "params": req.invoiceId,
+          "readerIds": <String>[],
+          "isBroadcast": true,
+          'receipentIds': <String>[],
+          'createdAt': FieldValue.serverTimestamp(),
+          'searchKeywords': _buildAllPrefixesEntity(req),
+          'deletedIds': <String>[],
+        };
+      }
+
+      final notifMap = <String, dynamic>{
+        'notificationId': notifId,
+        'title': "Project ${req.projectName} has been updated",
+        'subTitle': "Click this notification to go to this project",
+        "readerIds": <String>[],
+        "isBroadcast": false,
+        "route": AppRoutes.projectDetail,
+        "type": projectType.toJson(),
+        "params": req.projectId,
+        'receipentIds': teamIds,
+        'createdAt': FieldValue.serverTimestamp(),
+        'searchKeywords': _buildAllPrefixesEntity(req),
+        'deletedIds': <String>[],
+      };
+
+      // ---------------- Batch commit ----------------
+      final batch = _db.batch();
+      batch.set(colRef, projectMap, SetOptions(merge: true));
+      batch.set(notifRef.doc(notifId), notifMap, SetOptions(merge: true));
+
+      if (invRef != null && invoiceMap != null) {
+        batch.set(invRef, invoiceMap, SetOptions(merge: true));
+      }
+      if (notifInvoiceId != null && notifInvoiceMap != null) {
+        batch.set(
+          notifRef.doc(notifInvoiceId),
+          notifInvoiceMap,
+          SetOptions(merge: true),
+        );
+      }
+
+      await batch.commit();
+
+      return const Right('Project has been updated successfully.');
     } catch (_) {
       return const Left('Please try again');
     }

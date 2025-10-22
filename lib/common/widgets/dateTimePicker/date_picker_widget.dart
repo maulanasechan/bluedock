@@ -16,15 +16,18 @@ class DatePickerWidget extends StatelessWidget {
   });
 
   Future<void> pick(BuildContext context) async {
-    final initial = selected ?? DateTime.now();
     final firstDate = DateTime(2000, 1, 1);
     final lastDate = DateTime(2100, 12, 31);
+    final fallback = DateTime.now();
+    final initial = selected ?? fallback;
+
+    final initSafe = (initial.isBefore(firstDate) || initial.isAfter(lastDate))
+        ? fallback
+        : initial;
 
     final picked = await showDatePicker(
       context: context,
-      initialDate: initial.isBefore(firstDate) || initial.isAfter(lastDate)
-          ? DateTime.now()
-          : initial,
+      initialDate: initSafe,
       firstDate: firstDate,
       lastDate: lastDate,
     );
@@ -33,6 +36,11 @@ class DatePickerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasValue = selected != null;
+    final text = hasValue
+        ? DateFormat('EEEE, dd MMMM yyyy').format(selected!)
+        : 'Select a date';
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -44,20 +52,17 @@ class DatePickerWidget extends StatelessWidget {
             elevation: 4,
             borderRadius: BorderRadius.circular(12),
             child: Container(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: AppColors.white,
                 border: Border.all(width: 1.5, color: AppColors.border),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
                     child: TextWidget(
-                      text: DateFormat(
-                        'EEEE, dd MMMM yyyy',
-                      ).format(selected ?? DateTime.now()),
+                      text: text,
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                       color: AppColors.darkBlue,

@@ -5,3 +5,5 @@ npx -p node-firestore-import-export firestore-import -a key.json -b roles.json
 
 //command untuk buat search_keyword
 node enrich.js products.json output_enriched.json
+
+firebase deploy --only functions:onNotificationCreated

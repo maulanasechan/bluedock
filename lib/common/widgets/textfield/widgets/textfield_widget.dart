@@ -22,6 +22,7 @@ class TextfieldWidget extends StatelessWidget {
   final Color? iconColor;
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
+  final bool disabled;
 
   const TextfieldWidget({
     super.key,
@@ -40,6 +41,7 @@ class TextfieldWidget extends StatelessWidget {
     this.iconColor,
     this.keyboardType,
     this.inputFormatters,
+    this.disabled = false,
   });
 
   @override
@@ -61,6 +63,7 @@ class TextfieldWidget extends StatelessWidget {
                   ),
             SizedBox(height: title == null ? 0 : 12),
             CustomTextfieldWidget(
+              disabled: disabled,
               initialValue: initialValue,
               keyboardType: keyboardType,
               controller: controller,

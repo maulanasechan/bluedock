@@ -31,10 +31,12 @@ class NotificationFirebaseServiceImpl extends NotificationFirebaseService {
         descending: true,
       );
 
+      // ===== Broadcast =====
       Query<Map<String, dynamic>> qBroadcast = base.where(
         'isBroadcast',
         isEqualTo: true,
       );
+
       if (t.isNotEmpty) {
         qBroadcast = qBroadcast.where('type.title', isEqualTo: t);
       }
@@ -42,11 +44,12 @@ class NotificationFirebaseServiceImpl extends NotificationFirebaseService {
         qBroadcast = qBroadcast.where('searchKeywords', arrayContains: q);
       }
 
-      // ===== Build direct (targeted) query =====
+      // ===== Direct (targeted) =====
       Query<Map<String, dynamic>> qDirect = base.where(
         'receipentIds',
         arrayContains: uid,
-      );
+      ); // atau 'recipientIds'
+
       if (t.isNotEmpty) {
         qDirect = qDirect.where('type.title', isEqualTo: t);
       }
@@ -57,15 +60,25 @@ class NotificationFirebaseServiceImpl extends NotificationFirebaseService {
       // Eksekusi paralel
       final snaps = await Future.wait([qBroadcast.get(), qDirect.get()]);
 
-      // Gabungkan + de-dupe by notificationId
+      // Gabung + skip yang ada di deletedIds
       final seen = <String>{};
       final result = <Map<String, dynamic>>[];
 
-      void addDocs(QuerySnapshot<Map<String, dynamic>> s) {
-        for (final d in s.docs) {
+      bool isDeletedForMe(Map<String, dynamic> m) {
+        final raw = m['deletedIds'];
+        final list = (raw is List)
+            ? raw.map((e) => e.toString()).toList()
+            : <String>[];
+        return list.contains(uid);
+      }
+
+      void addDocs(QuerySnapshot<Map<String, dynamic>> snap) {
+        for (final d in snap.docs) {
           final m = d.data();
           final id = (m['notificationId'] ?? d.id).toString();
           if (id.isEmpty) continue;
+          if (isDeletedForMe(m)) continue; // <-- filter client-side
+
           if (seen.add(id)) {
             result.add({...m, 'notificationId': id});
           }
@@ -75,7 +88,7 @@ class NotificationFirebaseServiceImpl extends NotificationFirebaseService {
       addDocs(snaps[0]); // broadcast
       addDocs(snaps[1]); // direct
 
-      // Sort ulang by createdAt desc (jaga-jaga)
+      // Sort by createdAt desc
       result.sort((a, b) {
         final ta = a['createdAt'] as Timestamp?;
         final tb = b['createdAt'] as Timestamp?;
@@ -93,10 +106,20 @@ class NotificationFirebaseServiceImpl extends NotificationFirebaseService {
   @override
   Future<Either> deleteNotif(String notifId) async {
     try {
-      await _notfiDb.doc(notifId).delete();
-      return Right('Remove notification succesfull');
+      final uid = _auth.currentUser?.uid;
+      if (uid == null || uid.isEmpty) {
+        return const Left('User is not logged in.');
+      }
+
+      final docRef = _notfiDb.doc(notifId);
+
+      await docRef.set({
+        'deletedIds': FieldValue.arrayUnion([uid]),
+      }, SetOptions(merge: true));
+
+      return const Right('Notification marked as read.');
     } catch (e) {
-      return Left('Please try again');
+      return const Left('Please try again');
     }
   }
 
@@ -129,6 +152,7 @@ class NotificationFirebaseServiceImpl extends NotificationFirebaseService {
 
       final col = _db.collection('Notifications');
 
+      // NOTE: kalau key sebenarnya 'recipientIds', samakan di sini juga
       final snaps = await Future.wait([
         col.where('isBroadcast', isEqualTo: true).get(),
         col.where('receipentIds', arrayContains: uid).get(),
@@ -137,17 +161,36 @@ class NotificationFirebaseServiceImpl extends NotificationFirebaseService {
       int unread = 0;
       final seen = <String>{};
 
+      bool isDeletedForMe(Map<String, dynamic> m) {
+        final raw = m['deletedIds'];
+        if (raw is List) {
+          for (final e in raw) {
+            if (uid == e.toString()) return true;
+          }
+        }
+        return false;
+      }
+
       void countUnreadDocs(QuerySnapshot<Map<String, dynamic>> s) {
         for (final d in s.docs) {
           final m = d.data();
           final id = (m['notificationId'] ?? d.id).toString();
           if (id.isEmpty || !seen.add(id)) continue;
 
-          final readerIds = (m['readerIds'] is List)
-              ? (m['readerIds'] as List).map((e) => e.toString()).toSet()
-              : const <String>{};
+          // ⛔ skip jika user sudah "menghapus" (hide) notifikasi ini
+          if (isDeletedForMe(m)) continue;
 
-          if (!readerIds.contains(uid)) unread += 1; // belum dibaca
+          final rawReaders = m['readerIds'];
+          final readerIds = <String>{};
+          if (rawReaders is List) {
+            for (final e in rawReaders) {
+              readerIds.add(e.toString());
+            }
+          }
+
+          if (!readerIds.contains(uid)) {
+            unread += 1; // belum dibaca
+          }
         }
       }
 

@@ -17,6 +17,7 @@ class ProductCategorySelectionWidget extends StatelessWidget {
   final PhosphorIconData? icon;
   final double? heightButton;
   final List<BlocProvider> extraProviders;
+  final bool disabled;
   const ProductCategorySelectionWidget({
     super.key,
     required this.title,
@@ -25,12 +26,14 @@ class ProductCategorySelectionWidget extends StatelessWidget {
     this.icon,
     this.heightButton = 50,
     required this.extraProviders,
+    this.disabled = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return DropdownWidget(
       icon: icon,
+      disabled: disabled,
       title: title,
       state: selected == '' ? title : selected,
       validator: (_) => selected == '' ? '$title is required.' : null,

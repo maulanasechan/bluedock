@@ -148,65 +148,83 @@ class InvoiceFirebaseServiceImpl extends InvoiceFirebaseService {
   @override
   Future<Either> paidInvoice(InvoiceEntity req) async {
     try {
-      final userEmail = _auth.currentUser?.email ?? "";
+      final userEmail = _auth.currentUser?.email;
+
+      final projectRef = _db
+          .collection('Projects')
+          .doc('List Project')
+          .collection('Projects')
+          .doc(req.projectId);
 
       final invRef = _db.collection('Invoices').doc(req.invoiceId);
-      final purchaseRef = _db.collection('Purcashe Orders');
-      final purchaseId = purchaseRef.doc().id;
+      final purchaseCol = _db.collection('Purchase Orders');
+      final purchaseOrderId = purchaseCol.doc().id;
 
-      final notifRef = _db.collection('Notifications');
-      final notifInvoiceId = notifRef.doc().id;
-      final notifPurchaseId = notifRef.doc().id;
+      final notifCol = _db.collection('Notifications');
+      final notifInvoiceId = notifCol.doc().id;
+      final notifPurchaseId = notifCol.doc().id;
 
       final notifInvoiceMap = <String, dynamic>{
         'notificationId': notifInvoiceId,
         'title': "Project ${req.projectName} Down Payment has been paid",
         'subTitle': "Click this notification to go to this invoice",
-        "type": req.type.toJson(),
+        "type": invoiceType.toJson(),
         "route": AppRoutes.invoiceDetail,
         "params": req.invoiceId,
         "readerIds": <String>[],
         "isBroadcast": true,
         'receipentIds': <String>[],
+        'deletedIds': <String>[],
         'searchKeywords': req.searchKeywords,
+        'createdAt': FieldValue.serverTimestamp(),
       };
 
       final notifPurchaseMap = <String, dynamic>{
-        'notificationId': notifInvoiceId,
+        'notificationId': notifPurchaseId,
         'title': "Purchase Order created for this Project ${req.projectName}",
         'subTitle': "Click this notification to go to this purchase order",
-        "type": req.type.toJson(),
+        "type": purchaseType.toJson(),
         "route": AppRoutes.purchaseOrderDetail,
-        "params": purchaseId,
+        "params": purchaseOrderId,
         "readerIds": <String>[],
-        "isBroadcast": false,
-        'receipentIds': req.listTeamIds,
+        "isBroadcast": true,
+        'receipentIds': <String>[],
+        'deletedIds': <String>[],
         'createdAt': FieldValue.serverTimestamp(),
         'searchKeywords': req.searchKeywords,
       };
 
       final purchaseMap = <String, dynamic>{
+        'purchaseOrderId': purchaseOrderId,
         'projectId': req.projectId,
         'invoiceId': req.invoiceId,
         'purchaseContractNumber': req.purchaseContractNumber,
         'projectName': req.projectName,
         'projectCode': req.projectCode,
+        'currency': req.currency,
+        'price': null,
         'customerName': req.customerName,
         'customerCompany': req.customerCompany,
         'customerContact': req.customerContact,
         'productCategory': req.productCategory.toJson(),
         'productSelection': req.productSelection.toJson(),
+        'componentSelection': null,
+        'projectStatus': 'Active',
         'quantity': req.quantity,
         'listTeamIds': req.listTeamIds,
         'searchKeywords': req.searchKeywords,
         'createdAt': FieldValue.serverTimestamp(),
+        'favorites': <String>[],
+        'blDate': null,
+        'arrivalDate': null,
         'updatedAt': null,
         'updatedBy': null,
-        'type': req.type,
+        'type': req.type.toJson(),
         "createdBy": userEmail,
       };
 
       final invoiceMap = <String, dynamic>{
+        'projectStatus': 'Active',
         "dpStatus": true,
         "lcStatus": req.dpStatus == true ? true : false,
         "dpIssuedDate": req.dpStatus == false
@@ -217,19 +235,22 @@ class InvoiceFirebaseServiceImpl extends InvoiceFirebaseService {
             : null,
       };
 
+      final projectMap = <String, dynamic>{"status": 'Active'};
+
       final batch = _db.batch();
+      batch.set(projectRef, projectMap, SetOptions(merge: true));
       batch.set(
-        purchaseRef.doc(purchaseId),
+        purchaseCol.doc(purchaseOrderId),
         purchaseMap,
         SetOptions(merge: true),
       );
       batch.set(
-        notifRef.doc(notifPurchaseId),
+        notifCol.doc(notifPurchaseId),
         notifPurchaseMap,
         SetOptions(merge: true),
       );
       batch.set(
-        notifRef.doc(notifInvoiceId),
+        notifCol.doc(notifInvoiceId),
         notifInvoiceMap,
         SetOptions(merge: true),
       );
