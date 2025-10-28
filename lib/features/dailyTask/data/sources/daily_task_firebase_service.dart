@@ -13,15 +13,13 @@ abstract class DailyTaskFirebaseService {
   Future<Either> addDailyTask(DailyTaskFormReq req);
   Future<Either> updateDailyTask(DailyTaskFormReq req);
   Future<Either> deleteDailyTask(String req);
+  Future<Either> getDailyTaskById(String taskId);
 }
 
 class DailyTaskFirebaseServiceImpl extends DailyTaskFirebaseService {
   final _auth = FirebaseAuth.instance;
   final _baseDb = FirebaseFirestore.instance;
-  final _db = FirebaseFirestore.instance
-      .collection('Daily Task')
-      .doc('List Daily Task')
-      .collection('Daily Task');
+  final _db = FirebaseFirestore.instance.collection('Daily Task');
 
   final type = TypeCategorySelectionEntity(
     selectionId: 'lA1UeFRAk3dwN4HqmAzP',
@@ -50,6 +48,22 @@ class DailyTaskFirebaseServiceImpl extends DailyTaskFirebaseService {
       DateFormat('dd MMM yyyy, HH:mm').format(req.date!),
     ].where((e) => e.trim().isNotEmpty).join(' ');
     return buildWordPrefixes(all);
+  }
+
+  @override
+  Future<Either> getDailyTaskById(String taskId) async {
+    try {
+      if (taskId.isEmpty) return const Left('Daily Task Id is required');
+      final doc = await _db.doc(taskId).get();
+
+      if (!doc.exists) return const Left('Daily Task not found');
+
+      final data = doc.data()!;
+      data['dailyTaskId'] = data['dailyTaskId'] ?? doc.id; // normalize
+      return Right(data);
+    } catch (e) {
+      return const Left('Please try again');
+    }
   }
 
   @override

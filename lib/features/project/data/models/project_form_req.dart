@@ -19,8 +19,6 @@ class ProjectFormReq {
   final String warrantyOfGoods;
   final int quantity;
   final String projectDescription;
-  final int? maintenancePeriod;
-  final String maintenanceCurrency;
   final String customerContact;
   final String status;
   final List<StaffEntity> listTeam;
@@ -43,8 +41,6 @@ class ProjectFormReq {
     this.warrantyOfGoods = '',
     this.quantity = 1,
     this.projectDescription = '',
-    this.maintenancePeriod,
-    this.maintenanceCurrency = 'Month',
     this.customerContact = '',
     this.listTeam = const <StaffEntity>[],
     this.favorites = const <String>[],
@@ -93,8 +89,6 @@ class ProjectFormReq {
       quantity: quantity ?? this.quantity,
       warrantyOfGoods: warrantyOfGoods ?? this.warrantyOfGoods,
       projectDescription: projectDescription ?? this.projectDescription,
-      maintenancePeriod: maintenancePeriod ?? this.maintenancePeriod,
-      maintenanceCurrency: maintenanceCurrency ?? this.maintenanceCurrency,
       customerContact: customerContact ?? this.customerContact,
       listTeam: listTeam ?? this.listTeam,
       favorites: favorites ?? this.favorites,

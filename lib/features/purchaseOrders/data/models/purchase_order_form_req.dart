@@ -1,134 +1,120 @@
-import 'package:bluedock/common/domain/entities/staff_entity.dart';
 import 'package:bluedock/common/domain/entities/product_category_entity.dart';
 import 'package:bluedock/common/domain/entities/product_selection_entity.dart';
+import 'package:bluedock/common/domain/entities/project_entity.dart';
 import 'package:bluedock/common/domain/entities/type_category_selection_entity.dart';
+import 'package:bluedock/features/inventories/domain/entities/inventory_entity.dart';
 
 class PurchaseOrderFormReq {
   // IDs & linkage
-  final String projectId;
-  final String invoiceId;
+  final ProjectEntity? project;
   final String purchaseOrderId;
+  final String poName; // ← ditambahkan
 
   // Project & contract
-  final String purchaseContractNumber;
-  final String projectName;
-  final String projectCode;
-  final String projectStatus; // e.g. Inactive/Active/Done
   final String currency;
-  final int? price; // nullable sesuai permintaan
-  final int quantity;
+  final int? price; // nullable
+  final List<int> quantity; // disesuaikan: const [0]
 
-  // Customer
-  final String customerName;
-  final String customerCompany;
-  final String customerContact;
+  // Seller
+  final String sellerName;
+  final String sellerCompany;
+  final String sellerContact;
 
   // Selections
   final ProductCategoryEntity? productCategory;
   final ProductSelectionEntity? productSelection;
-  final TypeCategorySelectionEntity? componentSelection;
 
   // Meta
-  final List<StaffEntity> listTeam; // biar UI toggle pakai StaffEntity
-  final TypeCategorySelectionEntity? type; // tipe dokumen (PO)
-  final List<String> searchKeywords;
+  final List<InventoryEntity> listComponent;
+  final int componentLength;
 
-  // Audit/time (opsional di form, tapi keep supaya mudah hydrate)
-  final DateTime? blDate;
-  final DateTime? arrivalDate;
+  final TypeCategorySelectionEntity type; // tipe dokumen (PO)
+  final List<String> searchKeywords;
 
   const PurchaseOrderFormReq({
     // IDs & linkage
-    this.projectId = '',
-    this.invoiceId = '',
+    this.project,
     this.purchaseOrderId = '',
+    this.poName = '',
 
     // Project & contract
-    this.purchaseContractNumber = '',
-    this.projectName = '',
-    this.projectCode = '',
-    this.projectStatus = '',
     this.currency = 'USD',
     this.price,
-    this.quantity = 0,
+    this.quantity = const [],
 
-    // Customer
-    this.customerName = '',
-    this.customerCompany = '',
-    this.customerContact = '',
+    // Seller
+    this.sellerName = '',
+    this.sellerCompany = '',
+    this.sellerContact = '',
 
     // Selections
     this.productCategory,
     this.productSelection,
-    this.componentSelection,
+    this.listComponent = const <InventoryEntity>[],
+    this.componentLength = 1,
 
-    // Meta
-    this.listTeam = const <StaffEntity>[],
-    this.type,
+    this.type = const TypeCategorySelectionEntity(
+      selectionId: 'SnSu62diYMdF0FzOItzJ',
+      title: 'Project',
+      image: 'assets/icons/project.png',
+      color: '0F6CBB',
+    ),
     this.searchKeywords = const <String>[],
-
-    // Audit
-    this.blDate,
-    this.arrivalDate,
   });
 
   PurchaseOrderFormReq copyWith({
     // IDs & linkage
-    String? projectId,
-    String? invoiceId,
+    ProjectEntity? project,
     String? purchaseOrderId,
+    String? poName,
 
     // Project & contract
-    String? purchaseContractNumber,
-    String? projectName,
-    String? projectCode,
-    String? projectStatus,
     String? currency,
-    Object? price = _unset, // sentinel untuk bisa null-in
-    int? quantity,
+    Object? price = _unset,
+    List<int>? quantity,
 
-    // Customer
-    String? customerName,
-    String? customerCompany,
-    String? customerContact,
+    // Seller
+    String? sellerName,
+    String? sellerCompany,
+    String? sellerContact,
 
     // Selections
     ProductCategoryEntity? productCategory,
     ProductSelectionEntity? productSelection,
-    TypeCategorySelectionEntity? componentSelection,
 
     // Meta
-    List<StaffEntity>? listTeam,
+    List<InventoryEntity>? listComponent,
+    int? componentLength,
+
     TypeCategorySelectionEntity? type,
     List<String>? searchKeywords,
-
-    // Audit
-    DateTime? blDate,
-    DateTime? arrivalDate,
   }) {
     return PurchaseOrderFormReq(
-      projectId: projectId ?? this.projectId,
-      invoiceId: invoiceId ?? this.invoiceId,
+      // IDs & linkage
+      project: project ?? this.project,
       purchaseOrderId: purchaseOrderId ?? this.purchaseOrderId,
-      purchaseContractNumber:
-          purchaseContractNumber ?? this.purchaseContractNumber,
-      projectName: projectName ?? this.projectName,
-      projectCode: projectCode ?? this.projectCode,
-      projectStatus: projectStatus ?? this.projectStatus,
+      poName: poName ?? this.poName,
+
+      // Project & contract
       currency: currency ?? this.currency,
       price: identical(price, _unset) ? this.price : price as int?,
       quantity: quantity ?? this.quantity,
-      customerName: customerName ?? this.customerName,
-      customerCompany: customerCompany ?? this.customerCompany,
-      customerContact: customerContact ?? this.customerContact,
+
+      // Seller
+      sellerName: sellerName ?? this.sellerName,
+      sellerCompany: sellerCompany ?? this.sellerCompany,
+      sellerContact: sellerContact ?? this.sellerContact,
+
+      // Selections
       productCategory: productCategory ?? this.productCategory,
       productSelection: productSelection ?? this.productSelection,
-      componentSelection: componentSelection ?? this.componentSelection,
-      listTeam: listTeam ?? this.listTeam,
+
+      // Meta
+      listComponent: listComponent ?? this.listComponent,
+      componentLength: componentLength ?? this.componentLength,
+
       type: type ?? this.type,
       searchKeywords: searchKeywords ?? this.searchKeywords,
-      blDate: blDate ?? this.blDate,
-      arrivalDate: arrivalDate ?? this.arrivalDate,
     );
   }
 

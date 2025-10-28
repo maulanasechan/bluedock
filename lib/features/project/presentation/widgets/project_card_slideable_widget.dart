@@ -45,11 +45,11 @@ class ProjectCardSlidableWidget extends StatelessWidget {
           }
         },
         isUpdated: project.status == 'Inactive' && project.blDate == null,
-        deleteColor: project.blDate != null
-            ? project.status == 'Commissioning'
-                  ? AppColors.green
-                  : AppColors.blue
-            : AppColors.orange,
+        deleteColor: project.status == 'Inactive'
+            ? AppColors.red
+            : project.status == 'Commissioning'
+            ? AppColors.green
+            : AppColors.blue,
         deleteText: project.status == 'Inactive'
             ? 'Delete'
             : project.status == 'Active'

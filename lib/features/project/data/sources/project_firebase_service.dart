@@ -73,10 +73,7 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
     try {
       final userEmail = _auth.currentUser?.email ?? '';
 
-      final colRef = _db
-          .collection('Projects')
-          .doc('List Project')
-          .collection('Projects');
+      final colRef = _db.collection('Projects');
 
       final invRef = _db.collection('Invoices');
       final notifRef = _db.collection('Notifications');
@@ -145,16 +142,18 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
         'currency': req.currency,
         'payment': req.payment,
         'quantity': req.quantity,
-        'issuedDate': FieldValue.serverTimestamp(),
         'createdAt': FieldValue.serverTimestamp(),
-        'updatedAt': null,
         'createdBy': userEmail,
         "projectStatus": 'Inactive',
         'favorites': req.favorites,
         'type': projectType.toJson(),
-        "listTeamIds": teamIds,
-        "dpIssuedDate": null,
+        "issuedDate": FieldValue.serverTimestamp(),
+        "dpIssuedDate": FieldValue.serverTimestamp(),
         "lcIssuedDate": null,
+        "dpApprovedDate": null,
+        "lcApprovedDate": null,
+        "dpApprovedBy": '',
+        "lcApprovedBy": '',
         'searchKeywords': _buildAllPrefixes(req),
       };
 
@@ -175,8 +174,6 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
         'delivery': req.delivery,
         'warrantyOfGoods': req.warrantyOfGoods,
         'projectDescription': req.projectDescription,
-        'maintenancePeriod': req.maintenancePeriod,
-        'maintenanceCurrency': req.maintenanceCurrency,
         'listTeam': req.listTeam.map((m) => m.toJson()).toList(),
         'listTeamIds': teamIds,
         'quantity': req.quantity,
@@ -216,11 +213,7 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
   @override
   Future<Either> updateProject(ProjectFormReq req) async {
     try {
-      final colRef = _db
-          .collection('Projects')
-          .doc('List Project')
-          .collection('Projects')
-          .doc(req.projectId);
+      final colRef = _db.collection('Projects').doc(req.projectId);
 
       final invRef = _db.collection('Invoices').doc(req.invoiceId);
 
@@ -241,7 +234,8 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
         'currency': req.currency,
         'payment': req.payment,
         'quantity': req.quantity,
-        'issuedDate': FieldValue.serverTimestamp(),
+        "issuedDate": FieldValue.serverTimestamp(),
+        "dpIssuedDate": FieldValue.serverTimestamp(),
         'searchKeywords': _buildAllPrefixes(req),
       };
 
@@ -266,8 +260,6 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
         'delivery': req.delivery,
         'warrantyOfGoods': req.warrantyOfGoods,
         'projectDescription': req.projectDescription,
-        'maintenancePeriod': req.maintenancePeriod,
-        'maintenanceCurrency': req.maintenanceCurrency,
         'listTeam': req.listTeam.map((m) => m.toJson()).toList(),
         'listTeamIds': teamIds,
         'quantity': req.quantity,
@@ -331,12 +323,7 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
     try {
       await _db.collection('Invoices').doc(req.invoiceId).delete();
 
-      await _db
-          .collection('Projects')
-          .doc('List Project')
-          .collection('Projects')
-          .doc(req.projectId)
-          .delete();
+      await _db.collection('Projects').doc(req.projectId).delete();
 
       return Right('Remove project succesfull');
     } catch (e) {
@@ -350,11 +337,7 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
       final uid = _auth.currentUser?.uid;
       if (uid == null) return const Left('User is not logged in.');
 
-      final docRef = _db
-          .collection('Projects')
-          .doc('List Project')
-          .collection('Projects')
-          .doc(req);
+      final docRef = _db.collection('Projects').doc(req);
 
       var nowFav = false;
 
@@ -386,11 +369,7 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
   @override
   Future<Either> commisionProject(ProjectEntity req) async {
     try {
-      final colRef = _db
-          .collection('Projects')
-          .doc('List Project')
-          .collection('Projects')
-          .doc(req.projectId);
+      final colRef = _db.collection('Projects').doc(req.projectId);
 
       final teamIds = req.listTeam
           .map((m) => m.staffId)

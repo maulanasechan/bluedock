@@ -6,4 +6,5 @@ abstract class DailyTaskRepository {
   Future<Either> addDailyTask(DailyTaskFormReq product);
   Future<Either> updateDailyTask(DailyTaskFormReq product);
   Future<Either> deleteDailyTask(String req);
+  Future<Either> getDailyTaskById(String req);
 }

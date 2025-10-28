@@ -12,6 +12,11 @@ import 'package:bluedock/features/home/presentation/pages/error/you_are_offline_
 import 'package:bluedock/features/home/presentation/pages/home/home_page.dart';
 import 'package:bluedock/features/home/presentation/pages/profile/change_password_page.dart';
 import 'package:bluedock/features/home/presentation/pages/profile/profile_page.dart';
+import 'package:bluedock/features/inventories/domain/entities/inventory_entity.dart';
+import 'package:bluedock/features/inventories/presentation/pages/inventory_detail_page.dart';
+import 'package:bluedock/features/inventories/presentation/pages/inventory_form_page.dart';
+import 'package:bluedock/features/inventories/presentation/pages/inventory_success_page.dart';
+import 'package:bluedock/features/inventories/presentation/pages/manage_inventory_page.dart';
 import 'package:bluedock/features/invoice/presentation/pages/invoice_detail_page.dart';
 import 'package:bluedock/features/invoice/presentation/pages/manage_invoice_page.dart';
 import 'package:bluedock/features/invoice/presentation/pages/success_invoice_page.dart';
@@ -81,8 +86,15 @@ class AppRouter {
             path: AppRoutes.purchaseOrderDetail,
             name: AppRoutes.purchaseOrderDetail,
             builder: (context, state) {
-              final extra = state.extra as String;
-              return PurchaseOrderDetailPage(purchaseOrderId: extra);
+              final map = (state.extra is Map)
+                  ? Map<String, dynamic>.from(state.extra as Map)
+                  : const <String, dynamic>{};
+              final id = map['id'] as String? ?? '';
+              final isEdit = map['isEdit'] as bool? ?? false;
+              return PurchaseOrderDetailPage(
+                purchaseOrderId: id,
+                isEdit: isEdit,
+              );
             },
           ),
           GoRoute(
@@ -103,6 +115,41 @@ class AppRouter {
               final title = map['title'] as String? ?? '';
               final image = map['image'] as String? ?? '';
               return SuccessPurchaseOrderPage(title: title, image: image);
+            },
+          ),
+        ],
+      ),
+      GoRoute(
+        path: formatRoute(AppRoutes.inventory),
+        name: AppRoutes.inventory,
+        builder: (context, state) => const ManageInventoryPage(),
+        routes: [
+          GoRoute(
+            path: AppRoutes.inventoryForm,
+            name: AppRoutes.inventoryForm,
+            builder: (context, state) {
+              final extra = state.extra as InventoryEntity?;
+              return InventoryFormPage(inventory: extra);
+            },
+          ),
+          GoRoute(
+            path: AppRoutes.inventorySuccess,
+            name: AppRoutes.inventorySuccess,
+            builder: (context, state) {
+              final map = (state.extra is Map)
+                  ? Map<String, dynamic>.from(state.extra as Map)
+                  : const <String, dynamic>{};
+              final title = map['title'] as String? ?? '';
+              final image = map['image'] as String? ?? '';
+              return InventorySuccessPage(title: title, image: image);
+            },
+          ),
+          GoRoute(
+            path: AppRoutes.inventoryDetail,
+            name: AppRoutes.inventoryDetail,
+            builder: (context, state) {
+              final extra = state.extra as String;
+              return InventoryDetailPage(inventoryId: extra);
             },
           ),
         ],
@@ -138,8 +185,12 @@ class AppRouter {
             path: AppRoutes.detailDailyTask,
             name: AppRoutes.detailDailyTask,
             builder: (context, state) {
-              final extra = state.extra as DailyTaskEntity;
-              return DailyTaskDetailPage(task: extra);
+              final map = (state.extra is Map)
+                  ? Map<String, dynamic>.from(state.extra as Map)
+                  : const <String, dynamic>{};
+              final id = map['id'] as String? ?? '';
+              final isEdit = map['isEdit'] as bool? ?? false;
+              return DailyTaskDetailPage(taskId: id, isEdit: isEdit);
             },
           ),
           GoRoute(
@@ -165,8 +216,12 @@ class AppRouter {
             path: AppRoutes.invoiceDetail,
             name: AppRoutes.invoiceDetail,
             builder: (context, state) {
-              final extra = state.extra as String;
-              return InvoiceDetailPage(invoiceId: extra);
+              final map = (state.extra is Map)
+                  ? Map<String, dynamic>.from(state.extra as Map)
+                  : const <String, dynamic>{};
+              final id = map['id'] as String? ?? '';
+              final isEdit = map['isEdit'] as bool? ?? false;
+              return InvoiceDetailPage(invoiceId: id, isEdit: isEdit);
             },
           ),
           GoRoute(
@@ -213,8 +268,12 @@ class AppRouter {
             path: AppRoutes.projectDetail,
             name: AppRoutes.projectDetail,
             builder: (context, state) {
-              final extra = state.extra as String;
-              return ProjectDetailPage(projectId: extra);
+              final map = (state.extra is Map)
+                  ? Map<String, dynamic>.from(state.extra as Map)
+                  : const <String, dynamic>{};
+              final id = map['id'] as String? ?? '';
+              final isEdit = map['isEdit'] as bool? ?? false;
+              return ProjectDetailPage(projectId: id, isEdit: isEdit);
             },
           ),
           GoRoute(

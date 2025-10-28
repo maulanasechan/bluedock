@@ -49,11 +49,6 @@ class PurchaseOrderRepositoryImpl extends PurchaseOrderRepository {
   }
 
   @override
-  Future<Either> fillPurchaseOrder(PurchaseOrderFormReq req) async {
-    return await sl<PurchaseOrderFirebaseService>().fillPurchaseOrder(req);
-  }
-
-  @override
   Future<Either> updatePurchaseOrder(PurchaseOrderFormReq req) async {
     return await sl<PurchaseOrderFirebaseService>().updatePurchaseOrder(req);
   }

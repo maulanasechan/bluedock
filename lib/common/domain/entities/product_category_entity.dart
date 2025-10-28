@@ -36,4 +36,26 @@ class ProductCategoryEntity {
     'route': route,
     'totalProduct': totalProduct,
   };
+
+  /// ✅ fromJson versi aman
+  factory ProductCategoryEntity.fromJson(Map<String, dynamic> json) {
+    double asDouble(dynamic v) {
+      if (v is double) return v;
+      if (v is int) return v.toDouble();
+      if (v is String) return double.tryParse(v) ?? 0.0;
+      return 0.0;
+    }
+
+    return ProductCategoryEntity(
+      categoryId: (json['categoryId'] ?? '').toString(),
+      title: (json['title'] ?? '').toString(),
+      image: (json['image'] ?? '').toString(),
+      route: (json['route'] ?? '').toString(),
+      totalProduct: asDouble(json['totalProduct']),
+    );
+  }
+
+  /// ✅ Opsional: agar konsisten dengan model lain (fromMap)
+  factory ProductCategoryEntity.fromMap(Map<String, dynamic> map) =>
+      ProductCategoryEntity.fromJson(map);
 }

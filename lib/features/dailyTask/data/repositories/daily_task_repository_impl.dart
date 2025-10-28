@@ -33,4 +33,13 @@ class DailyTaskRepositoryImpl extends DailyTaskRepository {
   Future<Either> deleteDailyTask(String req) async {
     return await sl<DailyTaskFirebaseService>().deleteDailyTask(req);
   }
+
+  @override
+  Future<Either> getDailyTaskById(String taskId) async {
+    final res = await sl<DailyTaskFirebaseService>().getDailyTaskById(taskId);
+    return res.fold(
+      (err) => Left(err),
+      (m) => Right(DailyTaskModel.fromMap(m).toEntity()),
+    );
+  }
 }

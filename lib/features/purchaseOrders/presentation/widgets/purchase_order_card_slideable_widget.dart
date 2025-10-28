@@ -4,7 +4,6 @@ import 'package:bluedock/common/widgets/card/slidable_action_widget.dart';
 import 'package:bluedock/common/widgets/modal/center_modal_widget.dart';
 import 'package:bluedock/core/config/assets/app_images.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
-import 'package:bluedock/core/config/theme/app_colors.dart';
 import 'package:bluedock/features/project/domain/usecases/delete_project_usecase.dart';
 import 'package:bluedock/common/bloc/projectSection/project_display_cubit.dart';
 import 'package:bluedock/features/purchaseOrders/domain/entities/purchase_order_entity.dart';
@@ -12,7 +11,6 @@ import 'package:bluedock/features/purchaseOrders/presentation/widgets/purchase_o
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class PurchaseOrderCardSlideableWidget extends StatelessWidget {
   final PurchaseOrderEntity po;
@@ -24,15 +22,7 @@ class PurchaseOrderCardSlideableWidget extends StatelessWidget {
       create: (context) => ActionButtonCubit(),
       child: SlidableActionWidget(
         isSlideable: true,
-        isUpdated:
-            po.projectStatus == 'Active' || po.type.title == 'Purchase Order',
-        updateText: po.projectStatus == 'Active' ? 'Fill Data' : 'Update',
-        updateIcon: po.projectStatus == 'Active'
-            ? PhosphorIconsFill.folderPlus
-            : PhosphorIconsFill.gearFine,
-        updateColor: po.projectStatus == 'Active'
-            ? AppColors.blue
-            : AppColors.orange,
+        isUpdated: po.status == 'Inactive',
         onUpdateTap: () async {
           final changed = await context.pushNamed(
             AppRoutes.formPurchaseOrder,
@@ -42,14 +32,14 @@ class PurchaseOrderCardSlideableWidget extends StatelessWidget {
             context.read<ProjectDisplayCubit>().displayInitial();
           }
         },
-        extentRatio: po.type.title == 'Purchase Order' ? 0.4 : 0.2,
-        isDeleted: po.type.title == 'Purchase Order',
+        extentRatio: po.status == 'Inactive' ? 0.4 : 0.2,
+        isDeleted: po.status == 'Inactive',
         onDeleteTap: () async {
           final actionCubit = context.read<ActionButtonCubit>();
           final changed = await CenterModalWidget.display(
             context: context,
-            title: 'Remove Purchase Order',
-            subtitle: "Are you sure to remove this purchase order?",
+            title: 'Remove ${po.poName}',
+            subtitle: "Are you sure to remove this ${po.poName}?",
             yesButton: 'Remove',
             actionCubit: actionCubit,
             yesButtonOnTap: () async {
@@ -62,7 +52,7 @@ class PurchaseOrderCardSlideableWidget extends StatelessWidget {
             final change = await context.pushNamed(
               AppRoutes.successProject,
               extra: {
-                'title': '${po.projectName} has been removed',
+                'title': 'Purchase order has been removed',
                 'image': AppImages.appProjectDeleted,
               },
             );
@@ -71,7 +61,7 @@ class PurchaseOrderCardSlideableWidget extends StatelessWidget {
             }
           }
         },
-        deleteParams: po.projectId,
+        deleteParams: po.purchaseOrderId,
         child: PurchaseOrderCardWidget(po: po),
       ),
     );

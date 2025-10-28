@@ -19,6 +19,7 @@ class ProjectSelectionWidget extends StatelessWidget {
   final double heightButton;
   final List<BlocProvider> extraProviders;
   final bool? withoutTitle;
+  final String? status;
 
   const ProjectSelectionWidget({
     super.key,
@@ -26,9 +27,10 @@ class ProjectSelectionWidget extends StatelessWidget {
     required this.selected,
     required this.onPressed,
     this.icon,
-    this.heightButton = 50,
+    this.heightButton = 80,
     required this.extraProviders,
     this.withoutTitle = false,
+    this.status,
   });
 
   @override
@@ -82,22 +84,27 @@ class ProjectSelectionWidget extends StatelessWidget {
                           return Center(child: Text(state.message));
                         }
                         if (state is ProjectDisplayFetched) {
-                          final listSelection = state.listProject;
-                          if (listSelection.isEmpty) {
+                          final activeProjects = status == null
+                              ? state.listProject
+                              : state.listProject
+                                    .where((p) => p.status != status)
+                                    .toList();
+
+                          if (activeProjects.isEmpty) {
                             return const Center(
-                              child: Text('No product found'),
+                              child: Text('No active project found'),
                             );
                           }
                           return ListView.separated(
                             padding: const EdgeInsets.only(bottom: 3),
-                            itemCount: listSelection.length,
+                            itemCount: activeProjects.length,
                             separatorBuilder: (_, __) =>
                                 const SizedBox(height: 20),
                             itemBuilder: (context, index) {
-                              final value = listSelection[index];
+                              final value = activeProjects[index];
                               final isSelected = selected == value.projectName;
                               return ButtonWidget(
-                                height: 120,
+                                height: heightButton,
                                 background: isSelected
                                     ? AppColors.blue
                                     : AppColors.white,
@@ -110,78 +117,48 @@ class ProjectSelectionWidget extends StatelessWidget {
                                   child: SizedBox(
                                     width: double.infinity,
                                     child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        SizedBox(
-                                          width: 65,
-                                          height: 65,
-                                          child: Image.asset(
-                                            value.productSelection.image,
-                                            fit: BoxFit.contain,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 20),
                                         Expanded(
-                                          child: Row(
+                                          child: Column(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              Expanded(
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    TextWidget(
-                                                      text: value.projectName,
-                                                      color: isSelected
-                                                          ? AppColors.white
-                                                          : AppColors.darkBlue,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                    ),
-                                                    TextWidget(
-                                                      text:
-                                                          '${value.productCategory.title} - ${value.productSelection.productModel}',
-                                                      color: isSelected
-                                                          ? AppColors.white
-                                                          : AppColors.darkBlue,
-                                                      overflow:
-                                                          TextOverflow.fade,
-                                                      fontSize: 14,
-                                                    ),
-                                                    TextWidget(
-                                                      text:
-                                                          value.customerCompany,
-                                                      color: isSelected
-                                                          ? AppColors.white
-                                                          : AppColors.darkBlue,
-                                                      overflow:
-                                                          TextOverflow.fade,
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                      fontSize: 16,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-
                                               TextWidget(
                                                 text:
-                                                    "${value.quantity.toInt()} Unit",
-                                                overflow: TextOverflow.fade,
-                                                fontWeight: FontWeight.w700,
+                                                    "${value.customerCompany} - ${value.projectName}",
                                                 color: isSelected
                                                     ? AppColors.white
-                                                    : AppColors.orange,
+                                                    : AppColors.darkBlue,
+                                                overflow: TextOverflow.ellipsis,
                                                 fontSize: 16,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                              SizedBox(height: 8),
+                                              TextWidget(
+                                                text:
+                                                    '${value.productCategory.title} - ${value.productSelection.productModel}',
+                                                color: isSelected
+                                                    ? AppColors.white
+                                                    : AppColors.darkBlue,
+                                                overflow: TextOverflow.fade,
+                                                fontSize: 14,
                                               ),
                                             ],
                                           ),
+                                        ),
+                                        TextWidget(
+                                          text:
+                                              "${value.quantity.toInt()} Unit",
+                                          overflow: TextOverflow.fade,
+                                          fontWeight: FontWeight.w700,
+                                          color: isSelected
+                                              ? AppColors.white
+                                              : AppColors.orange,
+                                          fontSize: 18,
                                         ),
                                       ],
                                     ),

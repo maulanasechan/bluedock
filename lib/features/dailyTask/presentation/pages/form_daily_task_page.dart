@@ -147,9 +147,9 @@ class FormDailyTaskPage extends StatelessWidget {
                             ),
                             SizedBox(height: 24),
                             TypeCategorySelectionModalWidget(
-                              collection: 'Daily Task',
-                              subCollection: 'Type Category',
-                              document: 'Selection',
+                              collection: 'Selection',
+                              subCollection: 'Type Categories',
+                              document: 'List Selection',
                               selected: state.dailyTaskCategory?.title ?? '',
                               onSelected: (v) {
                                 context

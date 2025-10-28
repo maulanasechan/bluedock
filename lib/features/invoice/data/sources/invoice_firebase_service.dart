@@ -150,19 +150,11 @@ class InvoiceFirebaseServiceImpl extends InvoiceFirebaseService {
     try {
       final userEmail = _auth.currentUser?.email;
 
-      final projectRef = _db
-          .collection('Projects')
-          .doc('List Project')
-          .collection('Projects')
-          .doc(req.projectId);
-
+      final projectRef = _db.collection('Projects').doc(req.projectId);
       final invRef = _db.collection('Invoices').doc(req.invoiceId);
-      final purchaseCol = _db.collection('Purchase Orders');
-      final purchaseOrderId = purchaseCol.doc().id;
 
       final notifCol = _db.collection('Notifications');
       final notifInvoiceId = notifCol.doc().id;
-      final notifPurchaseId = notifCol.doc().id;
 
       final notifInvoiceMap = <String, dynamic>{
         'notificationId': notifInvoiceId,
@@ -179,76 +171,26 @@ class InvoiceFirebaseServiceImpl extends InvoiceFirebaseService {
         'createdAt': FieldValue.serverTimestamp(),
       };
 
-      final notifPurchaseMap = <String, dynamic>{
-        'notificationId': notifPurchaseId,
-        'title': "Purchase Order created for this Project ${req.projectName}",
-        'subTitle': "Click this notification to go to this purchase order",
-        "type": purchaseType.toJson(),
-        "route": AppRoutes.purchaseOrderDetail,
-        "params": purchaseOrderId,
-        "readerIds": <String>[],
-        "isBroadcast": true,
-        'receipentIds': <String>[],
-        'deletedIds': <String>[],
-        'createdAt': FieldValue.serverTimestamp(),
-        'searchKeywords': req.searchKeywords,
-      };
-
-      final purchaseMap = <String, dynamic>{
-        'purchaseOrderId': purchaseOrderId,
-        'projectId': req.projectId,
-        'invoiceId': req.invoiceId,
-        'purchaseContractNumber': req.purchaseContractNumber,
-        'projectName': req.projectName,
-        'projectCode': req.projectCode,
-        'currency': req.currency,
-        'price': null,
-        'customerName': req.customerName,
-        'customerCompany': req.customerCompany,
-        'customerContact': req.customerContact,
-        'productCategory': req.productCategory.toJson(),
-        'productSelection': req.productSelection.toJson(),
-        'componentSelection': null,
-        'projectStatus': 'Active',
-        'quantity': req.quantity,
-        'listTeamIds': req.listTeamIds,
-        'searchKeywords': req.searchKeywords,
-        'createdAt': FieldValue.serverTimestamp(),
-        'favorites': <String>[],
-        'blDate': null,
-        'arrivalDate': null,
-        'updatedAt': null,
-        'updatedBy': null,
-        'type': req.type.toJson(),
-        "createdBy": userEmail,
-      };
-
       final invoiceMap = <String, dynamic>{
-        'projectStatus': 'Active',
+        'projectStatus': req.dpStatus == true ? 'LC Paid' : 'DP Paid',
         "dpStatus": true,
         "lcStatus": req.dpStatus == true ? true : false,
-        "dpIssuedDate": req.dpStatus == false
+        "dpApprovedDate": req.dpStatus == false
             ? FieldValue.serverTimestamp()
             : null,
-        "lcIssuedDate": req.dpStatus == true
+        "lcApprovedDate": req.dpStatus == true
             ? FieldValue.serverTimestamp()
             : null,
+        "dpIssuedBy": req.dpStatus == true ? req.dpApprovedBy : userEmail,
+        "lcIssuedBy": req.dpStatus == true ? userEmail : '',
       };
 
-      final projectMap = <String, dynamic>{"status": 'Active'};
+      final projectMap = <String, dynamic>{
+        "status": req.dpStatus == true ? 'LC Paid' : 'DP Paid',
+      };
 
       final batch = _db.batch();
       batch.set(projectRef, projectMap, SetOptions(merge: true));
-      batch.set(
-        purchaseCol.doc(purchaseOrderId),
-        purchaseMap,
-        SetOptions(merge: true),
-      );
-      batch.set(
-        notifCol.doc(notifPurchaseId),
-        notifPurchaseMap,
-        SetOptions(merge: true),
-      );
       batch.set(
         notifCol.doc(notifInvoiceId),
         notifInvoiceMap,

@@ -15,3 +15,8 @@ class DailyTaskDisplayFailure extends DailyTaskDisplayState {
   final String message;
   DailyTaskDisplayFailure({required this.message});
 }
+
+class DailyTaskDisplayOneFetched extends DailyTaskDisplayState {
+  final DailyTaskEntity dailyTask;
+  DailyTaskDisplayOneFetched({required this.dailyTask});
+}

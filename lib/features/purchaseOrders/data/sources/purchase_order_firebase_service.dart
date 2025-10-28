@@ -2,6 +2,7 @@ import 'package:bluedock/common/data/models/search/search_with_type_req.dart';
 import 'package:bluedock/common/domain/entities/type_category_selection_entity.dart';
 import 'package:bluedock/common/helper/buildPrefix/build_prefixes_helper.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
+import 'package:bluedock/features/inventories/domain/entities/inventory_entity.dart';
 import 'package:bluedock/features/purchaseOrders/data/models/purchase_order_form_req.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
@@ -13,22 +14,13 @@ abstract class PurchaseOrderFirebaseService {
   Future<Either> favoritePurchaseOrder(String req);
   Future<Either> updatePurchaseOrder(PurchaseOrderFormReq req);
   Future<Either> deletePurchaseOrder(String req);
-  Future<Either> fillPurchaseOrder(PurchaseOrderFormReq req);
   Future<Either> addPurchaseOrder(PurchaseOrderFormReq req);
 }
 
 class PurchaseOrderFirebaseServiceImpl extends PurchaseOrderFirebaseService {
   final _auth = FirebaseAuth.instance;
   final _db = FirebaseFirestore.instance;
-
-  final projectType = TypeCategorySelectionEntity(
-    selectionId: 'tMa0kAraD4mRyZjvlSjs',
-    title: 'Project',
-    image: 'assets/icons/project.png',
-    color: '0F6CBB',
-  );
-
-  final purchaseType = TypeCategorySelectionEntity(
+  final _type = TypeCategorySelectionEntity(
     selectionId: 'lA1UeFRAk3dwN4HqmAzP',
     title: 'Purchase Order',
     image: 'assets/icons/purchaseOrder.png',
@@ -36,15 +28,32 @@ class PurchaseOrderFirebaseServiceImpl extends PurchaseOrderFirebaseService {
   );
 
   List<String> _buildAllPrefixes(PurchaseOrderFormReq req) {
-    final all = [
-      req.arrivalDate.toString(),
-      req.blDate.toString(),
-      req.customerCompany,
-      req.customerName,
-      req.productCategory?.title,
-      req.productSelection?.productModel,
-      req.componentSelection?.title,
-    ].where((e) => e!.trim().isNotEmpty).join(' ');
+    String? s(dynamic v) {
+      if (v == null) return null;
+      final s = v.toString().trim();
+      return s.isEmpty ? null : s;
+    }
+
+    final base = <String?>[
+      s(req.poName),
+      s(req.sellerCompany),
+      s(req.sellerName),
+      s(req.productCategory?.title),
+      s(req.productSelection?.productModel),
+    ];
+
+    // listComponent diasumsikan: List<InventoryEntity>?
+    final components =
+        (req.listComponent as List<InventoryEntity>?)
+            ?.expand((inv) => <String?>[s(inv.stockName), s(inv.partNo)])
+            .toList() ??
+        const <String>[];
+
+    final all = <String>[
+      ...base.whereType<String>(),
+      ...components.whereType<String>(),
+    ].join(' ');
+
     return buildWordPrefixes(all);
   }
 
@@ -165,156 +174,6 @@ class PurchaseOrderFirebaseServiceImpl extends PurchaseOrderFirebaseService {
   }
 
   @override
-  Future<Either> fillPurchaseOrder(PurchaseOrderFormReq req) async {
-    try {
-      final notifRef = _db.collection('Notifications');
-      final projectsRootRef = _db
-          .collection('Projects')
-          .doc('List Project')
-          .collection('Projects');
-      final purchRootRef = _db.collection('Purchase Orders');
-
-      final notifPurchId = notifRef.doc().id;
-
-      DocumentReference<Map<String, dynamic>>? projRef;
-      String? warrantyOfGoodsString;
-      DateTime? warrantyBlDate;
-
-      // --- Helpers
-      DateTime addMonths(DateTime base, int months) {
-        final y = base.year + ((base.month - 1 + months) ~/ 12);
-        final m = ((base.month - 1 + months) % 12) + 1;
-        final d = base.day;
-        final lastDay = DateTime(y, m + 1, 0).day;
-        return DateTime(y, m, d > lastDay ? lastDay : d);
-      }
-
-      int? extractBlMonths(String? warranty) {
-        if (warranty == null) return null;
-        final lower = warranty.toLowerCase().trim();
-
-        // fokus pada segmen yang menyebut "bill of lading"
-        final parts = lower.split(RegExp(r'\s+or\s+'));
-        final blPart = parts.firstWhere(
-          (p) => p.contains('bill of lading'),
-          orElse: () => lower,
-        );
-
-        final reg = RegExp(r'(\d+)\s*month');
-        final match = reg.firstMatch(blPart);
-        if (match != null) return int.tryParse(match.group(1)!);
-
-        // fallback global
-        final global = reg.firstMatch(lower);
-        return global != null ? int.tryParse(global.group(1)!) : null;
-      }
-
-      // --- Ambil Project & hitung warranty hanya jika type == Project
-      Map<String, dynamic>? projectMap;
-      Map<String, dynamic>? notifProjMap;
-      String? notifProjId;
-
-      if (req.type?.title == 'Project') {
-        projRef = projectsRootRef.doc(req.projectId);
-
-        final snap = await projRef.get();
-        if (snap.exists) {
-          final projData = snap.data();
-          warrantyOfGoodsString = (projData?['warrantyOfGoods'] as String?)
-              ?.trim();
-        }
-
-        // Hitung warrantyBlDate (BL only) kalau ada blDate
-        if (req.blDate != null) {
-          final blMonths = extractBlMonths(warrantyOfGoodsString);
-          final months = blMonths ?? 12; // default 12 bln bila tak terdeteksi
-          warrantyBlDate = addMonths(req.blDate!, months);
-        }
-
-        // Build project map & notif project
-        notifProjId = notifRef.doc().id;
-        projectMap = <String, dynamic>{
-          if (req.blDate != null) 'blDate': req.blDate,
-          if (warrantyBlDate != null) 'warrantyBlDate': warrantyBlDate,
-        };
-
-        notifProjMap = <String, dynamic>{
-          'notificationId': notifProjId,
-          'title': "Project ${req.projectName} has been updated",
-          'subTitle': "Tap to open this project",
-          "readerIds": <String>[],
-          "isBroadcast": false,
-          "route": AppRoutes.projectDetail,
-          "type": projectType.toJson(),
-          "params": req.projectId,
-          'receipentIds': req.listTeam,
-          'createdAt': FieldValue.serverTimestamp(),
-          'searchKeywords': req.searchKeywords,
-          'deletedIds': <String>[],
-        };
-      }
-
-      // --- Purchase Order update (boleh ikut simpan warrantyBlDate kalau terhitung)
-      final purchRef = purchRootRef.doc(req.purchaseOrderId);
-      final purchaseMap = <String, dynamic>{
-        if (req.blDate != null) 'blDate': req.blDate,
-        if (req.arrivalDate != null) 'arrivalDate': req.arrivalDate,
-        'price': req.price,
-        'currency': req.currency,
-        if (warrantyBlDate != null) 'warrantyBlDate': warrantyBlDate,
-      };
-
-      final notifPurchMap = <String, dynamic>{
-        'notificationId': notifPurchId,
-        'title':
-            "Purchase order for Project ${req.projectName} has been updated",
-        'subTitle': "Tap to open this purchase order",
-        "route": AppRoutes.purchaseOrderDetail,
-        "type": purchaseType.toJson(),
-        "params": req.purchaseOrderId,
-        "readerIds": <String>[],
-        "isBroadcast": true,
-        'receipentIds': <String>[],
-        'createdAt': FieldValue.serverTimestamp(),
-        'searchKeywords': req.searchKeywords,
-        'deletedIds': <String>[],
-      };
-
-      // --- Batch write
-      final batch = _db.batch();
-
-      if (projRef != null &&
-          projectMap != null &&
-          req.type?.title == 'Project') {
-        batch.set(projRef, projectMap, SetOptions(merge: true));
-      }
-
-      batch.set(purchRef, purchaseMap, SetOptions(merge: true));
-
-      if (notifProjMap != null && notifProjId != null) {
-        batch.set(
-          notifRef.doc(notifProjId),
-          notifProjMap,
-          SetOptions(merge: true),
-        );
-      }
-      batch.set(
-        notifRef.doc(notifPurchId),
-        notifPurchMap,
-        SetOptions(merge: true),
-      );
-
-      await batch.commit();
-
-      return const Right(
-        'Purchase order & related data have been updated successfully.',
-      );
-    } catch (_) {
-      return const Left('Please try again');
-    }
-  }
-
-  @override
   Future<Either> deletePurchaseOrder(String req) async {
     try {
       await _db.collection('Purchase Orders').doc(req).delete();
@@ -338,9 +197,10 @@ class PurchaseOrderFirebaseServiceImpl extends PurchaseOrderFirebaseService {
 
       final notifPurchaseMap = <String, dynamic>{
         'notificationId': notifId,
-        'title': "Purchase Order updated for this Project ${req.projectName}",
+        'title':
+            "Purchase Order updated for this ${req.type.title} ${req.project != null ? req.project!.projectName : ''}",
         'subTitle': "Click this notification to go to this purchase order",
-        "type": purchaseType.toJson(),
+        // "type": ,
         "route": AppRoutes.purchaseOrderDetail,
         "params": req.purchaseOrderId,
         "readerIds": <String>[],
@@ -352,24 +212,24 @@ class PurchaseOrderFirebaseServiceImpl extends PurchaseOrderFirebaseService {
       };
 
       final purchaseMap = <String, dynamic>{
-        'projectId': req.projectId,
-        'invoiceId': req.invoiceId,
-        'purchaseContractNumber': req.purchaseContractNumber,
-        'projectName': req.projectName,
-        'projectCode': req.projectCode,
+        // 'projectId': req.projectId,
+        // 'invoiceId': req.invoiceId,
+        // 'purchaseContractNumber': req.purchaseContractNumber,
+        // 'projectName': req.projectName,
+        // 'projectCode': req.projectCode,
         'currency': req.currency,
         'price': req.price,
-        'customerName': req.customerName,
-        'customerCompany': req.customerCompany,
-        'customerContact': req.customerContact,
+        // 'customerName': req.customerName,
+        // 'customerCompany': req.customerCompany,
+        // 'customerContact': req.customerContact,
         'productCategory': req.productCategory!.toJson(),
         'productSelection': req.productSelection!.toJson(),
-        'componentSelection': req.componentSelection?.toJson(),
+        // 'listTeamIds': req.listTeamIds,
+        'listConponent': req.listComponent.map((m) => m.toJson()).toList(),
         'projectStatus': 'Active',
         'quantity': req.quantity,
         'searchKeywords': req.searchKeywords,
-        'blDate': req.blDate,
-        'arrivalDate': req.arrivalDate,
+        // 'blNumber': req.blNumber,
         'updatedAt': FieldValue.serverTimestamp(),
         'updatedBy': userEmail,
       };
@@ -393,22 +253,36 @@ class PurchaseOrderFirebaseServiceImpl extends PurchaseOrderFirebaseService {
   Future<Either> addPurchaseOrder(PurchaseOrderFormReq req) async {
     try {
       final userEmail = _auth.currentUser?.email;
+
       final purchaseCol = _db.collection('Purchase Orders');
       final purchaseId = purchaseCol.doc().id;
 
       final notifCol = _db.collection('Notifications');
       final notifId = notifCol.doc().id;
 
+      // Bangun nama PO dengan fallback yang aman
+      final productCategory = (req.project == null)
+          ? req.productCategory?.toJson()
+          : req.project!.productCategory.toJson();
+
+      final productSelection = (req.project == null)
+          ? req.productSelection?.toJson()
+          : req.project!.productSelection.toJson();
+
+      final poName = (req.poName.isNotEmpty)
+          ? req.poName
+          : '${req.type.title} - ${req.project!.projectName}';
+
       final notifPurchaseMap = <String, dynamic>{
         'notificationId': notifId,
-        'title': "Purchase Order has been created",
-        'subTitle': "Click this notification to go to this purchase order",
-        "type": purchaseType.toJson(),
-        "route": AppRoutes.purchaseOrderDetail,
-        "params": purchaseId,
-        "readerIds": <String>[],
-        "isBroadcast": true,
-        'receipentIds': <String>[],
+        'title': 'Purchase Order has been created',
+        'subTitle': 'Click this notification to go to this $poName',
+        'type': _type.toJson(),
+        'route': AppRoutes.purchaseOrderDetail,
+        'params': purchaseId,
+        'readerIds': <String>[],
+        'isBroadcast': true,
+        'recipientIds': <String>[], // (opsional) perbaiki ejaan
         'deletedIds': <String>[],
         'createdAt': FieldValue.serverTimestamp(),
         'searchKeywords': req.searchKeywords,
@@ -416,33 +290,33 @@ class PurchaseOrderFirebaseServiceImpl extends PurchaseOrderFirebaseService {
 
       final purchaseMap = <String, dynamic>{
         'purchaseOrderId': purchaseId,
-        'projectId': req.projectId,
-        'invoiceId': req.invoiceId,
-        'purchaseContractNumber': req.purchaseContractNumber,
-        'projectName': req.projectName,
-        'projectCode': req.projectCode,
+        'poName': poName,
+        'project': req.project?.toJson(),
         'currency': req.currency,
         'price': req.price,
-        'customerName': userEmail,
-        'customerCompany': 'PT. Auxilary Machine',
-        'customerContact': req.customerContact,
-        'productCategory': req.productCategory!.toJson(),
-        'productSelection': req.productSelection!.toJson(),
-        'componentSelection': req.componentSelection?.toJson(),
-        'projectStatus': 'Active',
+        'sellerName': req.sellerName,
+        'sellerCompany': req.sellerCompany,
+        'sellerContact': req.sellerContact,
+        'productCategory': productCategory,
+        'productSelection': productSelection,
+        'listComponent': req.listComponent.map((m) => m.toJson()).toList(),
         'quantity': req.quantity,
         'searchKeywords': _buildAllPrefixes(req),
-        'blDate': req.blDate,
-        'arrivalDate': req.arrivalDate,
         'updatedAt': null,
         'updatedBy': null,
         'createdBy': userEmail,
         'createdAt': FieldValue.serverTimestamp(),
-        'type': purchaseType.toJson(),
+        'type': req.type.toJson(),
+        'status': 'Inactive',
       };
 
       final batch = _db.batch();
-      batch.set(purchaseCol.doc(notifId), purchaseMap, SetOptions(merge: true));
+      // ← pakai purchaseId, bukan notifId
+      batch.set(
+        purchaseCol.doc(purchaseId),
+        purchaseMap,
+        SetOptions(merge: true),
+      );
       batch.set(
         notifCol.doc(notifId),
         notifPurchaseMap,
@@ -450,8 +324,9 @@ class PurchaseOrderFirebaseServiceImpl extends PurchaseOrderFirebaseService {
       );
       await batch.commit();
 
-      return const Right('Purchase Order has been updated successfully.');
+      return const Right('Purchase Order has been created successfully.');
     } catch (e) {
+      // kamu bisa log e.toString() untuk debugging
       return const Left('Please try again');
     }
   }

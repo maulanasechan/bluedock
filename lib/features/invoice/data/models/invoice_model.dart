@@ -3,9 +3,6 @@ import 'package:bluedock/common/data/models/itemSelection/type_category_selectio
 import 'package:bluedock/features/invoice/domain/entities/invoice_entity.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:bluedock/common/data/models/productCategory/product_category_model.dart';
-import 'package:bluedock/common/data/models/product/product_selection_model.dart';
-
 class InvoiceModel {
   final String invoiceId;
   final String projectId;
@@ -19,8 +16,6 @@ class InvoiceModel {
   final String customerCompany;
   final String customerContact;
 
-  final ProductCategoryModel productCategory;
-  final ProductSelectionModel productSelection;
   final List<String> listTeamIds;
 
   final int dpAmount;
@@ -31,8 +26,6 @@ class InvoiceModel {
 
   final int totalPrice;
   final String currency;
-  final String payment;
-  final int quantity;
 
   final List<String> favorites;
   final TypeCategorySelectionModel type;
@@ -40,9 +33,14 @@ class InvoiceModel {
 
   final Timestamp? dpIssuedDate;
   final Timestamp? lcIssuedDate;
+  final Timestamp? dpApprovedDate; // baru
+  final Timestamp? lcApprovedDate; // baru
+  final String? dpApprovedBy; // baru
+  final String? lcApprovedBy; // baru
+
   final Timestamp createdAt;
-  final Timestamp? issuedDate;
   final String createdBy;
+  final Timestamp? issuedDate; // ← dimasukkan lagi
 
   const InvoiceModel({
     required this.invoiceId,
@@ -54,21 +52,21 @@ class InvoiceModel {
     required this.customerName,
     required this.customerCompany,
     required this.customerContact,
-    required this.productCategory,
-    required this.productSelection,
     required this.dpAmount,
     required this.lcAmount,
     required this.dpStatus,
     required this.lcStatus,
     required this.totalPrice,
     required this.currency,
-    required this.payment,
-    required this.quantity,
     required this.favorites,
     required this.type,
     required this.searchKeywords,
     required this.dpIssuedDate,
     required this.lcIssuedDate,
+    required this.dpApprovedDate,
+    required this.lcApprovedDate,
+    required this.dpApprovedBy,
+    required this.lcApprovedBy,
     required this.createdAt,
     required this.createdBy,
     required this.listTeamIds,
@@ -85,25 +83,25 @@ class InvoiceModel {
     String? customerName,
     String? customerCompany,
     String? customerContact,
-    ProductCategoryModel? productCategory,
-    ProductSelectionModel? productSelection,
     int? dpAmount,
     int? lcAmount,
     bool? dpStatus,
     bool? lcStatus,
     int? totalPrice,
     String? currency,
-    String? payment,
-    int? quantity,
     List<String>? favorites,
     TypeCategorySelectionModel? type,
     List<String>? searchKeywords,
     List<String>? listTeamIds,
     Timestamp? dpIssuedDate,
     Timestamp? lcIssuedDate,
+    Timestamp? dpApprovedDate,
+    Timestamp? lcApprovedDate,
+    String? dpApprovedBy,
+    String? lcApprovedBy,
     Timestamp? createdAt,
-    Timestamp? issuedDate,
     String? createdBy,
+    Timestamp? issuedDate,
   }) {
     return InvoiceModel(
       invoiceId: invoiceId ?? this.invoiceId,
@@ -116,21 +114,21 @@ class InvoiceModel {
       customerName: customerName ?? this.customerName,
       customerCompany: customerCompany ?? this.customerCompany,
       customerContact: customerContact ?? this.customerContact,
-      productCategory: productCategory ?? this.productCategory,
-      productSelection: productSelection ?? this.productSelection,
       dpAmount: dpAmount ?? this.dpAmount,
       lcAmount: lcAmount ?? this.lcAmount,
       dpStatus: dpStatus ?? this.dpStatus,
       lcStatus: lcStatus ?? this.lcStatus,
       totalPrice: totalPrice ?? this.totalPrice,
       currency: currency ?? this.currency,
-      payment: payment ?? this.payment,
-      quantity: quantity ?? this.quantity,
       favorites: favorites ?? this.favorites,
       type: type ?? this.type,
       searchKeywords: searchKeywords ?? this.searchKeywords,
       dpIssuedDate: dpIssuedDate ?? this.dpIssuedDate,
       lcIssuedDate: lcIssuedDate ?? this.lcIssuedDate,
+      dpApprovedDate: dpApprovedDate ?? this.dpApprovedDate,
+      lcApprovedDate: lcApprovedDate ?? this.lcApprovedDate,
+      dpApprovedBy: dpApprovedBy ?? this.dpApprovedBy,
+      lcApprovedBy: lcApprovedBy ?? this.lcApprovedBy,
       createdAt: createdAt ?? this.createdAt,
       createdBy: createdBy ?? this.createdBy,
       listTeamIds: listTeamIds ?? this.listTeamIds,
@@ -149,22 +147,22 @@ class InvoiceModel {
       'customerName': customerName,
       'customerCompany': customerCompany,
       'customerContact': customerContact,
-      'productCategory': productCategory.toMap(),
-      'productSelection': productSelection.toMap(),
       'dpAmount': dpAmount,
       'lcAmount': lcAmount,
       'dpStatus': dpStatus,
       'lcStatus': lcStatus,
       'totalPrice': totalPrice,
       'currency': currency,
-      'payment': payment,
-      'quantity': quantity,
       'favorites': favorites,
       'listTeamIds': listTeamIds,
       'type': type.toMap(),
       'searchKeywords': searchKeywords,
       'dpIssuedDate': dpIssuedDate,
       'lcIssuedDate': lcIssuedDate,
+      'dpApprovedDate': dpApprovedDate,
+      'lcApprovedDate': lcApprovedDate,
+      'dpApprovedBy': dpApprovedBy,
+      'lcApprovedBy': lcApprovedBy,
       'createdAt': createdAt,
       'createdBy': createdBy,
       'issuedDate': issuedDate,
@@ -197,6 +195,13 @@ class InvoiceModel {
       return const <String>[];
     }
 
+    Map<String, dynamic> asMap(dynamic v) {
+      if (v is Map) {
+        return v.cast<String, dynamic>();
+      }
+      return const <String, dynamic>{};
+    }
+
     return InvoiceModel(
       invoiceId: (map['invoiceId'] ?? '') as String,
       projectId: (map['projectId'] ?? '') as String,
@@ -207,42 +212,25 @@ class InvoiceModel {
       customerName: (map['customerName'] ?? '') as String,
       customerCompany: (map['customerCompany'] ?? '') as String,
       customerContact: (map['customerContact'] ?? '') as String,
-
-      productCategory: ProductCategoryModel.fromMap(
-        (map['productCategory'] as Map?)?.cast<String, dynamic>() ??
-            const <String, dynamic>{},
-      ),
-      productSelection: ProductSelectionModel.fromMap(
-        (map['productSelection'] as Map?)?.cast<String, dynamic>() ??
-            const <String, dynamic>{},
-      ),
-
       dpAmount: asInt(map['dpAmount']),
       lcAmount: asInt(map['lcAmount']),
-
       dpStatus: asBool(map['dpStatus']),
       lcStatus: asBool(map['lcStatus']),
-
       totalPrice: asInt(map['totalPrice']),
       currency: (map['currency'] ?? '') as String,
-      payment: (map['payment'] ?? '') as String,
-      quantity: asInt(map['quantity']),
-
       favorites: asStringList(map['favorites']),
       listTeamIds: asStringList(map['listTeamIds']),
-
-      type: TypeCategorySelectionModel.fromMap(
-        (map['type'] as Map?)?.cast<String, dynamic>() ??
-            const <String, dynamic>{},
-      ),
-
+      type: TypeCategorySelectionModel.fromMap(asMap(map['type'])),
       searchKeywords: asStringList(map['searchKeywords']),
-
       dpIssuedDate: map['dpIssuedDate'] as Timestamp?,
       lcIssuedDate: map['lcIssuedDate'] as Timestamp?,
-      issuedDate: map['issuedDate'] as Timestamp?,
+      dpApprovedDate: map['dpApprovedDate'] as Timestamp?,
+      lcApprovedDate: map['lcApprovedDate'] as Timestamp?,
+      dpApprovedBy: (map['dpApprovedBy'] as String?)?.toString(),
+      lcApprovedBy: (map['lcApprovedBy'] as String?)?.toString(),
       createdAt: (map['createdAt'] as Timestamp?) ?? Timestamp(0, 0),
       createdBy: (map['createdBy'] ?? '') as String,
+      issuedDate: map['issuedDate'] as Timestamp?,
     );
   }
 
@@ -264,22 +252,22 @@ extension InvoiceXModel on InvoiceModel {
       customerName: customerName,
       customerCompany: customerCompany,
       customerContact: customerContact,
-      productCategory: productCategory.toEntity(),
-      productSelection: productSelection.toEntity(),
       dpAmount: dpAmount,
       lcAmount: lcAmount,
       dpStatus: dpStatus,
       lcStatus: lcStatus,
       totalPrice: totalPrice,
       currency: currency,
-      payment: payment,
-      quantity: quantity,
       favorites: favorites,
       type: type.toEntity(),
       searchKeywords: searchKeywords,
       listTeamIds: listTeamIds,
       lcIssuedDate: lcIssuedDate,
       dpIssuedDate: dpIssuedDate,
+      dpApprovedDate: dpApprovedDate,
+      lcApprovedDate: lcApprovedDate,
+      dpApprovedBy: dpApprovedBy,
+      lcApprovedBy: lcApprovedBy,
       createdAt: createdAt,
       createdBy: createdBy,
       issuedDate: issuedDate,

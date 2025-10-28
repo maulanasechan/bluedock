@@ -18,10 +18,6 @@ class ProjectFormCubit extends Cubit<ProjectFormReq> {
   void setProjectCode(String v) => emit(state.copyWith(projectCode: v));
   void setCurrency(String v) => emit(state.copyWith(currency: v));
   void setPrice(String v) => emit(state.copyWith(price: int.parse(v)));
-  void setMaintenancePeriod(String v) =>
-      emit(state.copyWith(maintenancePeriod: int.parse(v)));
-  void setMaintenanceCurrency(String v) =>
-      emit(state.copyWith(maintenanceCurrency: v));
 
   void setDelivery(String v) => emit(state.copyWith(delivery: v));
   void setPayment(String v) => emit(state.copyWith(payment: v));
@@ -72,8 +68,6 @@ class ProjectFormCubit extends Cubit<ProjectFormReq> {
         customerContact: e.customerContact,
         listTeam: e.listTeam,
         payment: e.payment,
-        maintenancePeriod: e.maintenancePeriod,
-        maintenanceCurrency: e.maintenanceCurrency,
       ),
     );
   }

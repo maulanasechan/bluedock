@@ -36,4 +36,27 @@ class ProductSelectionEntity {
     'route': route,
     'quantity': quantity,
   };
+
+  /// ✅ fromJson versi aman terhadap tipe
+  factory ProductSelectionEntity.fromJson(Map<String, dynamic> json) {
+    double asDouble(dynamic v) {
+      if (v is double) return v;
+      if (v is int) return v.toDouble();
+      if (v is num) return v.toDouble();
+      if (v is String) return double.tryParse(v) ?? 0.0;
+      return 0.0;
+    }
+
+    return ProductSelectionEntity(
+      productId: (json['productId'] ?? '').toString(),
+      productModel: (json['productModel'] ?? '').toString(),
+      image: (json['image'] ?? '').toString(),
+      route: (json['route'] ?? '').toString(),
+      quantity: asDouble(json['quantity']),
+    );
+  }
+
+  /// ✅ Opsional: alias agar seragam dengan pemanggilan `fromMap`
+  factory ProductSelectionEntity.fromMap(Map<String, dynamic> map) =>
+      ProductSelectionEntity.fromJson(map);
 }

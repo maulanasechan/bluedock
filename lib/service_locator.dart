@@ -16,6 +16,7 @@ import 'package:bluedock/features/dailyTask/domain/repositories/daily_task_repos
 import 'package:bluedock/features/dailyTask/domain/usecases/add_daily_task_usecase.dart';
 import 'package:bluedock/features/dailyTask/domain/usecases/delete_daily_task_usecase.dart';
 import 'package:bluedock/features/dailyTask/domain/usecases/get_all_daily_task_usecase.dart';
+import 'package:bluedock/features/dailyTask/domain/usecases/get_daily_task_by_id_usecase.dart';
 import 'package:bluedock/features/dailyTask/domain/usecases/update_detegasa_incenerator_usecase.dart';
 import 'package:bluedock/features/home/data/repositories/user_repository_impl.dart';
 import 'package:bluedock/features/home/data/sources/user_firebase_service.dart';
@@ -23,6 +24,15 @@ import 'package:bluedock/features/home/domain/repositories/user_repository.dart'
 import 'package:bluedock/features/home/domain/usecases/get_app_menu_usecase.dart';
 import 'package:bluedock/common/domain/usecases/get_user_usecase.dart';
 import 'package:bluedock/features/home/domain/usecases/logout_usecase.dart';
+import 'package:bluedock/features/inventories/data/repositories/inventory_repository_impl.dart';
+import 'package:bluedock/features/inventories/data/sources/inventory_firebase_service.dart';
+import 'package:bluedock/features/inventories/domain/repositories/inventory_repository.dart';
+import 'package:bluedock/features/inventories/domain/usecases/add_inventory_usecase.dart';
+import 'package:bluedock/features/inventories/domain/usecases/delete_inventory_usecase.dart';
+import 'package:bluedock/features/inventories/domain/usecases/favorite_inventory_usecase.dart';
+import 'package:bluedock/features/inventories/domain/usecases/get_inventory_by_id_usecase.dart';
+import 'package:bluedock/features/inventories/domain/usecases/search_inventory_usecase.dart';
+import 'package:bluedock/features/inventories/domain/usecases/update_inventory_usecase.dart';
 import 'package:bluedock/features/invoice/data/repositories/invoice_repository_impl.dart';
 import 'package:bluedock/features/invoice/data/sources/invoice_firebase_service.dart';
 import 'package:bluedock/features/invoice/domain/repositories/invoice_repository.dart';
@@ -105,7 +115,6 @@ import 'package:bluedock/features/purchaseOrders/data/sources/purchase_order_fir
 import 'package:bluedock/features/purchaseOrders/domain/repositories/purchase_order_repository.dart';
 import 'package:bluedock/features/purchaseOrders/domain/usecases/add_purchase_order_usecase.dart';
 import 'package:bluedock/features/purchaseOrders/domain/usecases/delete_purchase_order_usecase.dart';
-import 'package:bluedock/features/purchaseOrders/domain/usecases/fill_purchase_order_usecase.dart';
 import 'package:bluedock/features/purchaseOrders/domain/usecases/get_purchase_order_by_id_usecase.dart';
 import 'package:bluedock/features/purchaseOrders/domain/usecases/search_purchase_order_usecase.dart';
 import 'package:bluedock/features/purchaseOrders/domain/usecases/update_purchase_order_usecase.dart';
@@ -172,6 +181,9 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<PurchaseOrderFirebaseService>(
     PurchaseOrderFirebaseServiceImpl(),
   );
+  sl.registerSingleton<InventoryFirebaseService>(
+    InventoryFirebaseServiceImpl(),
+  );
 
   //Repositories
   sl.registerSingleton<RoleRepository>(RoleRepositoryImpl());
@@ -212,6 +224,15 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<InvoiceRepository>(InvoiceRepositoryImpl());
   sl.registerSingleton<NotificationRepository>(NotificationRepositoryImpl());
   sl.registerSingleton<PurchaseOrderRepository>(PurchaseOrderRepositoryImpl());
+  sl.registerSingleton<InventoryRepository>(InventoryRepositoryImpl());
+
+  //Inventory Usecases
+  sl.registerSingleton<SearchInventoryUseCase>(SearchInventoryUseCase());
+  sl.registerSingleton<GetInventoryByIdUseCase>(GetInventoryByIdUseCase());
+  sl.registerSingleton<AddInventoryUseCase>(AddInventoryUseCase());
+  sl.registerSingleton<UpdateInventoryUseCase>(UpdateInventoryUseCase());
+  sl.registerSingleton<DeleteInventoryUseCase>(DeleteInventoryUseCase());
+  sl.registerSingleton<FavoriteInventoryUseCase>(FavoriteInventoryUseCase());
 
   //Notification Usecases
   sl.registerSingleton<SearchPurchaseOrderUseCase>(
@@ -226,7 +247,6 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<DeletePurchaseOrderUseCase>(
     DeletePurchaseOrderUseCase(),
   );
-  sl.registerSingleton<FillPurchaseOrderUseCase>(FillPurchaseOrderUseCase());
   sl.registerSingleton<AddPurchaseOrderUseCase>(AddPurchaseOrderUseCase());
 
   //Notification Usecases
@@ -270,6 +290,7 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<UpdateDailyTaskUseCase>(UpdateDailyTaskUseCase());
   sl.registerSingleton<AddDailyTaskUseCase>(AddDailyTaskUseCase());
   sl.registerSingleton<DeleteDailyTaskUseCase>(DeleteDailyTaskUseCase());
+  sl.registerSingleton<GetDailyTaskByIdUseCase>(GetDailyTaskByIdUseCase());
 
   //Product Selection Usecases
   sl.registerSingleton<GetProductSelectionUseCase>(

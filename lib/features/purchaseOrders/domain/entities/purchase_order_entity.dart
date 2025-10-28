@@ -1,167 +1,111 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bluedock/common/domain/entities/product_category_entity.dart';
 import 'package:bluedock/common/domain/entities/product_selection_entity.dart';
+import 'package:bluedock/common/domain/entities/project_entity.dart';
 import 'package:bluedock/common/domain/entities/type_category_selection_entity.dart';
+import 'package:bluedock/features/inventories/domain/entities/inventory_entity.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PurchaseOrderEntity {
   // IDs & linkage
   final String purchaseOrderId;
-  final String projectId;
-  final String invoiceId;
+  final ProjectEntity? project;
+  final String poName;
 
   // Project & contract
-  final String purchaseContractNumber;
-  final String projectName;
-  final String projectCode;
-  final String projectStatus;
   final String currency;
   final int? price;
-  final int quantity;
+  final List<int> quantity;
 
-  // Customer
-  final String customerName;
-  final String customerCompany;
-  final String customerContact;
+  // Seller
+  final String sellerName;
+  final String sellerCompany;
+  final String sellerContact;
 
   // Selections
-  final ProductCategoryEntity productCategory;
-  final ProductSelectionEntity productSelection;
-
-  /// Optional: if/when you model component selection as an entity, replace this type.
-  final TypeCategorySelectionEntity? componentSelection;
+  final ProductCategoryEntity? productCategory;
+  final ProductSelectionEntity? productSelection;
 
   // Meta
-  final List<String> listTeamIds;
-  final List<String> favorites;
+  final List<InventoryEntity> listComponent;
   final List<String> searchKeywords;
+  final List<String> favorites;
   final TypeCategorySelectionEntity type;
+  final String status; // ← added
 
-  // Timestamps & audit
-  final Timestamp createdAt;
-  final Timestamp? blDate;
-  final Timestamp? arrivalDate;
-  final Timestamp? updatedAt;
-  final String? updatedBy;
+  // Audit
   final String createdBy;
+  final Timestamp createdAt;
+  final String? updatedBy;
+  final Timestamp? updatedAt;
 
   PurchaseOrderEntity({
-    // IDs & linkage
     required this.purchaseOrderId,
-    required this.projectId,
-    required this.invoiceId,
-
-    // Project & contract
-    required this.purchaseContractNumber,
-    required this.projectName,
-    required this.projectCode,
-    required this.favorites,
-    required this.projectStatus,
+    this.project,
+    this.poName = '',
     required this.currency,
     this.price,
-
-    // Customer
-    required this.customerName,
-    required this.customerCompany,
-    required this.customerContact,
-
-    // Selections
-    required this.productCategory,
-    required this.productSelection,
-    this.componentSelection,
-
-    // Meta
     required this.quantity,
-    required this.listTeamIds,
+    this.sellerName = '',
+    this.sellerCompany = '',
+    this.sellerContact = '',
+    this.productCategory,
+    this.productSelection,
+    this.listComponent = const <InventoryEntity>[],
     required this.searchKeywords,
+    this.favorites = const <String>[],
     required this.type,
-
-    // Timestamps & audit
-    required this.createdAt,
-    this.blDate,
-    this.arrivalDate,
-    this.updatedAt,
-    this.updatedBy,
+    this.status = 'Active', // ← added (default)
     required this.createdBy,
+    required this.createdAt,
+    this.updatedBy,
+    this.updatedAt,
   });
 
   PurchaseOrderEntity copyWith({
-    // IDs & linkage
     String? purchaseOrderId,
-    String? projectId,
-    String? invoiceId,
-
-    // Project & contract
-    String? purchaseContractNumber,
-    String? projectName,
-    String? projectCode,
-    String? projectStatus,
+    ProjectEntity? project,
+    String? poName,
     String? currency,
-    int? price,
-
-    // Customer
-    String? customerName,
-    String? customerCompany,
-    String? customerContact,
-
-    // Selections
+    Object? price = _unset,
+    List<int>? quantity,
+    String? sellerName,
+    String? sellerCompany,
+    String? sellerContact,
     ProductCategoryEntity? productCategory,
     ProductSelectionEntity? productSelection,
-    TypeCategorySelectionEntity? componentSelection,
-
-    // Meta
-    int? quantity,
-    List<String>? listTeamIds,
+    List<InventoryEntity>? listComponent,
     List<String>? searchKeywords,
     List<String>? favorites,
     TypeCategorySelectionEntity? type,
-
-    // Timestamps & audit
-    Timestamp? createdAt,
-    Timestamp? blDate,
-    Timestamp? arrivalDate,
-    Timestamp? updatedAt,
-    String? updatedBy,
+    String? status, // ← added
     String? createdBy,
+    Timestamp? createdAt,
+    String? updatedBy,
+    Timestamp? updatedAt,
   }) {
     return PurchaseOrderEntity(
-      // IDs & linkage
       purchaseOrderId: purchaseOrderId ?? this.purchaseOrderId,
-      projectId: projectId ?? this.projectId,
-      invoiceId: invoiceId ?? this.invoiceId,
-
-      // Project & contract
-      purchaseContractNumber:
-          purchaseContractNumber ?? this.purchaseContractNumber,
-      projectName: projectName ?? this.projectName,
-      projectCode: projectCode ?? this.projectCode,
-      favorites: favorites ?? this.favorites,
-      projectStatus: projectStatus ?? this.projectStatus,
+      project: project ?? this.project,
+      poName: poName ?? this.poName,
       currency: currency ?? this.currency,
-      price: price ?? this.price,
-
-      // Customer
-      customerName: customerName ?? this.customerName,
-      customerCompany: customerCompany ?? this.customerCompany,
-      customerContact: customerContact ?? this.customerContact,
-
-      // Selections
+      price: identical(price, _unset) ? this.price : price as int?,
+      quantity: quantity ?? this.quantity,
+      sellerName: sellerName ?? this.sellerName,
+      sellerCompany: sellerCompany ?? this.sellerCompany,
+      sellerContact: sellerContact ?? this.sellerContact,
       productCategory: productCategory ?? this.productCategory,
       productSelection: productSelection ?? this.productSelection,
-      componentSelection: componentSelection ?? this.componentSelection,
-
-      // Meta
-      quantity: quantity ?? this.quantity,
-      listTeamIds: listTeamIds ?? this.listTeamIds,
+      listComponent: listComponent ?? this.listComponent,
       searchKeywords: searchKeywords ?? this.searchKeywords,
+      favorites: favorites ?? this.favorites,
       type: type ?? this.type,
-
-      // Timestamps & audit
-      createdAt: createdAt ?? this.createdAt,
-      blDate: blDate ?? this.blDate,
-      arrivalDate: arrivalDate ?? this.arrivalDate,
-      updatedAt: updatedAt ?? this.updatedAt,
-      updatedBy: updatedBy ?? this.updatedBy,
+      status: status ?? this.status, // ← apply
       createdBy: createdBy ?? this.createdBy,
+      createdAt: createdAt ?? this.createdAt,
+      updatedBy: updatedBy ?? this.updatedBy,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
+
+  static const Object _unset = Object();
 }

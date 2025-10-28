@@ -34,10 +34,7 @@ class ProjectSectionFirebaseServiceImpl extends ProjectSectionFirebaseService {
       );
       final isPD = roleTitle == 'presidentdirector';
 
-      final col = _db
-          .collection('Projects')
-          .doc('List Project')
-          .collection('Projects');
+      final col = _db.collection('Projects');
 
       Query<Map<String, dynamic>> qRef = col;
       if (req.type != '') {
@@ -128,12 +125,7 @@ class ProjectSectionFirebaseServiceImpl extends ProjectSectionFirebaseService {
     try {
       if (projectId.isEmpty) return const Left('Project ID is required');
 
-      final doc = await _db
-          .collection('Projects')
-          .doc('List Project')
-          .collection('Projects')
-          .doc(projectId)
-          .get();
+      final doc = await _db.collection('Projects').doc(projectId).get();
 
       if (!doc.exists) return const Left('Project not found');
 

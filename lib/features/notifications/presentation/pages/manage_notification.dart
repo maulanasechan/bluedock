@@ -114,8 +114,15 @@ class ManageNotificationPage extends StatelessWidget {
                         return ListView.separated(
                           padding: EdgeInsets.zero,
                           itemBuilder: (context, index) {
-                            return NotificationCardSlideableWidget(
-                              notif: state.listNotif[index],
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                bottom: index == state.listNotif.length - 1
+                                    ? 40
+                                    : 0,
+                              ),
+                              child: NotificationCardSlideableWidget(
+                                notif: state.listNotif[index],
+                              ),
                             );
                           },
                           separatorBuilder: (context, index) {

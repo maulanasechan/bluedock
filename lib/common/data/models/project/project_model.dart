@@ -23,8 +23,6 @@ class ProjectModel {
   final String warrantyOfGoods;
   final int quantity;
   final String projectDescription;
-  final int maintenancePeriod;
-  final String maintenanceCurrency;
   final String customerContact;
   final String customerCompany;
   final List<String> favorites;
@@ -55,8 +53,6 @@ class ProjectModel {
     required this.warrantyOfGoods,
     required this.quantity,
     required this.projectDescription,
-    required this.maintenancePeriod,
-    required this.maintenanceCurrency,
     required this.favorites,
     required this.customerContact,
     required this.listTeam,
@@ -89,8 +85,6 @@ class ProjectModel {
     String? warrantyOfGoods,
     int? quantity,
     String? projectDescription,
-    int? maintenancePeriod,
-    String? maintenanceCurrency,
     String? customerContact,
     String? customerCompany,
     List<String>? favorites,
@@ -124,8 +118,6 @@ class ProjectModel {
       warrantyOfGoods: warrantyOfGoods ?? this.warrantyOfGoods,
       quantity: quantity ?? this.quantity,
       projectDescription: projectDescription ?? this.projectDescription,
-      maintenancePeriod: maintenancePeriod ?? this.maintenancePeriod,
-      maintenanceCurrency: maintenanceCurrency ?? this.maintenanceCurrency,
       customerContact: customerContact ?? this.customerContact,
       listTeam: listTeam ?? this.listTeam,
       favorites: favorites ?? this.favorites,
@@ -158,8 +150,6 @@ class ProjectModel {
       'warrantyOfGoods': warrantyOfGoods,
       'quantity': quantity,
       'projectDescription': projectDescription,
-      'maintenancePeriod': maintenancePeriod,
-      'maintenanceCurrency': maintenanceCurrency,
       'customerContact': customerContact,
       'favorites': favorites,
       'listTeam': listTeam.map((e) => e.toJson()).toList(),
@@ -205,8 +195,6 @@ class ProjectModel {
       warrantyOfGoods: (map['warrantyOfGoods'] ?? '') as String,
       quantity: asInt(map['quantity']),
       projectDescription: (map['projectDescription'] ?? '') as String,
-      maintenancePeriod: asInt(map['maintenancePeriod']),
-      maintenanceCurrency: (map['maintenanceCurrency'] ?? '') as String,
       customerContact: (map['customerContact'] ?? '') as String,
       favorites: (map['favorites'] is List)
           ? List<String>.from(
@@ -257,8 +245,6 @@ extension ProjectXModel on ProjectModel {
       warrantyOfGoods: warrantyOfGoods,
       quantity: quantity,
       projectDescription: projectDescription,
-      maintenancePeriod: maintenancePeriod,
-      maintenanceCurrency: maintenanceCurrency,
       customerContact: customerContact,
       favorites: favorites,
       listTeam: listTeam,

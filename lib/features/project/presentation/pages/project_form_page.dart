@@ -32,8 +32,8 @@ class ProjectFormPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isUpdate = project != null;
-    final collection = 'Projects';
-    final document = 'Selection';
+    final collection = 'Selection';
+    final document = 'List Selection';
 
     return MultiBlocProvider(
       providers: [
@@ -323,60 +323,6 @@ class ProjectFormPage extends StatelessWidget {
                         extraProviders: [
                           BlocProvider.value(
                             value: context.read<ProjectFormCubit>(),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 24),
-                      TextWidget(
-                        text: 'Maintenance Period',
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      SizedBox(height: 12),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: TextfieldWidget(
-                              validator: AppValidators.number(),
-                              hintText: 'Maintenance Period',
-                              initialValue: state.maintenancePeriod == null
-                                  ? ''
-                                  : state.maintenancePeriod.toString(),
-                              suffixIcon: PhosphorIconsBold.calendarCheck,
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                              ],
-                              onChanged: (v) => context
-                                  .read<ProjectFormCubit>()
-                                  .setMaintenancePeriod(v),
-                            ),
-                          ),
-                          SizedBox(width: 12),
-                          SizedBox(
-                            width: 80,
-                            child: ItemSelectionModalWidget(
-                              icon: PhosphorIconsBold.addressBook,
-                              align: TextAlign.center,
-                              withoutIcon: true,
-                              withoutTitle: true,
-                              collection: collection,
-                              document: document,
-                              subCollection: 'Maintenance Currency',
-                              selected: state.maintenanceCurrency,
-                              onSelected: (value) {
-                                context
-                                    .read<ProjectFormCubit>()
-                                    .setMaintenanceCurrency(value.title);
-                                context.pop();
-                              },
-                              extraProviders: [
-                                BlocProvider.value(
-                                  value: context.read<ProjectFormCubit>(),
-                                ),
-                              ],
-                            ),
                           ),
                         ],
                       ),

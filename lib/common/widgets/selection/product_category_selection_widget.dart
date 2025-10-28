@@ -11,22 +11,26 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class ProductCategorySelectionWidget extends StatelessWidget {
-  final String title;
+  final String? title;
   final String selected;
   final void Function(ProductCategoryEntity) onPressed;
   final PhosphorIconData? icon;
   final double? heightButton;
   final List<BlocProvider> extraProviders;
   final bool disabled;
+  final double borderRadius;
+  final double? height;
   const ProductCategorySelectionWidget({
     super.key,
-    required this.title,
+    this.title,
     required this.selected,
     required this.onPressed,
     this.icon,
     this.heightButton = 50,
     required this.extraProviders,
     this.disabled = false,
+    this.borderRadius = 12,
+    this.height,
   });
 
   @override
@@ -35,8 +39,10 @@ class ProductCategorySelectionWidget extends StatelessWidget {
       icon: icon,
       disabled: disabled,
       title: title,
-      state: selected == '' ? title : selected,
+      borderRadius: borderRadius,
+      state: selected == '' ? 'Product Category' : selected,
       validator: (_) => selected == '' ? '$title is required.' : null,
+      height: height,
       onTap: () {
         BottomModalWidget.display(
           context,

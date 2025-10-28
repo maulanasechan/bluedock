@@ -80,7 +80,7 @@ class ManagePurchaseOrderPage extends StatelessWidget {
                         'All',
                         'Aftersales',
                         'Project',
-                        'Self Stock',
+                        'Stock',
                       ],
                       selected: selectedLabel,
                       onSelected: (value) {

@@ -7,7 +7,6 @@ import 'package:bluedock/common/widgets/button/widgets/icon_button_widget.dart';
 import 'package:bluedock/common/widgets/gradientScaffold/gradient_scaffold_widget.dart';
 import 'package:bluedock/common/widgets/modal/center_modal_widget.dart';
 import 'package:bluedock/common/widgets/text/text_widget.dart';
-import 'package:bluedock/core/config/assets/app_images.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
 import 'package:bluedock/features/invoice/domain/entities/invoice_entity.dart';
@@ -22,7 +21,12 @@ import 'package:intl/intl.dart';
 
 class InvoiceDetailPage extends StatelessWidget {
   final String invoiceId;
-  const InvoiceDetailPage({super.key, required this.invoiceId});
+  final bool isEdit;
+  const InvoiceDetailPage({
+    super.key,
+    required this.invoiceId,
+    this.isEdit = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +41,17 @@ class InvoiceDetailPage extends StatelessWidget {
       child: GradientScaffoldWidget(
         body: Padding(
           padding: const EdgeInsets.fromLTRB(0, 90, 0, 0),
-          child: BlocBuilder<InvoiceDisplayCubit, InvoiceDisplayState>(
+          child: BlocConsumer<InvoiceDisplayCubit, InvoiceDisplayState>(
+            listener: (context, state) {
+              if (state is InvoiceDisplayFailure) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Invoice not found')),
+                );
+                if (Navigator.of(context).canPop()) {
+                  context.pop();
+                }
+              }
+            },
             builder: (context, state) {
               if (state is InvoiceDisplayLoading) {
                 return Center(child: CircularProgressIndicator());
@@ -87,17 +101,7 @@ class InvoiceDetailPage extends StatelessWidget {
   Widget _avatarWidget(BuildContext context, InvoiceEntity invoice) {
     return Column(
       children: [
-        SizedBox(
-          width: 80,
-          height: 80,
-          child: Image.asset(
-            invoice.productSelection.image == ''
-                ? AppImages.appDetegasaIncenerator
-                : invoice.productSelection.image,
-            fit: BoxFit.contain,
-          ),
-        ),
-        SizedBox(height: 24),
+        SizedBox(height: 14),
         TextWidget(
           text: invoice.purchaseContractNumber,
           fontWeight: FontWeight.w700,
@@ -163,10 +167,9 @@ class InvoiceDetailPage extends StatelessWidget {
                   ),
                   SizedBox(width: 30),
                   ProjectTextWidget(
-                    title: 'Issued Date',
-                    subTitle: DateFormat(
-                      'dd MMM yyyy, HH:mm',
-                    ).format(invoice.issuedDate!.toDate()),
+                    title: 'Total Price',
+                    subTitle:
+                        '${invoice.currency} ${formatWithCommas(invoice.totalPrice.toString())}',
                   ),
                 ],
               ),
@@ -186,19 +189,23 @@ class InvoiceDetailPage extends StatelessWidget {
                   SizedBox(
                     width: 155,
                     child: ProjectTextWidget(
-                      title: 'Total Price',
-                      subTitle:
-                          '${invoice.currency} ${formatWithCommas(invoice.totalPrice.toString())}',
+                      title: 'DP Issued Date',
+                      subTitle: DateFormat(
+                        'dd MMM yyyy, HH:mm',
+                      ).format(invoice.dpIssuedDate!.toDate()),
                     ),
                   ),
                   SizedBox(width: 30),
                   ProjectTextWidget(
-                    title: 'Quantity',
-                    subTitle: invoice.quantity.toString(),
+                    title: 'LC Issued Date',
+                    subTitle: invoice.lcIssuedDate == null
+                        ? '-'
+                        : DateFormat(
+                            'dd MMM yyyy, HH:mm',
+                          ).format(invoice.lcIssuedDate!.toDate()),
                   ),
                 ],
               ),
-
               Row(
                 children: [
                   SizedBox(
@@ -217,7 +224,6 @@ class InvoiceDetailPage extends StatelessWidget {
                   ),
                 ],
               ),
-
               Row(
                 children: [
                   SizedBox(
@@ -316,6 +322,7 @@ class InvoiceDetailPage extends StatelessWidget {
   Widget _bottomNavWidget(BuildContext context, InvoiceEntity invoice) {
     return Builder(
       builder: (context) {
+        if (!isEdit) return SizedBox();
         return Column(
           children: [
             SizedBox(height: 50),

@@ -23,7 +23,12 @@ import 'package:intl/intl.dart';
 
 class ProjectDetailPage extends StatelessWidget {
   final String projectId;
-  const ProjectDetailPage({super.key, required this.projectId});
+  final bool isEdit;
+  const ProjectDetailPage({
+    super.key,
+    required this.projectId,
+    this.isEdit = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +45,18 @@ class ProjectDetailPage extends StatelessWidget {
       child: GradientScaffoldWidget(
         body: Padding(
           padding: const EdgeInsets.fromLTRB(0, 90, 0, 0),
-          child: BlocBuilder<ProjectDisplayCubit, ProjectDisplayState>(
+          child: BlocConsumer<ProjectDisplayCubit, ProjectDisplayState>(
+            listener: (context, state) {
+              if (state is ProjectDisplayFailure) {
+                // opsional: kasih info dulu
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Project not found')),
+                );
+                if (Navigator.of(context).canPop()) {
+                  context.pop();
+                }
+              }
+            },
             builder: (context, state) {
               if (state is ProjectDisplayLoading) {
                 return Center(child: CircularProgressIndicator());
@@ -230,11 +246,6 @@ class ProjectDetailPage extends StatelessWidget {
                 subTitle: project.delivery,
               ),
               ProjectTextWidget(
-                title: 'Maintenance Period',
-                subTitle:
-                    'Every ${project.maintenancePeriod} ${project.maintenanceCurrency}',
-              ),
-              ProjectTextWidget(
                 title: 'Project Description',
                 subTitle: project.projectDescription == ''
                     ? '-'
@@ -324,6 +335,7 @@ class ProjectDetailPage extends StatelessWidget {
   Widget _bottomNavWidget(BuildContext context, ProjectEntity project) {
     return Builder(
       builder: (context) {
+        if (!isEdit) return SizedBox();
         return Column(
           children: [
             if (project.status == 'Inactive' || project.blDate != null)

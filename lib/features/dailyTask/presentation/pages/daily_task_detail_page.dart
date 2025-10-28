@@ -1,6 +1,7 @@
 import 'package:bluedock/common/helper/dateTime/format_time_helper.dart';
 import 'package:bluedock/common/widgets/button/bloc/action_button_cubit.dart';
 import 'package:bluedock/common/widgets/button/widgets/button_widget.dart';
+import 'package:bluedock/common/widgets/button/widgets/icon_button_widget.dart';
 import 'package:bluedock/common/widgets/gradientScaffold/gradient_scaffold_widget.dart';
 import 'package:bluedock/common/widgets/modal/center_modal_widget.dart';
 import 'package:bluedock/common/widgets/text/text_widget.dart';
@@ -9,6 +10,8 @@ import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
 import 'package:bluedock/features/dailyTask/domain/entities/daily_task_entity.dart';
 import 'package:bluedock/features/dailyTask/domain/usecases/delete_daily_task_usecase.dart';
+import 'package:bluedock/features/dailyTask/presentation/bloc/dailyTask/daily_task_display_cubit.dart';
+import 'package:bluedock/features/dailyTask/presentation/bloc/dailyTask/daily_task_display_state.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,31 +19,88 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class DailyTaskDetailPage extends StatelessWidget {
-  final DailyTaskEntity task;
-  const DailyTaskDetailPage({super.key, required this.task});
+  final String taskId;
+  final bool isEdit;
+  const DailyTaskDetailPage({
+    super.key,
+    required this.taskId,
+    this.isEdit = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     final userEmail = FirebaseAuth.instance.currentUser?.email;
 
     return MultiBlocProvider(
-      providers: [BlocProvider(create: (context) => ActionButtonCubit())],
+      providers: [
+        BlocProvider(create: (context) => ActionButtonCubit()),
+        BlocProvider(
+          create: (context) =>
+              DailyTaskDisplayCubit()..displayDailyTaskById(taskId),
+        ),
+      ],
       child: GradientScaffoldWidget(
-        hideBack: false,
-        body: Column(
-          children: [
-            _contentWidget(context),
-            SizedBox(height: 50),
-            userEmail == task.createdBy
-                ? _bottomNavWidget(context, task)
-                : SizedBox(),
-          ],
+        body: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 90, 0, 0),
+          child: BlocConsumer<DailyTaskDisplayCubit, DailyTaskDisplayState>(
+            listener: (context, state) {
+              if (state is DailyTaskDisplayFailure) {
+                // opsional: kasih info dulu
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Daily Task not found')),
+                );
+                if (Navigator.of(context).canPop()) {
+                  context.pop();
+                }
+              }
+            },
+            builder: (context, state) {
+              if (state is DailyTaskDisplayLoading) {
+                return Center(child: CircularProgressIndicator());
+              }
+              if (state is DailyTaskDisplayOneFetched) {
+                final task = state.dailyTask;
+                return Column(
+                  children: [
+                    Stack(
+                      children: [
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: IconButtonWidget(),
+                        ),
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: TextWidget(
+                            text: task.title,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 32),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            _contentWidget(context, task),
+                            if (userEmail == task.createdBy)
+                              _bottomNavWidget(context, task),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }
+              return SizedBox();
+            },
+          ),
         ),
       ),
     );
   }
 
-  Widget _contentWidget(BuildContext context) {
+  Widget _contentWidget(BuildContext context, DailyTaskEntity task) {
     return Material(
       elevation: 4,
       borderRadius: BorderRadius.circular(10),
@@ -55,7 +115,7 @@ class DailyTaskDetailPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextWidget(
-              text: task.title,
+              text: 'Task Description',
               fontWeight: FontWeight.w700,
               fontSize: 16,
             ),
@@ -283,6 +343,8 @@ class DailyTaskDetailPage extends StatelessWidget {
   Widget _bottomNavWidget(BuildContext context, DailyTaskEntity task) {
     return Builder(
       builder: (context) {
+        if (!isEdit) return SizedBox();
+
         return Expanded(
           child: SingleChildScrollView(
             child: Column(

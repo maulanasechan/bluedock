@@ -15,6 +15,8 @@ class DropdownWidget extends StatelessWidget {
   final bool? withoutIcon;
   final TextAlign? align;
   final bool disabled;
+  final double borderRadius;
+  final double? height;
 
   const DropdownWidget({
     super.key,
@@ -28,6 +30,8 @@ class DropdownWidget extends StatelessWidget {
     this.withoutIcon = false,
     this.align = TextAlign.start,
     this.disabled = false,
+    this.borderRadius = 12,
+    this.height,
   });
 
   @override
@@ -50,16 +54,19 @@ class DropdownWidget extends StatelessWidget {
               onTap: disabled ? () {} : onTap,
               child: Material(
                 elevation: 4,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(borderRadius),
                 child: Container(
-                  padding: EdgeInsets.all(16),
+                  height: height,
+                  padding: height != null
+                      ? EdgeInsets.symmetric(horizontal: 16)
+                      : EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: AppColors.white,
                     border: Border.all(
                       width: 1.5,
                       color: hasError ? AppColors.blue : AppColors.border,
                     ),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(borderRadius),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

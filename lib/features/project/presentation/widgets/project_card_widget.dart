@@ -26,7 +26,7 @@ class ProjectCardWidget extends StatelessWidget {
       onTap: () async {
         final changed = await context.pushNamed(
           AppRoutes.projectDetail,
-          extra: project.projectId,
+          extra: {'id': project.projectId, 'isEdit': true},
         );
         if (changed == true && context.mounted) {
           context.read<ProjectDisplayCubit>().displayInitial();
