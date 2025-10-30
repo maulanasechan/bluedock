@@ -290,7 +290,49 @@ class InvoiceDetailPage extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 24),
+              if (invoice.dpApprovedDate != null)
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 155,
+                      child: ProjectTextWidget(
+                        title: 'DP Approved Date',
+                        subTitle: DateFormat(
+                          'dd MMM yyyy, HH:mm',
+                        ).format(invoice.dpApprovedDate!.toDate()),
+                      ),
+                    ),
+                    SizedBox(width: 30),
+                    ProjectTextWidget(
+                      title: 'LC Approved Date',
+                      subTitle: invoice.lcApprovedDate == null
+                          ? '-'
+                          : DateFormat(
+                              'dd MMM yyyy, HH:mm',
+                            ).format(invoice.lcApprovedDate!.toDate()),
+                    ),
+                  ],
+                ),
+              if (invoice.dpApprovedBy != '')
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 155,
+                      child: ProjectTextWidget(
+                        title: 'DP Approved By',
+                        subTitle:
+                            '${invoice.dpApprovedBy == '' ? '-' : invoice.dpApprovedBy}',
+                      ),
+                    ),
+                    SizedBox(width: 30),
+                    ProjectTextWidget(
+                      title: 'LC Approved By',
+                      subTitle:
+                          '${invoice.lcApprovedBy == '' ? '-' : invoice.lcApprovedBy}',
+                    ),
+                  ],
+                ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

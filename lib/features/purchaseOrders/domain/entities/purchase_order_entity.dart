@@ -108,4 +108,38 @@ class PurchaseOrderEntity {
   }
 
   static const Object _unset = Object();
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    // IDs & linkage
+    'purchaseOrderId': purchaseOrderId,
+    'project': project?.toJson(),
+    'poName': poName,
+
+    // Project & contract
+    'currency': currency,
+    'price': price,
+    'quantity': quantity,
+
+    // Seller
+    'sellerName': sellerName,
+    'sellerCompany': sellerCompany,
+    'sellerContact': sellerContact,
+
+    // Selections
+    'productCategory': productCategory?.toJson(),
+    'productSelection': productSelection?.toJson(),
+
+    // Meta
+    'listComponent': listComponent.map((e) => e.toJson()).toList(),
+    'searchKeywords': searchKeywords,
+    'favorites': favorites,
+    'type': type.toJson(),
+    'status': status,
+
+    // Audit
+    'createdBy': createdBy,
+    'createdAt': createdAt,
+    'updatedBy': updatedBy,
+    'updatedAt': updatedAt,
+  };
 }

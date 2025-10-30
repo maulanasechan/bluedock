@@ -4,11 +4,14 @@ import 'package:bluedock/common/widgets/button/widgets/button_widget.dart';
 import 'package:bluedock/common/widgets/button/widgets/copy_button_widget.dart';
 import 'package:bluedock/common/widgets/button/widgets/icon_button_widget.dart';
 import 'package:bluedock/common/widgets/gradientScaffold/gradient_scaffold_widget.dart';
+import 'package:bluedock/common/widgets/modal/center_modal_widget.dart';
 import 'package:bluedock/common/widgets/text/text_widget.dart';
+import 'package:bluedock/core/config/assets/app_images.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
 import 'package:bluedock/features/project/presentation/widgets/project_text_widget.dart';
 import 'package:bluedock/features/purchaseOrders/domain/entities/purchase_order_entity.dart';
+import 'package:bluedock/features/purchaseOrders/domain/usecases/delete_purchase_order_usecase.dart';
 import 'package:bluedock/features/purchaseOrders/presentation/bloc/purchase_order_display_cubit.dart';
 import 'package:bluedock/features/purchaseOrders/presentation/bloc/purchase_order_display_state.dart';
 import 'package:flutter/material.dart';
@@ -220,7 +223,7 @@ class PurchaseOrderDetailPage extends StatelessWidget {
                   ProjectTextWidget(
                     title: 'Price',
                     subTitle:
-                        '${purchaseOrder.currency} ${formatWithCommas(purchaseOrder.price.toString())}',
+                        '${purchaseOrder.currency} - ${formatWithDot(purchaseOrder.price.toString())}',
                   ),
                 ],
               ),
@@ -328,12 +331,32 @@ class PurchaseOrderDetailPage extends StatelessWidget {
             if (purchaseOrder.status == 'Inactive')
               ButtonWidget(
                 onPressed: () async {
-                  final changed = await context.pushNamed(
-                    AppRoutes.formPurchaseOrder,
-                    extra: purchaseOrder,
+                  final actionCubit = context.read<ActionButtonCubit>();
+                  final changed = await CenterModalWidget.display(
+                    context: context,
+                    title: 'Remove Purchase Order',
+                    subtitle: "Are you sure to remove ${purchaseOrder.poName}?",
+                    yesButton: 'Remove',
+                    actionCubit: actionCubit,
+                    yesButtonOnTap: () {
+                      context.read<ActionButtonCubit>().execute(
+                        usecase: DeletePurchaseOrderUseCase(),
+                        params: purchaseOrder.purchaseOrderId,
+                      );
+                      context.pop(true);
+                    },
                   );
                   if (changed == true && context.mounted) {
-                    context.pop(true);
+                    final change = await context.pushNamed(
+                      AppRoutes.purchaseOrderSuccess,
+                      extra: {
+                        'title': '${purchaseOrder.poName} has been removed',
+                        'image': AppImages.appProjectDeleted,
+                      },
+                    );
+                    if (change == true && context.mounted) {
+                      context.pop(true);
+                    }
                   }
                 },
                 background: AppColors.red,

@@ -12,7 +12,7 @@ abstract class ProjectFirebaseService {
   Future<Either> updateProject(ProjectFormReq req);
   Future<Either> deleteProject(ProjectEntity req);
   Future<Either> favoriteProject(String req);
-  Future<Either> commisionProject(ProjectEntity req);
+  Future<Either> endProject(ProjectEntity req);
 }
 
 class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
@@ -367,8 +367,9 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
   }
 
   @override
-  Future<Either> commisionProject(ProjectEntity req) async {
+  Future<Either> endProject(ProjectEntity req) async {
     try {
+      final userEmail = _auth.currentUser?.email ?? '';
       final colRef = _db.collection('Projects').doc(req.projectId);
 
       final teamIds = req.listTeam
@@ -377,68 +378,11 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
           .toSet()
           .toList();
 
-      // ---------------- Helpers ----------------
-      DateTime addMonths(DateTime base, int months) {
-        final y = base.year + ((base.month - 1 + months) ~/ 12);
-        final m = ((base.month - 1 + months) % 12) + 1;
-        final d = base.day;
-        final lastDay = DateTime(y, m + 1, 0).day;
-        return DateTime(y, m, d > lastDay ? lastDay : d);
-      }
-
-      int? extractCommMonths(String? warranty) {
-        if (warranty == null) return null;
-        final lower = warranty.toLowerCase().trim();
-        final parts = lower.split(RegExp(r'\s+or\s+'));
-        final commPart = parts.firstWhere(
-          (p) => p.contains('commission'),
-          orElse: () => lower,
-        );
-        final reg = RegExp(r'(\d+)\s*month');
-        final match = reg.firstMatch(commPart);
-        if (match != null) return int.tryParse(match.group(1)!);
-        final global = reg.firstMatch(lower);
-        return global != null ? int.tryParse(global.group(1)!) : null;
-      }
-
-      DateTime? asDateTime(dynamic v) {
-        if (v == null) return null;
-        if (v is DateTime) return v;
-        if (v is Timestamp) return v.toDate();
-        return null; // kalau tipe lain, abaikan
-      }
-
-      // ---------------- Ambil warrantyOfGoods & hitung warrantyCommDate ----------------
-      String? warrantyOfGoodsString;
-      DateTime? warrantyCommDate;
-
-      final projSnap = await colRef.get();
-      if (projSnap.exists) {
-        final data = projSnap.data();
-        warrantyOfGoodsString = (data?['warrantyOfGoods'] as String?)?.trim();
-      }
-
-      final commMonths = extractCommMonths(warrantyOfGoodsString);
-      if (commMonths != null) {
-        DateTime? baseComm = asDateTime(req.commDate);
-        if (baseComm == null && req.status == 'Active') {
-          // commissioning baru dimulai: pakai waktu lokal sebagai base kalkulasi
-          baseComm = DateTime.now();
-        }
-        if (baseComm != null) {
-          warrantyCommDate = addMonths(baseComm, commMonths);
-        }
-      }
-
       // ---------------- Project & Notifications ----------------
       final projectMap = <String, dynamic>{
-        'status': req.status == 'Active' ? 'Commissioning' : 'Done',
-        // simpan commDate: kalau Active biar server yang set; kalau tidak, simpan nilai yang ada
-        'commDate': req.status == 'Active'
-            ? FieldValue.serverTimestamp()
-            : asDateTime(req.commDate),
-        if (warrantyCommDate != null) 'warrantyCommDate': warrantyCommDate,
+        'status': 'Done',
         'updatedAt': FieldValue.serverTimestamp(),
+        'updatedBy': userEmail,
       };
 
       final notifRef = _db.collection('Notifications');
@@ -455,7 +399,9 @@ class ProjectFirebaseServiceImpl extends ProjectFirebaseService {
 
         invoiceMap = <String, dynamic>{
           'projectStatus': 'Done',
+          'lcIssuedBy': userEmail,
           'issuedDate': FieldValue.serverTimestamp(),
+          'lcIssuedDate': FieldValue.serverTimestamp(),
           'updatedAt': FieldValue.serverTimestamp(),
         };
 

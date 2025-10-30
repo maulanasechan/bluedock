@@ -108,7 +108,7 @@ class PurchaseOrderFormStockWidget extends StatelessWidget {
                   iconSize: 28,
                   iconColor: AppColors.blue,
                   onPressed: state.componentLength == 1
-                      ? null
+                      ? () {}
                       : () {
                           cubit.removeLastComponent();
                         },

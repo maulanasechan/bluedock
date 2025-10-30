@@ -12,7 +12,7 @@ import 'package:bluedock/core/config/assets/app_images.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
 import 'package:bluedock/common/domain/entities/project_entity.dart';
-import 'package:bluedock/features/project/domain/usecases/commision_project_usecase.dart';
+import 'package:bluedock/features/project/domain/usecases/end_project_usecase.dart';
 import 'package:bluedock/features/project/domain/usecases/delete_project_usecase.dart';
 import 'package:bluedock/features/project/presentation/widgets/project_text_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -210,7 +210,7 @@ class ProjectDetailPage extends StatelessWidget {
                     child: ProjectTextWidget(
                       title: 'Price',
                       subTitle:
-                          '${project.currency} ${formatWithCommas(project.price.toString())}',
+                          '${project.currency} - ${formatWithDot(project.price.toString())}',
                     ),
                   ),
                   SizedBox(width: 30),
@@ -364,20 +364,14 @@ class ProjectDetailPage extends StatelessWidget {
                     context: context,
                     title: project.status == 'Inactive'
                         ? 'Remove Project'
-                        : 'Start Commision',
+                        : 'Finish Project',
                     subtitle: project.status == 'Inactive'
                         ? "Are you sure to remove ${project.projectName}?"
-                        : "Are you sure to start commisioning for this project ${project.projectName}?",
-                    yesButton: project.status == 'Inactive'
-                        ? 'Remove'
-                        : project.status == 'Active'
-                        ? 'Start'
-                        : 'Done',
+                        : "Are you sure to finish this project ${project.projectName}?",
+                    yesButton: project.status == 'Inactive' ? 'Remove' : 'Done',
                     actionCubit: actionCubit,
                     yesButtonColor: project.status == 'Inactive'
                         ? AppColors.red
-                        : project.status == 'Active'
-                        ? AppColors.orange
                         : AppColors.green,
                     yesButtonOnTap: () {
                       project.status == 'Inactive'
@@ -386,7 +380,7 @@ class ProjectDetailPage extends StatelessWidget {
                               params: project.projectId,
                             )
                           : context.read<ActionButtonCubit>().execute(
-                              usecase: CommisionProjectUseCase(),
+                              usecase: EndProjectUseCase(),
                               params: project,
                             );
                       context.pop(true);
@@ -398,7 +392,7 @@ class ProjectDetailPage extends StatelessWidget {
                       extra: {
                         'title': project.status == 'Inactive'
                             ? '${project.projectName} has been removed'
-                            : 'Start commisioning for ${project.projectName}',
+                            : '${project.projectName} had been done',
                         'image': project.status == 'Inactive'
                             ? AppImages.appProjectDeleted
                             : AppImages.appProjectSuccess,
@@ -412,14 +406,10 @@ class ProjectDetailPage extends StatelessWidget {
                 },
                 background: project.status == 'Inactive'
                     ? AppColors.red
-                    : project.status == 'Active'
-                    ? AppColors.blue
                     : AppColors.green,
                 title: project.status == 'Inactive'
                     ? 'Delete project'
-                    : project.status == 'Active'
-                    ? "Start Commisions"
-                    : "Project Done",
+                    : "Finish Project",
                 fontSize: 16,
               ),
             SizedBox(height: 6),

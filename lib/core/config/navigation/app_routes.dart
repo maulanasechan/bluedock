@@ -26,7 +26,10 @@ class AppRoutes {
   static const formPurchaseOrder = 'formPurchaseOrder';
   static const finance = 'finance';
   static const receipt = 'receipt';
-  static const deliveryOrder = 'deliveryOrder';
+  static const orderDelivery = 'orderDelivery';
+  static const orderDeliveryForm = 'orderDeliveryForm';
+  static const orderDeliveryDetail = 'orderDeliveryDetail';
+  static const orderDeliverySuccess = 'orderDeliverySuccess';
   static const dailyTask = 'dailyTask';
   static const formDailyTask = 'formDailyTask';
   static const detailDailyTask = 'detailDailyTask';

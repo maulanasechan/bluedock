@@ -172,7 +172,7 @@ class InvoiceFirebaseServiceImpl extends InvoiceFirebaseService {
       };
 
       final invoiceMap = <String, dynamic>{
-        'projectStatus': req.dpStatus == true ? 'LC Paid' : 'DP Paid',
+        'projectStatus': req.dpStatus == true ? 'Done' : 'Active',
         "dpStatus": true,
         "lcStatus": req.dpStatus == true ? true : false,
         "dpApprovedDate": req.dpStatus == false
@@ -181,12 +181,12 @@ class InvoiceFirebaseServiceImpl extends InvoiceFirebaseService {
         "lcApprovedDate": req.dpStatus == true
             ? FieldValue.serverTimestamp()
             : null,
-        "dpIssuedBy": req.dpStatus == true ? req.dpApprovedBy : userEmail,
-        "lcIssuedBy": req.dpStatus == true ? userEmail : '',
+        "dpApprovedBy": req.dpStatus == true ? req.dpApprovedBy : userEmail,
+        "lcApprovedBy": req.dpStatus == true ? userEmail : '',
       };
 
       final projectMap = <String, dynamic>{
-        "status": req.dpStatus == true ? 'LC Paid' : 'DP Paid',
+        "status": req.dpStatus == true ? 'Done' : 'Active',
       };
 
       final batch = _db.batch();

@@ -192,15 +192,22 @@ class PurchaseOrderFirebaseServiceImpl extends PurchaseOrderFirebaseService {
           .collection('Purchase Orders')
           .doc(req.purchaseOrderId);
 
+      final productCategory = (req.project == null)
+          ? req.productCategory?.toJson()
+          : req.project!.productCategory.toJson();
+
+      final productSelection = (req.project == null)
+          ? req.productSelection?.toJson()
+          : req.project!.productSelection.toJson();
+
       final notifCol = _db.collection('Notifications');
       final notifId = notifCol.doc().id;
 
       final notifPurchaseMap = <String, dynamic>{
         'notificationId': notifId,
-        'title':
-            "Purchase Order updated for this ${req.type.title} ${req.project != null ? req.project!.projectName : ''}",
-        'subTitle': "Click this notification to go to this purchase order",
-        // "type": ,
+        'title': 'Purchase Order has been created',
+        'subTitle': 'Click this notification to go to this ${req.poName}',
+        'type': _type.toJson(),
         "route": AppRoutes.purchaseOrderDetail,
         "params": req.purchaseOrderId,
         "readerIds": <String>[],
@@ -212,26 +219,24 @@ class PurchaseOrderFirebaseServiceImpl extends PurchaseOrderFirebaseService {
       };
 
       final purchaseMap = <String, dynamic>{
-        // 'projectId': req.projectId,
-        // 'invoiceId': req.invoiceId,
-        // 'purchaseContractNumber': req.purchaseContractNumber,
-        // 'projectName': req.projectName,
-        // 'projectCode': req.projectCode,
+        'poName': req.poName,
+        'project': req.project?.toJson(),
         'currency': req.currency,
         'price': req.price,
-        // 'customerName': req.customerName,
-        // 'customerCompany': req.customerCompany,
-        // 'customerContact': req.customerContact,
-        'productCategory': req.productCategory!.toJson(),
-        'productSelection': req.productSelection!.toJson(),
-        // 'listTeamIds': req.listTeamIds,
-        'listConponent': req.listComponent.map((m) => m.toJson()).toList(),
-        'projectStatus': 'Active',
+        'sellerName': req.sellerName,
+        'sellerCompany': req.sellerCompany,
+        'sellerContact': req.sellerContact,
+        'productCategory': productCategory,
+        'productSelection': productSelection,
+        'listComponent': req.listComponent.map((m) => m.toJson()).toList(),
         'quantity': req.quantity,
-        'searchKeywords': req.searchKeywords,
-        // 'blNumber': req.blNumber,
-        'updatedAt': FieldValue.serverTimestamp(),
-        'updatedBy': userEmail,
+        'searchKeywords': _buildAllPrefixes(req),
+        'updatedAt': null,
+        'updatedBy': null,
+        'createdBy': userEmail,
+        'createdAt': FieldValue.serverTimestamp(),
+        'type': req.type.toJson(),
+        'status': 'Inactive',
       };
 
       final batch = _db.batch();
@@ -311,7 +316,6 @@ class PurchaseOrderFirebaseServiceImpl extends PurchaseOrderFirebaseService {
       };
 
       final batch = _db.batch();
-      // ← pakai purchaseId, bukan notifId
       batch.set(
         purchaseCol.doc(purchaseId),
         purchaseMap,

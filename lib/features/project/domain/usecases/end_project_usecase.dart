@@ -4,9 +4,9 @@ import 'package:bluedock/features/project/domain/repositories/project_repository
 import 'package:bluedock/service_locator.dart';
 import 'package:dartz/dartz.dart';
 
-class CommisionProjectUseCase implements UseCase<Either, ProjectEntity> {
+class EndProjectUseCase implements UseCase<Either, ProjectEntity> {
   @override
   Future<Either> call({ProjectEntity? params}) async {
-    return await sl<ProjectRepository>().commisionProject(params!);
+    return await sl<ProjectRepository>().endProject(params!);
   }
 }

@@ -53,6 +53,16 @@ import 'package:bluedock/features/notifications/domain/usecases/count_unread_use
 import 'package:bluedock/features/notifications/domain/usecases/delete_notif_usecase.dart';
 import 'package:bluedock/features/notifications/domain/usecases/read_notif_usecase.dart';
 import 'package:bluedock/features/notifications/domain/usecases/search_notif_usecase.dart';
+import 'package:bluedock/features/orderDeliveries/data/repositories/order_delivery_repository_impl.dart';
+import 'package:bluedock/features/orderDeliveries/data/sources/order_delivery_firebase_service.dart';
+import 'package:bluedock/features/orderDeliveries/domain/repositories/order_delivery_repository.dart';
+import 'package:bluedock/features/orderDeliveries/domain/usecases/complete_order_delivery_usecase.dart';
+import 'package:bluedock/features/orderDeliveries/domain/usecases/create_order_delivery_usecase.dart';
+import 'package:bluedock/features/orderDeliveries/domain/usecases/delete_order_delivery_usecase.dart';
+import 'package:bluedock/features/orderDeliveries/domain/usecases/favorite_order_delivery_usecase.dart';
+import 'package:bluedock/features/orderDeliveries/domain/usecases/get_order_delivery_by_id_usecase.dart';
+import 'package:bluedock/features/orderDeliveries/domain/usecases/search_order_delivery_usecase.dart';
+import 'package:bluedock/features/orderDeliveries/domain/usecases/update_order_delivery_usecase.dart';
 import 'package:bluedock/features/product/data/repositories/detegasa_incenerator_repository_impl.dart';
 import 'package:bluedock/features/product/data/repositories/detegasa_oily_water_separator_impl.dart';
 import 'package:bluedock/features/product/data/repositories/detegasa_sewage_treatment_plant_repository_impl.dart';
@@ -106,7 +116,7 @@ import 'package:bluedock/features/project/data/repositories/project_repository_i
 import 'package:bluedock/features/project/data/sources/project_firebase_service.dart';
 import 'package:bluedock/features/project/domain/repositories/project_repository.dart';
 import 'package:bluedock/features/project/domain/usecases/add_project_usecase.dart';
-import 'package:bluedock/features/project/domain/usecases/commision_project_usecase.dart';
+import 'package:bluedock/features/project/domain/usecases/end_project_usecase.dart';
 import 'package:bluedock/features/project/domain/usecases/delete_project_usecase.dart';
 import 'package:bluedock/features/project/domain/usecases/favorite_project_usecase.dart';
 import 'package:bluedock/common/domain/usecases/search_project_usecase.dart';
@@ -184,6 +194,9 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<InventoryFirebaseService>(
     InventoryFirebaseServiceImpl(),
   );
+  sl.registerSingleton<OrderDeliveryFirebaseService>(
+    OrderDeliveryFirebaseServiceImpl(),
+  );
 
   //Repositories
   sl.registerSingleton<RoleRepository>(RoleRepositoryImpl());
@@ -225,6 +238,30 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<NotificationRepository>(NotificationRepositoryImpl());
   sl.registerSingleton<PurchaseOrderRepository>(PurchaseOrderRepositoryImpl());
   sl.registerSingleton<InventoryRepository>(InventoryRepositoryImpl());
+  sl.registerSingleton<OrderDeliveryRepository>(OrderDeliveryRepositoryImpl());
+
+  //Order Delivery Usecases
+  sl.registerSingleton<SearchOrderDeliveryUseCase>(
+    SearchOrderDeliveryUseCase(),
+  );
+  sl.registerSingleton<GetOrderDeliveryByIdUseCase>(
+    GetOrderDeliveryByIdUseCase(),
+  );
+  sl.registerSingleton<CreateOrderDeliveryUseCase>(
+    CreateOrderDeliveryUseCase(),
+  );
+  sl.registerSingleton<UpdateOrderDeliveryUseCase>(
+    UpdateOrderDeliveryUseCase(),
+  );
+  sl.registerSingleton<FavoriteOrderDeliveryUseCase>(
+    FavoriteOrderDeliveryUseCase(),
+  );
+  sl.registerSingleton<DeleteOrderDeliveryUseCase>(
+    DeleteOrderDeliveryUseCase(),
+  );
+  sl.registerSingleton<CompleteOrderDeliveryUseCase>(
+    CompleteOrderDeliveryUseCase(),
+  );
 
   //Inventory Usecases
   sl.registerSingleton<SearchInventoryUseCase>(SearchInventoryUseCase());
@@ -390,5 +427,5 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<GetProjectByIdUseCase>(GetProjectByIdUseCase());
   sl.registerSingleton<DeleteProjectUseCase>(DeleteProjectUseCase());
   sl.registerSingleton<FavoriteProjectUseCase>(FavoriteProjectUseCase());
-  sl.registerSingleton<CommisionProjectUseCase>(CommisionProjectUseCase());
+  sl.registerSingleton<EndProjectUseCase>(EndProjectUseCase());
 }

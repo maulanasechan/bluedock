@@ -25,6 +25,11 @@ import 'package:bluedock/features/login/presentation/pages/login_page.dart';
 import 'package:bluedock/features/login/presentation/pages/send_email_page.dart';
 import 'package:bluedock/features/notifications/presentation/pages/manage_notification.dart';
 import 'package:bluedock/features/notifications/presentation/pages/success_notification_page.dart';
+import 'package:bluedock/features/orderDeliveries/domain/entities/order_delivery_entity.dart';
+import 'package:bluedock/features/orderDeliveries/presentation/pages/manage_order_delivery_page.dart';
+import 'package:bluedock/features/orderDeliveries/presentation/pages/order_delivery_detail_page.dart';
+import 'package:bluedock/features/orderDeliveries/presentation/pages/order_delivery_form_page.dart';
+import 'package:bluedock/features/orderDeliveries/presentation/pages/success_order_delivery_page.dart';
 import 'package:bluedock/features/product/domain/entities/detegasa_incenerator_entity.dart';
 import 'package:bluedock/features/product/domain/entities/detegasa_oily_water_separator_entity.dart';
 import 'package:bluedock/features/product/domain/entities/detegasa_sewage_treatment_plant_entity.dart';
@@ -115,6 +120,48 @@ class AppRouter {
               final title = map['title'] as String? ?? '';
               final image = map['image'] as String? ?? '';
               return SuccessPurchaseOrderPage(title: title, image: image);
+            },
+          ),
+        ],
+      ),
+      GoRoute(
+        path: formatRoute(AppRoutes.orderDelivery),
+        name: AppRoutes.orderDelivery,
+        builder: (context, state) => const ManageOrderDeliveryPage(),
+        routes: [
+          GoRoute(
+            path: AppRoutes.orderDeliveryDetail,
+            name: AppRoutes.orderDeliveryDetail,
+            builder: (context, state) {
+              final map = (state.extra is Map)
+                  ? Map<String, dynamic>.from(state.extra as Map)
+                  : const <String, dynamic>{};
+              final id = map['id'] as String? ?? '';
+              final isEdit = map['isEdit'] as bool? ?? false;
+              return OrderDeliveryDetailPage(
+                orderDeliveryId: id,
+                isEdit: isEdit,
+              );
+            },
+          ),
+          GoRoute(
+            path: AppRoutes.orderDeliveryForm,
+            name: AppRoutes.orderDeliveryForm,
+            builder: (context, state) {
+              final extra = state.extra as OrderDeliveryEntity?;
+              return OrderDeliveryFormPage(orderDelivery: extra);
+            },
+          ),
+          GoRoute(
+            path: AppRoutes.orderDeliverySuccess,
+            name: AppRoutes.orderDeliverySuccess,
+            builder: (context, state) {
+              final map = (state.extra is Map)
+                  ? Map<String, dynamic>.from(state.extra as Map)
+                  : const <String, dynamic>{};
+              final title = map['title'] as String? ?? '';
+              final image = map['image'] as String? ?? '';
+              return SuccessOrderDeliveryPage(title: title, image: image);
             },
           ),
         ],

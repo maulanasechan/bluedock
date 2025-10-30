@@ -27,7 +27,7 @@ class ProjectRepositoryImpl extends ProjectRepository {
   }
 
   @override
-  Future<Either> commisionProject(ProjectEntity project) async {
-    return await sl<ProjectFirebaseService>().commisionProject(project);
+  Future<Either> endProject(ProjectEntity project) async {
+    return await sl<ProjectFirebaseService>().endProject(project);
   }
 }

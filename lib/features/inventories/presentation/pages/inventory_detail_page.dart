@@ -11,7 +11,6 @@ import 'package:bluedock/features/inventories/domain/entities/inventory_entity.d
 import 'package:bluedock/features/inventories/domain/usecases/delete_inventory_usecase.dart';
 import 'package:bluedock/features/inventories/presentation/bloc/inventory_display_cubit.dart';
 import 'package:bluedock/features/inventories/presentation/bloc/inventory_display_state.dart';
-import 'package:bluedock/features/project/domain/usecases/commision_project_usecase.dart';
 import 'package:bluedock/features/project/presentation/widgets/project_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -279,63 +278,45 @@ class InventoryDetailPage extends StatelessWidget {
                 fontSize: 16,
               ),
             if (inventory.arrivalDate == null) SizedBox(height: 16),
-            ButtonWidget(
-              onPressed: () async {
-                final actionCubit = context.read<ActionButtonCubit>();
-                final changed = await CenterModalWidget.display(
-                  context: context,
-                  title: inventory.arrivalDate == null
-                      ? 'Remove ${inventory.stockName}'
-                      : '${inventory.stockName} Delivered',
-                  subtitle: inventory.arrivalDate == null
-                      ? "Are you sure to remove ${inventory.stockName}?"
-                      : "Are you sure this ${inventory.stockName} had been delivered?",
-                  yesButton: inventory.arrivalDate == null
-                      ? 'Remove'
-                      : 'Delivered',
-                  actionCubit: actionCubit,
-                  yesButtonColor: inventory.arrivalDate == null
-                      ? AppColors.red
-                      : AppColors.blue,
-                  yesButtonOnTap: () {
-                    inventory.arrivalDate == null
-                        ? context.read<ActionButtonCubit>().execute(
-                            usecase: DeleteInventoryUseCase(),
-                            params: inventory.inventoryId,
-                          )
-                        : context.read<ActionButtonCubit>().execute(
-                            usecase: CommisionProjectUseCase(),
-                            params: inventory,
-                          );
-                    context.pop(true);
-                  },
-                );
-                if (changed == true && context.mounted) {
-                  final change = await context.pushNamed(
-                    AppRoutes.successProject,
-                    extra: {
-                      'title': inventory.arrivalDate == null
-                          ? '${inventory.stockName} has been removed'
-                          : '${inventory.stockName} has been delivered',
-                      'image': inventory.arrivalDate == null
-                          ? AppImages.appProjectDeleted
-                          : AppImages.appProjectSuccess,
+            if (inventory.arrivalDate == null)
+              ButtonWidget(
+                onPressed: () async {
+                  final actionCubit = context.read<ActionButtonCubit>();
+                  final changed = await CenterModalWidget.display(
+                    context: context,
+                    title: 'Remove ${inventory.stockName}',
+                    subtitle: "Are you sure to remove ${inventory.stockName}?",
+                    yesButton: 'Remove',
+                    actionCubit: actionCubit,
+                    yesButtonColor: inventory.arrivalDate == null
+                        ? AppColors.red
+                        : AppColors.blue,
+                    yesButtonOnTap: () {
+                      context.read<ActionButtonCubit>().execute(
+                        usecase: DeleteInventoryUseCase(),
+                        params: inventory.inventoryId,
+                      );
+                      context.pop(true);
                     },
                   );
+                  if (changed == true && context.mounted) {
+                    final change = await context.pushNamed(
+                      AppRoutes.successProject,
+                      extra: {
+                        'title': '${inventory.stockName} has been removed',
+                        'image': AppImages.appProjectDeleted,
+                      },
+                    );
 
-                  if (change == true && context.mounted) {
-                    context.pop(true);
+                    if (change == true && context.mounted) {
+                      context.pop(true);
+                    }
                   }
-                }
-              },
-              background: inventory.arrivalDate == null
-                  ? AppColors.red
-                  : AppColors.blue,
-              title: inventory.arrivalDate == null
-                  ? 'Delete Stock'
-                  : "Stock Delivered",
-              fontSize: 16,
-            ),
+                },
+                background: AppColors.red,
+                title: 'Delete Stock',
+                fontSize: 16,
+              ),
             SizedBox(height: 6),
           ],
         );

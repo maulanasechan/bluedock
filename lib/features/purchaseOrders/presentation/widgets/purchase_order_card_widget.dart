@@ -1,4 +1,5 @@
 import 'package:bluedock/common/helper/color/string_to_color_helper.dart';
+import 'package:bluedock/common/helper/stringTrimmer/format_thousand_helper.dart';
 import 'package:bluedock/common/widgets/card/card_container_with_type_widget.dart';
 import 'package:bluedock/common/widgets/text/text_widget.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
@@ -112,7 +113,8 @@ class PurchaseOrderCardWidget extends StatelessWidget {
               SizedBox(width: 30),
               TitleSubtitleWidget(
                 title: 'Price',
-                subtitle: '${po.currency} - ${po.price}',
+                subtitle:
+                    '${po.currency} - ${formatWithDot(po.price.toString())}',
               ),
             ],
           ),

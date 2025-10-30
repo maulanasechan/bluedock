@@ -90,14 +90,13 @@ class ManagePurchaseOrderPage extends StatelessWidget {
                         );
                       },
                     ),
-                    SizedBox(height: selectedLabel != 'All' ? 20 : 12),
+                    SizedBox(height: selectedLabel != 'All' ? 24 : 12),
                     if (selectedLabel != 'All')
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           TextWidget(
-                            text: 'Notification from:',
-                            fontSize: 14,
+                            text: 'Purchase Order filter:',
                             fontWeight: FontWeight.w700,
                           ),
                           SizedBox(width: 6),

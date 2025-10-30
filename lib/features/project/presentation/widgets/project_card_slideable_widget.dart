@@ -6,7 +6,7 @@ import 'package:bluedock/core/config/assets/app_images.dart';
 import 'package:bluedock/core/config/navigation/app_routes.dart';
 import 'package:bluedock/common/domain/entities/project_entity.dart';
 import 'package:bluedock/core/config/theme/app_colors.dart';
-import 'package:bluedock/features/project/domain/usecases/commision_project_usecase.dart';
+import 'package:bluedock/features/project/domain/usecases/end_project_usecase.dart';
 import 'package:bluedock/features/project/domain/usecases/delete_project_usecase.dart';
 import 'package:bluedock/common/bloc/projectSection/project_display_cubit.dart';
 import 'package:bluedock/features/project/presentation/widgets/project_card_widget.dart';
@@ -27,14 +27,13 @@ class ProjectCardSlidableWidget extends StatelessWidget {
     return BlocProvider(
       create: (context) => ActionButtonCubit(),
       child: SlidableActionWidget(
-        extentRatio: project.blDate != null ? 0.2 : 0.4,
+        extentRatio: project.status == 'Commissioning' ? 0.2 : 0.4,
         isSlideable:
             userEmail == project.createdBy && project.status == 'Inactive'
             ? true
-            : project.blDate != null && project.status != 'Done'
+            : project.status == 'Commissioning'
             ? true
             : false,
-
         onUpdateTap: () async {
           final changed = await context.pushNamed(
             AppRoutes.formProject,
@@ -47,14 +46,8 @@ class ProjectCardSlidableWidget extends StatelessWidget {
         isUpdated: project.status == 'Inactive' && project.blDate == null,
         deleteColor: project.status == 'Inactive'
             ? AppColors.red
-            : project.status == 'Commissioning'
-            ? AppColors.green
-            : AppColors.blue,
-        deleteText: project.status == 'Inactive'
-            ? 'Delete'
-            : project.status == 'Active'
-            ? 'Start Commision'
-            : 'Project Done',
+            : AppColors.green,
+        deleteText: project.status == 'Inactive' ? 'Delete' : 'Project Done',
         deleteIcon: project.status == 'Inactive'
             ? PhosphorIconsBold.trash
             : project.status == 'Active'
@@ -71,19 +64,11 @@ class ProjectCardSlidableWidget extends StatelessWidget {
                 : AppColors.green,
             title: project.status == 'Inactive'
                 ? 'Remove Project'
-                : project.status == 'Active'
-                ? 'Start Commision'
                 : 'Project Done',
             subtitle: project.status == 'Inactive'
                 ? "Are you sure to remove ${project.projectName}?"
-                : project.status == 'Active'
-                ? "Are you sure to start commisioning for this project ${project.projectName}?"
-                : "Are you sure to make this project ${project.projectName} end?",
-            yesButton: project.status == 'Inactive'
-                ? 'Remove'
-                : project.status == 'Active'
-                ? 'Start'
-                : 'Done',
+                : "Are you sure to finish this project ${project.projectName}?",
+            yesButton: project.status == 'Inactive' ? 'Remove' : 'Done',
             actionCubit: actionCubit,
             yesButtonOnTap: () async {
               project.status == 'Inactive'
@@ -92,7 +77,7 @@ class ProjectCardSlidableWidget extends StatelessWidget {
                       params: project,
                     )
                   : context.read<ActionButtonCubit>().execute(
-                      usecase: CommisionProjectUseCase(),
+                      usecase: EndProjectUseCase(),
                       params: project,
                     );
               final ok = await waitActionDone(actionCubit);

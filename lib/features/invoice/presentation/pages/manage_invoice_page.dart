@@ -57,14 +57,16 @@ class ManageInvoicePage extends StatelessWidget {
                         final mapped = value == 'All' ? '' : value;
                         context.read<InvoiceDisplayCubit>().setType(mapped);
                       },
+                      selectedColor: selectedLabel == 'Down Payment'
+                          ? AppColors.blue
+                          : AppColors.orange,
                     ),
-                    SizedBox(height: selectedLabel != 'All' ? 20 : 12),
+                    SizedBox(height: selectedLabel != 'All' ? 24 : 12),
                     if (selectedLabel != 'All')
                       Row(
                         children: [
                           TextWidget(
                             text: 'Invoice Status :',
-                            fontSize: 14,
                             fontWeight: FontWeight.w700,
                           ),
                           SizedBox(width: 6),

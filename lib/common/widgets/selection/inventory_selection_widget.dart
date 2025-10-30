@@ -23,6 +23,7 @@ class InventorySelectionWidget extends StatelessWidget {
   final int? index;
   final bool? withoutIcon;
   final List<InventoryEntity>? listComponent;
+  final bool disabled;
 
   const InventorySelectionWidget({
     super.key,
@@ -36,11 +37,13 @@ class InventorySelectionWidget extends StatelessWidget {
     this.icon,
     this.extraProviders = const <BlocProvider>[],
     this.withoutIcon = false,
+    this.disabled = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return DropdownWidget(
+      disabled: disabled,
       withoutIcon: withoutIcon,
       icon: icon,
       title: title,
@@ -60,21 +63,18 @@ class InventorySelectionWidget extends StatelessWidget {
           return;
         }
 
+        final invCubit = context.read<InventoryDisplayCubit>();
+        invCubit.displayInventory(
+          params: SearchInventoryReq(category: categoryId, model: productId),
+        );
+
         BottomModalWidget.display(
           context,
           height: MediaQuery.of(context).size.height,
           MultiBlocProvider(
             providers: [
               ...extraProviders,
-              BlocProvider.value(
-                value: context.read<InventoryDisplayCubit>()
-                  ..displayInventory(
-                    params: SearchInventoryReq(
-                      category: categoryId,
-                      model: productId,
-                    ),
-                  ),
-              ),
+              BlocProvider.value(value: invCubit),
             ],
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
@@ -94,7 +94,7 @@ class InventorySelectionWidget extends StatelessWidget {
                     iconColor: AppColors.darkBlue,
                     hintText: 'Search',
                     onChanged: (value) {
-                      context.read<InventoryDisplayCubit>().displayInventory(
+                      invCubit.displayInventory(
                         params: SearchInventoryReq(
                           category: categoryId,
                           model: productId,
@@ -105,106 +105,111 @@ class InventorySelectionWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
                   Expanded(
-                    child: BlocBuilder<InventoryDisplayCubit, InventoryDisplayState>(
-                      builder: (context, state) {
-                        if (state is InventoryDisplayLoading) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                        if (state is InventoryDisplayFailure) {
-                          return Center(child: Text(state.message));
-                        }
-                        if (state is InventoryDisplayFetched) {
-                          final all = state.listInventory;
-
-                          // ✅ filter hanya jika listComponent ada & tidak kosong
-                          List<InventoryEntity> filtered;
-                          if (listComponent == null || listComponent!.isEmpty) {
-                            filtered = all;
-                          } else {
-                            final chosenIds = listComponent!
-                                .map((e) => e.inventoryId)
-                                .where((id) => id.isNotEmpty)
-                                .toSet();
-
-                            // izinkan item yang sedang terpilih di baris ini
-                            if (selected != null) {
-                              chosenIds.remove(selected!.inventoryId);
-                            }
-
-                            filtered = all
-                                .where(
-                                  (e) => !chosenIds.contains(e.inventoryId),
-                                )
-                                .toList();
-                          }
-
-                          if (filtered.isEmpty) {
-                            return const Center(
-                              child: Text('Inventory not found'),
-                            );
-                          }
-
-                          return ListView.separated(
-                            padding: const EdgeInsets.only(bottom: 3),
-                            itemCount: filtered.length,
-                            separatorBuilder: (_, __) =>
-                                const SizedBox(height: 20),
-                            itemBuilder: (context, index) {
-                              final value = filtered[index];
-                              final bool isSelected =
-                                  selected?.inventoryId == value.inventoryId;
-
-                              return ButtonWidget(
-                                background: isSelected
-                                    ? AppColors.blue
-                                    : AppColors.white,
-                                onPressed: () {
-                                  onPressed(value);
-                                  Navigator.of(
-                                    context,
-                                  ).maybePop(); // tutup modal
-                                },
-                                content: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 14,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child: TextWidget(
-                                          text: value.stockName,
-                                          color: isSelected
-                                              ? AppColors.white
-                                              : AppColors.darkBlue,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      TextWidget(
-                                        text: '${value.quantity} Unit',
-                                        color: isSelected
-                                            ? AppColors.white
-                                            : AppColors.orange,
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 16,
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                    child:
+                        BlocBuilder<
+                          InventoryDisplayCubit,
+                          InventoryDisplayState
+                        >(
+                          builder: (context, state) {
+                            if (state is InventoryDisplayLoading) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
                               );
-                            },
-                          );
-                        }
-                        return const SizedBox.shrink();
-                      },
-                    ),
+                            }
+                            if (state is InventoryDisplayFailure) {
+                              return Center(child: Text(state.message));
+                            }
+                            if (state is InventoryDisplayFetched) {
+                              final all = state.listInventory;
+
+                              List<InventoryEntity> filtered;
+
+                              if (listComponent == null ||
+                                  listComponent!.isEmpty) {
+                                filtered = all;
+                              } else {
+                                final chosenIds = listComponent!
+                                    .map((e) => e.inventoryId)
+                                    .where((id) => id.isNotEmpty)
+                                    .toSet();
+
+                                if (selected != null) {
+                                  chosenIds.remove(selected!.inventoryId);
+                                }
+
+                                filtered = all
+                                    .where(
+                                      (e) => !chosenIds.contains(e.inventoryId),
+                                    )
+                                    .toList();
+                              }
+
+                              if (filtered.isEmpty) {
+                                return const Center(
+                                  child: Text('Inventory not found'),
+                                );
+                              }
+
+                              return ListView.separated(
+                                padding: const EdgeInsets.only(bottom: 3),
+                                itemCount: filtered.length,
+                                separatorBuilder: (_, __) =>
+                                    const SizedBox(height: 20),
+                                itemBuilder: (context, index) {
+                                  final value = filtered[index];
+                                  final bool isSelected =
+                                      selected?.inventoryId ==
+                                      value.inventoryId;
+
+                                  return ButtonWidget(
+                                    background: isSelected
+                                        ? AppColors.blue
+                                        : AppColors.white,
+                                    onPressed: () {
+                                      onPressed(value);
+                                      Navigator.of(
+                                        context,
+                                      ).maybePop(); // tutup modal
+                                    },
+                                    content: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 14,
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            child: TextWidget(
+                                              text: value.stockName,
+                                              color: isSelected
+                                                  ? AppColors.white
+                                                  : AppColors.darkBlue,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          TextWidget(
+                                            text: '${value.quantity} Unit',
+                                            color: isSelected
+                                                ? AppColors.white
+                                                : AppColors.orange,
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 16,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+                            return const SizedBox.shrink();
+                          },
+                        ),
                   ),
                 ],
               ),

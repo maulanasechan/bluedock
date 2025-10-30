@@ -59,8 +59,6 @@ class InventoryFirebaseServiceImpl extends InventoryFirebaseService {
       final col = _db.collection('Inventories');
       Query<Map<String, dynamic>> qRef = col;
 
-      // ---- keyword -> server-side via searchKeywords (jika disiapkan) ----
-      // Kalau kamu punya index `searchKeywords: [lowercased tokens]`
       final QuerySnapshot<Map<String, dynamic>> snap = q.isEmpty
           ? await qRef.get()
           : await qRef.where('searchKeywords', arrayContains: q).get();

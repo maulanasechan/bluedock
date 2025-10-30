@@ -23,11 +23,13 @@ class PurchaseOrderFormProjectWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ProjectSelectionWidget(
-          status: 'DP Paid',
+          status: 'Inactive',
           title: 'Project Reference',
           selected: state.project?.projectName ?? '',
           onPressed: (v) {
-            cubit.setProject(v);
+            cubit
+              ..setProject(v)
+              ..setQuantityFromTextList(v.quantity.toString());
             context.pop();
           },
           extraProviders: [BlocProvider.value(value: cubit)],
@@ -63,6 +65,9 @@ class PurchaseOrderFormProjectWidget extends StatelessWidget {
         ),
         SizedBox(height: 24),
         TextfieldWidget(
+          key: ValueKey(
+            '${state.quantity.length}:${state.quantity.isNotEmpty ? state.quantity[0] : 0}',
+          ),
           validator: AppValidators.number(),
           hintText: 'Quantity',
           title: 'Quantity',

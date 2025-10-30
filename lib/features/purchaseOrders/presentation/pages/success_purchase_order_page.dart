@@ -13,7 +13,7 @@ class SuccessPurchaseOrderPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return GradientScaffoldWidget(
       body: SuccessPageWidget(
-        image: image == '' ? AppImages.appInvoice : image!,
+        image: image == '' ? AppImages.appTaskCreated : image!,
         title: title,
         onPressed: () {
           context.pop(true);

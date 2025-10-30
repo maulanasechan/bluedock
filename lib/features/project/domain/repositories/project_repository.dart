@@ -7,5 +7,5 @@ abstract class ProjectRepository {
   Future<Either> updateProject(ProjectFormReq req);
   Future<Either> deleteProject(ProjectEntity req);
   Future<Either> favoriteProject(String req);
-  Future<Either> commisionProject(ProjectEntity req);
+  Future<Either> endProject(ProjectEntity req);
 }
